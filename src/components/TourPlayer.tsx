@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../utils/cn";
 import { px, type Shot } from "../data/media";

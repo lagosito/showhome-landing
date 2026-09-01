@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Container, Reveal, SectionHead } from "./primitives";
 import { px, tourShots } from "../data/media";
