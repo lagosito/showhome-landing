@@ -16,6 +16,7 @@ interface Photo {
   filename: string;
   detectedRoom: Room;
   room: Room;
+  description: string;
   order: number;
 }
 
@@ -55,6 +56,7 @@ export default function RoomsPage() {
       ...p,
       detectedRoom: 'Unsorted' as Room,
       room: 'Unsorted' as Room,
+      description: p.description || '',
       order: i + 1,
     }));
 
@@ -78,13 +80,17 @@ export default function RoomsPage() {
 
       if (res.ok) {
         const { results } = await res.json();
-        const roomMap = new Map(results.map((r: any) => [r.id, r.detectedRoom]));
+        const resultMap = new Map(results.map((r: any) => [r.id, r]));
 
-        const updated = photos.map(p => ({
-          ...p,
-          detectedRoom: (roomMap.get(p.id) || 'Other') as Room,
-          room: (roomMap.get(p.id) || 'Other') as Room,
-        }));
+        const updated = photos.map(p => {
+          const detected = resultMap.get(p.id);
+          return {
+            ...p,
+            detectedRoom: (detected?.detectedRoom || 'Other') as Room,
+            room: (detected?.detectedRoom || 'Other') as Room,
+            description: detected?.description || p.description || '',
+          };
+        });
 
         // Group into sections
         const grouped = groupPhotos(updated);

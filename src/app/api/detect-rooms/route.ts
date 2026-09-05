@@ -6,8 +6,20 @@ type Room = typeof ROOMS[number];
 
 const ORCAROUTER_KEY = process.env.ORCAROUTER_API_KEY;
 
-async function detectRoomForImage(imageUrl: string): Promise<Room> {
-  if (!ORCAROUTER_KEY) return 'Other';
+interface RoomClassification {
+  room: Room;
+  description: string;
+}
+
+const DESCRIPTION_PROMPT = `You are a real estate photo analyst. Return a JSON object with two fields:
+- "room": one of Kitchen, Living Room, Dining Room, Bedroom, Bathroom, Hallway, Exterior, Other
+- "description": one sentence (max 20 words) describing what is physically visible — materials, finishes, light, views. No sales adjectives ("spacious", "charming", "inviting", "modern"). No counts, measurements, prices, or guesses about other rooms. If you cannot describe the photo confidently, use an empty string "".
+
+Reply with ONLY valid JSON, nothing else.`;
+
+async function detectRoomForImage(imageUrl: string): Promise<RoomClassification> {
+  const fallback: RoomClassification = { room: 'Other', description: '' };
+  if (!ORCAROUTER_KEY) return fallback;
 
   try {
     const res = await fetch('https://api.orcarouter.ai/v1/chat/completions', {
@@ -24,7 +36,7 @@ async function detectRoomForImage(imageUrl: string): Promise<Room> {
             content: [
               {
                 type: 'text',
-                text: `Classify this real estate photo into exactly ONE room type. Reply with ONLY the room name, nothing else.\n\nOptions: Kitchen, Living Room, Dining Room, Bedroom, Bathroom, Hallway, Exterior, Other\n\nIf you cannot determine the room, reply "Other".`,
+                text: DESCRIPTION_PROMPT,
               },
               {
                 type: 'image_url',
@@ -33,19 +45,22 @@ async function detectRoomForImage(imageUrl: string): Promise<Room> {
             ],
           },
         ],
-        max_tokens: 20,
+        max_tokens: 120,
         temperature: 0,
+        response_format: { type: 'json_object' },
       }),
     });
 
-    if (!res.ok) return 'Other';
+    if (!res.ok) return fallback;
 
     const data = await res.json();
     const text = (data.choices?.[0]?.message?.content || '').trim();
-    const match = ROOMS.find(r => r.toLowerCase() === text.toLowerCase());
-    return match || 'Other';
+    const parsed = JSON.parse(text);
+    const room = ROOMS.find(r => r.toLowerCase() === (parsed.room || '').toLowerCase()) || 'Other';
+    const description = typeof parsed.description === 'string' ? parsed.description.slice(0, 200) : '';
+    return { room, description };
   } catch {
-    return 'Other';
+    return fallback;
   }
 }
 
@@ -64,14 +79,14 @@ export async function POST(request: Request) {
   // Classify all photos in parallel (max 12 concurrent)
   const results = await Promise.allSettled(
     photos.map(async (photo: { id: string; url: string; filename: string }) => {
-      const room = await detectRoomForImage(photo.url);
-      return { id: photo.id, detectedRoom: room };
+      const { room, description } = await detectRoomForImage(photo.url);
+      return { id: photo.id, detectedRoom: room, description };
     })
   );
 
   const classified = results.map((r, i) => {
     if (r.status === 'fulfilled') return r.value;
-    return { id: photos[i].id, detectedRoom: 'Other' as Room };
+    return { id: photos[i].id, detectedRoom: 'Other' as Room, description: '' };
   });
 
   return NextResponse.json({ results: classified });

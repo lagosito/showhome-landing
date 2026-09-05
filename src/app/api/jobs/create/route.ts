@@ -67,6 +67,7 @@ export async function POST(request: Request) {
         url: p.url,
         room: p.room,
         order: i + 1,
+        description: p.description || '',
       })),
     });
 

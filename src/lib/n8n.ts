@@ -9,7 +9,7 @@ export interface N8nJobPayload {
   avatarId: string | null;
   avatarUrl: string | null;
   highlights: string;
-  photos: { url: string; room: string; order: number }[];
+  photos: { url: string; room: string; order: number; description?: string }[];
 }
 
 export async function submitJobToN8n(payload: N8nJobPayload): Promise<{ accepted: boolean; jobId: string }> {
