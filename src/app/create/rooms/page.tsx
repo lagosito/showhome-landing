@@ -80,7 +80,9 @@ export default function RoomsPage() {
 
       if (res.ok) {
         const { results } = await res.json();
-        const resultMap = new Map(results.map((r: any) => [r.id, r]));
+        const resultMap = new Map<string, { detectedRoom?: string; description?: string }>(
+          results.map((r: any) => [r.id, r])
+        );
 
         const updated = photos.map(p => {
           const detected = resultMap.get(p.id);
