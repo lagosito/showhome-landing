@@ -54,15 +54,24 @@ export default function RoomsPage() {
 
     const photos: Photo[] = JSON.parse(stored).map((p: any, i: number) => ({
       ...p,
-      detectedRoom: 'Unsorted' as Room,
-      room: 'Unsorted' as Room,
+      detectedRoom: (p.room && p.room !== 'Unsorted' ? p.room : 'Unsorted') as Room,
+      room: (p.room && p.room !== 'Unsorted' ? p.room : 'Unsorted') as Room,
       description: p.description || '',
       order: i + 1,
     }));
 
-    // Start with everything unsorted
-    setSections([{ room: 'Unsorted', photos }]);
-    detectRooms(photos);
+    // Check if rooms are pre-filled (import flow) or need detection (upload flow)
+    const hasPreFilledRooms = photos.some(p => p.room !== 'Unsorted');
+    if (hasPreFilledRooms) {
+      // Skip vision API — group directly from pre-filled data
+      const grouped = groupPhotos(photos);
+      setSections(grouped);
+      setDetecting(false);
+    } else {
+      // Start with everything unsorted, then detect
+      setSections([{ room: 'Unsorted', photos }]);
+      detectRooms(photos);
+    }
   }, [router]);
 
   const detectRooms = async (photos: Photo[]) => {

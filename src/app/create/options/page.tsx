@@ -39,6 +39,10 @@ export default function OptionsPage() {
       propertyType, style, avatarId, aspectRatio, highlights,
     }));
 
+    // Read listing metadata if imported from link
+    const listingRaw = sessionStorage.getItem('showhome-listing');
+    const listing = listingRaw ? JSON.parse(listingRaw) : null;
+
     // Call server route to create job
     const res = await fetch('/api/jobs/create', {
       method: 'POST',
@@ -51,6 +55,13 @@ export default function OptionsPage() {
         avatarUrl: null,
         highlights,
         photos,
+        // Import metadata (only present for link-imported jobs)
+        source: listing?.source || 'upload',
+        sourceUrl: listing?.sourceUrl || null,
+        rightsConfirmedAt: listing?.rightsConfirmedAt || null,
+        floorPlanUrl: listing?.floorPlanUrl || null,
+        listingText: listing?.listingText || null,
+        listingFacts: listing?.listingFacts || null,
       }),
     });
 

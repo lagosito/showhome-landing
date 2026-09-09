@@ -140,6 +140,13 @@ export default function UploadPage() {
               </h1>
               <p className="mt-4 text-[15px] text-ink-3">
                 Between 3 and 12 photos. Drop everything at once — we&apos;ll sort the rooms automatically.
+                {' '}
+                <button
+                  onClick={() => router.push('/create/import')}
+                  className="font-medium text-ink underline underline-offset-2 hover:text-clay"
+                >
+                  Or paste a listing link
+                </button>
               </p>
             </div>
 

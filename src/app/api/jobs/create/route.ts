@@ -18,7 +18,11 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { propertyType, style, aspectRatio, avatarId, avatarUrl, highlights, photos } = body;
+  const {
+    propertyType, style, aspectRatio, avatarId, avatarUrl, highlights, photos,
+    // Import metadata (optional)
+    source, sourceUrl, rightsConfirmedAt, floorPlanUrl, listingText, listingFacts,
+  } = body;
 
   // Validate
   if (!propertyType || !style || !aspectRatio || !photos?.length) {
@@ -43,6 +47,12 @@ export async function POST(request: Request) {
     avatar_url: avatarUrl || null,
     highlights: highlights || '',
     photos,
+    source: source || 'upload',
+    source_url: sourceUrl || null,
+    rights_confirmed_at: rightsConfirmedAt || null,
+    floor_plan_url: floorPlanUrl || null,
+    listing_text: listingText || null,
+    listing_facts: listingFacts || null,
   });
 
   if (insertError) {
