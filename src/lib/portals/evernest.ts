@@ -103,7 +103,7 @@ export const evernestParser: PortalParser = {
     const photoRegex = /<img[^>]*alt="([^"]*)"[^>]*src="(https:\/\/images\.ctfassets\.net\/[^"]*\?[^"]*)"[^>]*>/gi;
     const photoRegexAlt = /<img[^>]*src="(https:\/\/images\.ctfassets\.net\/[^"]*\?[^"]*)"[^>]*alt="([^"]*)"[^>]*>/gi;
     const seen = new Set<string>();
-    const photos: { url: string; alt: string }[] = [];
+    const photos: { url: string; alt: string; room?: string; description?: string }[] = [];
 
     for (const re of [photoRegex, photoRegexAlt]) {
       let m: RegExpExecArray | null;
@@ -112,13 +112,16 @@ export const evernestParser: PortalParser = {
         const rawSrc = (m[2] || m[1] || '').trim();
         // Skip floor plans
         if (alt.toLowerCase().includes('grundriss') || alt.toLowerCase().includes('floor plan')) continue;
-        // Skip agent/broker photos
-        if (alt.toLowerCase().includes('frau mit') || alt.toLowerCase().includes('mann mit')) continue;
         // Normalize URL to w=1920
         const baseUrl = rawSrc.split('?')[0];
         const url = `${baseUrl}?w=1920`;
         if (seen.has(url)) continue;
         seen.add(url);
+        // Agent/broker photos → classify as Presenter
+        if (alt.toLowerCase().includes('frau mit') || alt.toLowerCase().includes('mann mit')) {
+          photos.push({ url, alt, room: 'Presenter', description: translateAltToDescription(alt) });
+          continue;
+        }
         photos.push({ url, alt });
       }
     }

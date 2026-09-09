@@ -6,20 +6,9 @@ import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
 
-const FEATURE_PRESENTER = process.env.NEXT_PUBLIC_FEATURE_PRESENTER === 'true';
-
-const AVATARS = [
-  { id: 'anna', name: 'Anna', desc: 'Friendly and professional, warm European accent' },
-  { id: 'marcus', name: 'Marcus', desc: 'Confident and polished, natural delivery' },
-  { id: 'sofia', name: 'Sofia', desc: 'Engaging and clear, modern style' },
-  { id: 'james', name: 'James', desc: 'Calm and authoritative, classic narration' },
-];
-
 export default function OptionsPage() {
   const router = useRouter();
   const [propertyType, setPropertyType] = useState<'rent' | 'sale'>('rent');
-  const [style, setStyle] = useState<'voiceover' | 'presenter'>('voiceover');
-  const [avatarId, setAvatarId] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState<'9:16' | '16:9'>('9:16');
   const [highlights, setHighlights] = useState('');
   const [photos, setPhotos] = useState<any[]>([]);
@@ -33,46 +22,45 @@ export default function OptionsPage() {
     setPhotos(JSON.parse(stored));
   }, [router]);
 
+  // Derive style from photos — Presenter photo present = presenter video
+  const derivedStyle: 'voiceover' | 'presenter' =
+    photos.some((p: any) => p.room === 'Presenter') ? 'presenter' : 'voiceover';
+
   const handleSubmit = async () => {
-    // Store options
     sessionStorage.setItem('showhome-options', JSON.stringify({
-      propertyType, style, avatarId, aspectRatio, highlights,
+      propertyType, aspectRatio, highlights,
     }));
 
-    // Read listing metadata if imported from link
     const listingRaw = sessionStorage.getItem('showhome-listing');
     const listing = listingRaw ? JSON.parse(listingRaw) : null;
 
-    // Call server route to create job
     const res = await fetch('/api/jobs/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         propertyType,
-        style,
+        style: derivedStyle,
         aspectRatio,
-        avatarId: style === 'presenter' ? avatarId : null,
+        avatarId: null,
         avatarUrl: null,
         highlights,
         photos,
-        // Import metadata (only present for link-imported jobs)
+        // Import metadata
         source: listing?.source || 'upload',
         sourceUrl: listing?.sourceUrl || null,
         rightsConfirmedAt: listing?.rightsConfirmedAt || null,
         floorPlanUrl: listing?.floorPlanUrl || null,
         listingText: listing?.listingText || null,
         listingFacts: listing?.listingFacts || null,
+        presenterConsentAt: listing?.presenterConsentAt || null,
       }),
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       alert(data.error || 'Something went wrong');
       return;
     }
-
-    // Navigate to waiting screen
     router.push(`/create/wait/${data.jobId}`);
   };
 
@@ -84,7 +72,7 @@ export default function OptionsPage() {
           <div className="mx-auto max-w-2xl">
             <div className="text-center">
               <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
-                <span className="h-1 w-1 rounded-full bg-clay" /> Step 2 of 3
+                <span className="h-1 w-1 rounded-full bg-clay" /> Step 3 of 4
               </span>
               <h1 className="mt-5 text-balance text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
                 Choose your video options
@@ -111,63 +99,6 @@ export default function OptionsPage() {
                   ))}
                 </div>
               </fieldset>
-
-              {/* Video style */}
-              <fieldset>
-                <legend className="text-[14px] font-semibold text-ink">Video style</legend>
-                <div className="mt-3 flex gap-3">
-                  <button
-                    onClick={() => setStyle('voiceover')}
-                    className={`flex-1 rounded-xl border px-4 py-3.5 text-left transition ${
-                      style === 'voiceover'
-                        ? 'border-ink bg-ink text-paper'
-                        : 'border-line bg-white text-ink hover:border-ink/25'
-                    }`}
-                  >
-                    <span className="text-[14px] font-medium">AI Voiceover</span>
-                    <span className="mt-1 block text-[12px] opacity-70">Narrator over the walkthrough</span>
-                  </button>
-                  {FEATURE_PRESENTER && (
-                    <button
-                      onClick={() => setStyle('presenter')}
-                      className={`flex-1 rounded-xl border px-4 py-3.5 text-left transition ${
-                        style === 'presenter'
-                          ? 'border-ink bg-ink text-paper'
-                          : 'border-line bg-white text-ink hover:border-ink/25'
-                      }`}
-                    >
-                      <span className="text-[14px] font-medium">AI Presenter</span>
-                      <span className="mt-1 block text-[12px] opacity-70">On-camera host walks through</span>
-                    </button>
-                  )}
-                </div>
-              </fieldset>
-
-              {/* Presenter avatars (feature flagged) */}
-              {FEATURE_PRESENTER && style === 'presenter' && (
-                <fieldset>
-                  <legend className="text-[14px] font-semibold text-ink">Choose your presenter</legend>
-                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    {AVATARS.map(a => (
-                      <button
-                        key={a.id}
-                        onClick={() => setAvatarId(a.id)}
-                        className={`rounded-xl border p-3 text-center transition ${
-                          avatarId === a.id
-                            ? 'border-ink bg-ink text-paper'
-                            : 'border-line bg-white text-ink hover:border-ink/25'
-                        }`}
-                      >
-                        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-paper-2 text-[24px]">
-                          {a.name[0]}
-                        </div>
-                        <p className="mt-2 text-[13px] font-medium">{a.name}</p>
-                        <p className="mt-0.5 text-[11px] opacity-70">{a.desc}</p>
-                      </button>
-                    ))}
-                  </div>
-                </fieldset>
-              )}
 
               {/* Format */}
               <fieldset>
@@ -218,7 +149,7 @@ export default function OptionsPage() {
                 <p className="text-[13px] font-semibold text-ink">Summary</p>
                 <div className="mt-3 space-y-2 text-[13px] text-ink-2">
                   <p>Property: <strong>{propertyType === 'rent' ? 'For rent' : 'For sale'}</strong></p>
-                  <p>Style: <strong>{style === 'voiceover' ? 'AI Voiceover' : 'AI Presenter'}</strong></p>
+                  <p>Style: <strong>{derivedStyle === 'presenter' ? 'Presenter on camera' : 'AI Voiceover'}</strong></p>
                   <p>Format: <strong>{aspectRatio === '9:16' ? '9:16 Vertical' : '16:9 Landscape'}</strong></p>
                   <p>Photos: <strong>{photos.length}</strong></p>
                   {highlights && <p>Highlights: <strong>{highlights}</strong></p>}
@@ -228,11 +159,9 @@ export default function OptionsPage() {
               {/* Actions */}
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button
-                  onClick={() => router.push('/create/upload')}
+                  onClick={() => router.push('/create/rooms')}
                   className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
-                >
-                  Back
-                </button>
+                >Back</button>
                 <button
                   onClick={handleSubmit}
                   className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20]"

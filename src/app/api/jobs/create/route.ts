@@ -22,6 +22,7 @@ export async function POST(request: Request) {
     propertyType, style, aspectRatio, avatarId, avatarUrl, highlights, photos,
     // Import metadata (optional)
     source, sourceUrl, rightsConfirmedAt, floorPlanUrl, listingText, listingFacts,
+    presenterConsentAt,
   } = body;
 
   // Validate
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
     floor_plan_url: floorPlanUrl || null,
     listing_text: listingText || null,
     listing_facts: listingFacts || null,
+    presenter_consent_at: presenterConsentAt || null,
   });
 
   if (insertError) {
