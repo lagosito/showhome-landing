@@ -108,7 +108,7 @@ export function Hero() {
                     <p className="text-[12px] font-semibold leading-snug text-white sm:text-[13px]">
                       {s.t}
                     </p>
-                    <p className="mt-0.5 text-[10.5px] leading-snug text-white/55 sm:text-[11.5px]">
+                    <p className="mt-0.5 hidden text-[10.5px] leading-snug text-white/55 sm:block sm:text-[11.5px]">
                       {s.d}
                     </p>
                   </div>
