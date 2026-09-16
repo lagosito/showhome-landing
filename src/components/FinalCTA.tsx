@@ -22,21 +22,21 @@ export function FinalCTA() {
 
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-[11.5px] font-semibold uppercase tracking-[0.16em] text-white/80 backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-clay animate-sheen" />
-              Get started free
+              Kostenlos starten
             </span>
 
             <h2 className="mx-auto mt-7 max-w-[19ch] text-balance text-[clamp(2.1rem,5.4vw,4rem)] font-semibold leading-[1.0] tracking-[-0.045em]">
-              Your next property deserves more than a photo gallery.
+              Deine nächste Immobilie verdient mehr als eine Fotogalerie.
             </h2>
 
             <p className="mx-auto mt-6 max-w-lg text-pretty text-[16.5px] leading-relaxed text-white/65 sm:text-[18px]">
-              Turn your property photos into a professional video tour with
-              ShowHome.
+              Mach aus deinen Immobilienfotos mit ShowHome eine professionelle
+              Videotour.
             </p>
 
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button href="#top" size="lg" variant="light" className="w-full sm:w-auto" icon={<ArrowIcon />}>
-                Create your first video
+                Erstes Video erstellen
               </Button>
               <Button
                 href="#enterprise"
@@ -44,12 +44,12 @@ export function FinalCTA() {
                 className="w-full border border-white/18 bg-white/[0.06] text-paper backdrop-blur hover:bg-white/[0.12] sm:w-auto"
                 variant="ghost"
               >
-                Talk to sales
+                Vertrieb kontaktieren
               </Button>
             </div>
 
             <p className="mt-7 text-[13px] text-white/45">
-              First video free · No credit card required · Cancel anytime
+              Erstes Video gratis · Keine Kreditkarte nötig · Jederzeit kündbar
             </p>
           </div>
         </Reveal>

@@ -2,18 +2,18 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f5",
+  themeColor: "#ffffff",
 };
 
 export const metadata: Metadata = {
-  title: "ShowHome — Turn property photos into professional video tours",
+  title: "ShowHome — Aus Immobilienfotos werden professionelle Videotouren",
   description:
-    "ShowHome turns ordinary property photos into professional real-estate video tours. Upload your photos. Get a polished property video in minutes.",
+    "ShowHome verwandelt einfache Immobilienfotos in professionelle Videotouren. Fotos hochladen und in wenigen Minuten ein hochwertiges Immobilienvideo erhalten.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="de">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

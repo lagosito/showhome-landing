@@ -7,10 +7,10 @@ import { cn } from '@/utils/cn';
 import { Button, Container, Logo } from './primitives';
 
 const links = [
-  { label: 'Product', href: '/#product' },
-  { label: 'How it works', href: '/#how' },
-  { label: 'Pricing', href: '/#pricing' },
-  { label: 'For Agents', href: '/#agents' },
+  { label: 'Produkt', href: '/#product' },
+  { label: "So funktioniert's", href: '/#how' },
+  { label: 'Preise', href: '/#pricing' },
+  { label: 'Für Makler', href: '/#agents' },
   { label: 'Enterprise', href: '/#enterprise' },
 ];
 
@@ -39,11 +39,11 @@ export function Nav() {
     >
       <Container>
         <div className="flex h-[68px] items-center justify-between gap-6">
-          <Link href="/" className="shrink-0" aria-label="ShowHome home">
+          <Link href="/" className="shrink-0" aria-label="ShowHome Startseite">
             <Logo />
           </Link>
 
-          <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
+          <nav className="hidden items-center gap-8 md:flex" aria-label="Hauptnavigation">
             {links.map((l) => (
               <Link
                 key={l.href}
@@ -60,15 +60,15 @@ export function Nav() {
               href="/auth/signin"
               className="rounded-full px-4 py-2 text-[14.5px] font-medium text-ink-2 transition hover:text-ink"
             >
-              Sign in
+              Anmelden
             </Link>
-            <Button href="/create/upload">Create a video</Button>
+            <Button href="/create/upload">Video erstellen</Button>
           </div>
 
           <button
             type="button"
             className="grid h-10 w-10 place-items-center rounded-full border border-line-2 bg-white/60 md:hidden"
-            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
@@ -113,10 +113,10 @@ export function Nav() {
               onClick={() => setOpen(false)}
               className="border-b border-line/70 py-3 text-[15px] font-medium text-ink-2"
             >
-              Sign in
+              Anmelden
             </Link>
             <Button href="/create/upload" className="mt-4 mb-4 w-full py-3">
-              Create a video
+              Video erstellen
             </Button>
           </nav>
         </Container>

@@ -1,14 +1,14 @@
 import { ArrowIcon, Button, Container, Logo } from "./primitives";
 
 const nav = [
-  { label: "Product", href: "#product" },
-  { label: "How it works", href: "#how" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "For Agents", href: "#agents" },
+  { label: "Produkt", href: "#product" },
+  { label: "So funktioniert's", href: "#how" },
+  { label: "Preise", href: "#pricing" },
+  { label: "Für Makler", href: "#agents" },
   { label: "Enterprise", href: "#enterprise" },
 ];
 
-const legal = ["Privacy", "Terms", "Security", "Imprint"];
+const legal = ["Datenschutz", "AGB", "Sicherheit", "Impressum"];
 
 export function Footer() {
   return (
@@ -18,8 +18,8 @@ export function Footer() {
           <div className="max-w-sm">
             <Logo />
             <p className="mt-4 text-[14px] leading-relaxed text-ink-3">
-              Professional property video tours, generated from the photos you
-              already have.
+              Professionelle Immobilien-Videotouren, erstellt aus den Fotos, die du
+              schon hast.
             </p>
           </div>
 
@@ -40,14 +40,14 @@ export function Footer() {
 
           <div className="shrink-0">
             <Button href="#cta" size="lg" icon={<ArrowIcon />}>
-              Create a video
+              Video erstellen
             </Button>
           </div>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-line py-7 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[12.5px] text-ink-3">
-            © {new Date().getFullYear()} ShowHome. All rights reserved.
+            © {new Date().getFullYear()} ShowHome. Alle Rechte vorbehalten.
           </p>
           <ul className="flex flex-wrap gap-6">
             {legal.map((l) => (
