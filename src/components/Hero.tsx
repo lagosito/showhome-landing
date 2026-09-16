@@ -95,11 +95,11 @@ export function Hero() {
 
           {/* Three steps — inline over the video */}
           <Reveal delay={380}>
-            <div className="mt-8 grid w-full max-w-[860px] grid-cols-1 gap-2 sm:grid-cols-3">
+            <div className="mt-8 grid w-full max-w-[860px] grid-cols-1 gap-2 text-left sm:grid-cols-3">
               {steps.map((s) => (
                 <div
                   key={s.k}
-                  className="flex items-start gap-4 rounded-xl bg-black/40 px-5 py-4 backdrop-blur-sm sm:px-6 sm:py-5"
+                  className="flex items-start gap-4 rounded-xl bg-black/40 px-5 py-4 text-left backdrop-blur-sm sm:px-6 sm:py-5"
                 >
                   <span className="shrink-0 font-sans text-[40px] font-bold leading-none tracking-tight text-white/25 sm:text-[48px]">
                     {s.k}
