@@ -1,6 +1,5 @@
 import { Container, Reveal } from "./primitives";
-import { TourPlayer } from "./TourPlayer";
-import { demoImg, tourShots, uploadShots } from "../data/media";
+import { demoImg, uploadShots } from "../data/media";
 
 function PhotoFolder() {
   const files = uploadShots.slice(0, 9);
@@ -43,7 +42,6 @@ function PhotoFolder() {
 }
 
 export function BeforeAfter() {
-  const shots = [...tourShots.slice(2), ...tourShots.slice(0, 2)];
   return (
     <section className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
       <div
@@ -97,11 +95,31 @@ export function BeforeAfter() {
             <p className="mb-4 text-[14px] font-medium text-white">
               … wird eine professionelle Immobilientour.
             </p>
-            <TourPlayer
-              shots={shots}
-              title="Wohnung Verde · 86 m² · Geführte Tour"
-              className="ring-white/10"
-            />
+            <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#141518] shadow-[0_20px_60px_-30px_rgba(0,0,0,.8)]">
+              <div className="relative">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full"
+                >
+                  <source src="/demo-video.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                  <div className="flex items-center gap-2">
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-white/90 text-ink">
+                      <svg viewBox="0 0 16 16" className="ml-0.5 h-3 w-3" aria-hidden="true">
+                        <path d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9a.6.6 0 0 0-.92.5Z" fill="currentColor" />
+                      </svg>
+                    </span>
+                    <span className="text-[11.5px] font-medium text-white/90">
+                      Wohnung Verde · Geführte Tour
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {[
                 "Natürliche Raumabfolge",
