@@ -75,12 +75,12 @@ export default function ImportPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message || 'Something went wrong. Please try again.');
+        setError(data.message || data.error || 'Etwas ist schiefgelaufen. Bitte versuche es erneut.');
         return;
       }
       setResult(data);
     } catch {
-      setError('Something went wrong. Please try again.');
+      setError('Etwas ist schiefgelaufen. Bitte versuche es erneut.');
     } finally {
       setLoading(false);
     }
@@ -105,7 +105,7 @@ export default function ImportPage() {
           body: JSON.stringify({ imageUrl: photo.url }),
         });
 
-        if (!res.ok) throw new Error('Upload failed');
+        if (!res.ok) throw new Error('Upload fehlgeschlagen');
         const { publicUrl } = await res.json();
 
         uploadedPhotos.push({
@@ -141,7 +141,7 @@ export default function ImportPage() {
 
       router.push('/create/rooms');
     } catch {
-      setError('Failed to upload photos. Please try again.');
+      setError('Fotos konnten nicht hochgeladen werden. Bitte versuche es erneut.');
       setUploading(false);
     }
   };
@@ -154,13 +154,13 @@ export default function ImportPage() {
           <div className="mx-auto max-w-2xl">
             <div className="text-center">
               <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
-                <span className="h-1 w-1 rounded-full bg-clay" /> Step 1 of 4
+                <span className="h-1 w-1 rounded-full bg-clay" /> Schritt 1 von 4
               </span>
               <h1 className="mt-5 text-balance text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
-                Import from a listing
+                Aus einem Inserat importieren
               </h1>
               <p className="mt-4 text-[15px] text-ink-3">
-                Paste the URL of your property listing and we&apos;ll extract the photos automatically.
+                Füge die URL deines Immobilieninserats ein und wir übernehmen die Fotos automatisch.
               </p>
             </div>
 
@@ -180,11 +180,11 @@ export default function ImportPage() {
                   disabled={loading || !url.trim()}
                   className="rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-40 disabled:hover:translate-y-0"
                 >
-                  {loading ? 'Fetching…' : 'Fetch'}
+                  {loading ? 'Wird abgerufen…' : 'Abrufen'}
                 </button>
               </div>
               <p className="mt-3 text-[13px] text-ink-3">
-                Currently supported: <strong>Evernest</strong>
+                Aktuell unterstützt: <strong>Evernest</strong>
               </p>
             </div>
 
@@ -199,7 +199,7 @@ export default function ImportPage() {
             {loading && (
               <div className="mt-12 flex flex-col items-center gap-4">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-line border-t-clay" />
-                <p className="text-[13px] text-ink-3">Fetching listing…</p>
+                <p className="text-[13px] text-ink-3">Inserat wird abgerufen…</p>
               </div>
             )}
 
@@ -218,7 +218,7 @@ export default function ImportPage() {
                   ))}
                   {result.photos.length > 6 && (
                     <div className="flex h-24 w-32 flex-shrink-0 items-center justify-center rounded-xl border border-line bg-paper-2">
-                      <span className="text-[13px] text-ink-3">+{result.photos.length - 6} more</span>
+                      <span className="text-[13px] text-ink-3">+{result.photos.length - 6} weitere</span>
                     </div>
                   )}
                 </div>
@@ -232,7 +232,7 @@ export default function ImportPage() {
                   <div className="mt-3 flex flex-wrap gap-4 text-[14px]">
                     {result.price && <span className="font-medium text-ink">{result.price}</span>}
                     {result.area && <span className="text-ink-2">{result.area}</span>}
-                    {result.rooms && <span className="text-ink-2">{result.rooms} rooms</span>}
+                    {result.rooms && <span className="text-ink-2">{result.rooms} Zimmer</span>}
                   </div>
                   {result.features.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -242,7 +242,7 @@ export default function ImportPage() {
                     </div>
                   )}
                   <p className="mt-3 text-[13px] text-ink-3">
-                    {result.photos.length} photos found
+                    {result.photos.length} Fotos gefunden
                   </p>
                 </div>
 
@@ -256,7 +256,7 @@ export default function ImportPage() {
                       className="mt-0.5 h-4 w-4 rounded border-line accent-ink"
                     />
                     <span className="text-[14px] text-ink">
-                      This is my own listing and I have the rights to use these photos.
+                      Das ist mein eigenes Inserat und ich habe die Rechte, diese Fotos zu verwenden.
                     </span>
                   </label>
                 )}
@@ -271,7 +271,7 @@ export default function ImportPage() {
                       />
                     </div>
                     <p className="mt-2 text-center text-[13px] text-ink-3">
-                      Uploading {uploadProgress.done} of {uploadProgress.total} photos…
+                      {uploadProgress.done} von {uploadProgress.total} Fotos werden hochgeladen…
                     </p>
                   </div>
                 )}
@@ -283,14 +283,14 @@ export default function ImportPage() {
                     disabled={uploading}
                     className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white disabled:opacity-40"
                   >
-                    Back
+                    Zurück
                   </button>
                   <button
                     onClick={handleConfirm}
                     disabled={!rightsConfirmed || uploading}
                     className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-40 disabled:hover:translate-y-0"
                   >
-                    {uploading ? 'Importing…' : 'Sort rooms'}
+                    {uploading ? 'Wird importiert…' : 'Räume sortieren'}
                   </button>
                 </div>
               </div>
@@ -300,12 +300,12 @@ export default function ImportPage() {
             {!result && !loading && (
               <div className="mt-8 text-center">
                 <p className="text-[14px] text-ink-3">
-                  Or{' '}
+                  Oder{' '}
                   <button
                     onClick={() => router.push('/create/upload')}
                     className="font-medium text-ink underline underline-offset-2 hover:text-clay"
                   >
-                    upload photos directly
+                    Fotos direkt hochladen
                   </button>
                 </p>
               </div>

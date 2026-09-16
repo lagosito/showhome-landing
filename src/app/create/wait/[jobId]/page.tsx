@@ -7,11 +7,11 @@ import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
 
 const STATUS_STEPS = [
-  { key: 'queued', label: 'Queued', desc: 'Waiting in line…' },
-  { key: 'writing_script', label: 'Writing script', desc: 'Our AI is writing the narration…' },
-  { key: 'rendering', label: 'Rendering', desc: 'Creating your video tour…' },
-  { key: 'ready', label: 'Ready', desc: 'Your video is done!' },
-  { key: 'failed', label: 'Failed', desc: 'Something went wrong.' },
+  { key: 'queued', label: 'In der Warteschlange', desc: 'Wartet auf Bearbeitung…' },
+  { key: 'writing_script', label: 'Skript wird geschrieben', desc: 'Unsere KI schreibt den Sprechertext…' },
+  { key: 'rendering', label: 'Rendering', desc: 'Deine Videotour wird erstellt…' },
+  { key: 'ready', label: 'Fertig', desc: 'Dein Video ist fertig!' },
+  { key: 'failed', label: 'Fehlgeschlagen', desc: 'Etwas ist schiefgelaufen.' },
 ];
 
 export default function WaitPage() {
@@ -50,7 +50,7 @@ export default function WaitPage() {
       <>
         <Nav />
         <main className="flex min-h-[60vh] items-center justify-center">
-          <p className="text-ink-3">Loading job…</p>
+          <p className="text-ink-3">Auftrag wird geladen…</p>
         </main>
         <Footer />
       </>
@@ -64,10 +64,10 @@ export default function WaitPage() {
         <Container>
           <div className="mx-auto max-w-lg text-center">
             <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
-              <span className="h-1 w-1 rounded-full bg-clay" /> Step 3 of 3
+              <span className="h-1 w-1 rounded-full bg-clay" /> Schritt 4 von 4
             </span>
             <h1 className="mt-5 text-[clamp(1.6rem,3.5vw,2.4rem)] font-semibold leading-[1.1] tracking-[-0.03em]">
-              {job.status === 'failed' ? 'Something went wrong' : 'Your video is being created'}
+              {job.status === 'failed' ? 'Etwas ist schiefgelaufen' : 'Dein Video wird erstellt'}
             </h1>
 
             {/* Status steps */}
@@ -99,15 +99,15 @@ export default function WaitPage() {
 
             {job.status === 'failed' && (
               <div className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-5 text-left">
-                <p className="text-[14px] font-medium text-red-800">Generation failed</p>
+                <p className="text-[14px] font-medium text-red-800">Erstellung fehlgeschlagen</p>
                 <p className="mt-2 text-[13px] text-red-700">
-                  {job.error || 'An unexpected error occurred. Your credit has not been consumed.'}
+                  {job.error || 'Ein unerwarteter Fehler ist aufgetreten. Dein Guthaben wurde nicht verbraucht.'}
                 </p>
                 <button
                   onClick={() => router.push('/create/options')}
                   className="mt-4 rounded-full bg-ink px-5 py-2.5 text-[14px] font-medium text-paper transition hover:-translate-y-0.5"
                 >
-                  Try again
+                  Erneut versuchen
                 </button>
               </div>
             )}
@@ -123,8 +123,8 @@ export default function WaitPage() {
                     className="mt-1 h-4 w-4 rounded border-line text-clay accent-clay"
                   />
                   <div>
-                    <p className="text-[14px] font-medium text-ink">Notify me when it&apos;s ready</p>
-                    <p className="mt-0.5 text-[12px] text-ink-3">We&apos;ll email you so you don&apos;t have to wait here.</p>
+                    <p className="text-[14px] font-medium text-ink">Benachrichtige mich, wenn es fertig ist</p>
+                    <p className="mt-0.5 text-[12px] text-ink-3">Wir schicken dir eine E-Mail, damit du nicht hier warten musst.</p>
                   </div>
                 </label>
                 {notify && !emailSaved && (
@@ -133,25 +133,25 @@ export default function WaitPage() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
+                      placeholder="deine@email.de"
                       className="flex-1 rounded-lg border border-line px-3 py-2 text-[13px] outline-none focus:border-ink"
                     />
                     <button
                       onClick={() => setEmailSaved(true)}
                       className="rounded-lg bg-ink px-4 py-2 text-[13px] font-medium text-paper"
                     >
-                      Save
+                      Speichern
                     </button>
                   </div>
                 )}
                 {emailSaved && (
-                  <p className="mt-2 text-[12px] text-clay">✓ We&apos;ll notify {email}</p>
+                  <p className="mt-2 text-[12px] text-clay">✓ Wir benachrichtigen {email}</p>
                 )}
               </div>
             )}
 
             <p className="mt-8 text-[13px] text-ink-3">
-              You can leave this page and come back later. Your video will be here.
+              Du kannst diese Seite verlassen und später zurückkommen. Dein Video wartet hier auf dich.
             </p>
           </div>
         </Container>
