@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Container, Reveal, SectionHead } from "./primitives";
-import { px, tourShots } from "../data/media";
+import { demoImg, tourShots } from "../data/media";
 
 const channels = [
   { n: "Immobilienportale", d: "16:9 · MP4" },
@@ -27,8 +27,8 @@ function PortraitMock() {
         <div className="relative aspect-[9/19] w-full overflow-hidden bg-black">
           {tourShots.map((s, idx) => (
             <img
-              key={s.id}
-              src={px(s.id, 540, 1140)}
+              key={s.file}
+              src={demoImg(s.file)}
               alt=""
               aria-hidden="true"
               loading="lazy"
@@ -43,7 +43,7 @@ function PortraitMock() {
 
           <div className="absolute inset-x-0 top-0 flex gap-1 p-3">
             {tourShots.map((s, idx) => (
-              <span key={s.id} className="h-[2.5px] flex-1 overflow-hidden rounded-full bg-white/30">
+              <span key={s.file} className="h-[2.5px] flex-1 overflow-hidden rounded-full bg-white/30">
                 <span
                   className={`block h-full rounded-full bg-white transition-[width] duration-500 ${
                     idx < i ? "w-full" : idx === i ? "w-1/2" : "w-0"

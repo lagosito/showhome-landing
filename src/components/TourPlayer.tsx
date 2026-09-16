@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "../utils/cn";
-import { px, type Shot } from "../data/media";
+import { demoImg, type LocalShot } from "../data/media";
 
 const SHOT_MS = 4200;
 
@@ -13,7 +13,7 @@ export function TourPlayer({
   compact = false,
   minimal = false,
 }: {
-  shots: Shot[];
+  shots: LocalShot[];
   className?: string;
   title?: string;
   compact?: boolean;
@@ -65,8 +65,8 @@ export function TourPlayer({
       )}>
         {shots.map((s, idx) => (
           <img
-            key={s.id}
-            src={px(s.id, 1280, 720)}
+            key={s.file}
+            src={demoImg(s.file)}
             alt={s.alt}
             loading={idx === 0 ? "eager" : "lazy"}
             decoding="async"
@@ -163,7 +163,7 @@ export function TourPlayer({
             <div className="flex flex-1 items-center gap-1">
               {shots.map((s, idx) => (
                 <button
-                  key={s.id}
+                  key={s.file}
                   type="button"
                   aria-label={`Springe zu ${s.room}`}
                   onClick={() => {

@@ -1,5 +1,5 @@
 import { Container, Reveal, SectionHead } from "./primitives";
-import { px, tourShots, uploadShots } from "../data/media";
+import { demoImg, tourShots, uploadShots } from "../data/media";
 
 /* ---------- Step visuals ---------- */
 
@@ -8,9 +8,9 @@ function StepUpload() {
     <div className="flex h-full flex-col justify-between p-5 sm:p-6">
       <div className="grid grid-cols-3 gap-2">
         {uploadShots.slice(0, 6).map((s, i) => (
-          <div key={s.id} className="relative overflow-hidden rounded-lg">
+          <div key={s.file} className="relative overflow-hidden rounded-lg">
             <img
-              src={px(s.id, 240, 180)}
+              src={demoImg(s.file)}
               alt=""
               aria-hidden="true"
               loading="lazy"
@@ -82,9 +82,9 @@ function StepBuild() {
       <div className="mt-5 rounded-xl border border-line bg-white p-4">
         <div className="flex items-end gap-1.5">
           {tourShots.map((s, i) => (
-            <div key={s.id} className="flex-1">
+            <div key={s.file} className="flex-1">
               <img
-                src={px(s.id, 160, 100)}
+                src={demoImg(s.file)}
                 alt=""
                 aria-hidden="true"
                 loading="lazy"
@@ -119,7 +119,7 @@ function StepShare() {
     <div className="flex h-full flex-col justify-between p-5 sm:p-6">
       <div className="relative overflow-hidden rounded-xl bg-ink">
         <img
-          src={px(tourShots[1].id, 640, 360)}
+          src={demoImg(tourShots[1].file)}
           alt="Fertige Immobilientour, bereit zum Teilen"
           loading="lazy"
           decoding="async"

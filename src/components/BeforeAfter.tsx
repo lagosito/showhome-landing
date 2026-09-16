@@ -1,6 +1,6 @@
 import { Container, Reveal } from "./primitives";
 import { TourPlayer } from "./TourPlayer";
-import { px, tourShots, uploadShots } from "../data/media";
+import { demoImg, tourShots, uploadShots } from "../data/media";
 
 function PhotoFolder() {
   const files = uploadShots.slice(0, 9);
@@ -21,10 +21,10 @@ function PhotoFolder() {
       </div>
       <div className="grid grid-cols-3 gap-3 p-4 sm:p-5">
         {files.map((f, i) => (
-          <div key={f.id} className="group">
+          <div key={f.file} className="group">
             <div className="relative overflow-hidden rounded-md bg-black/40">
               <img
-                src={px(f.id, 260, 195)}
+                src={demoImg(f.file)}
                 alt=""
                 aria-hidden="true"
                 loading="lazy"

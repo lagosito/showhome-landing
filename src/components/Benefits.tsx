@@ -1,6 +1,6 @@
 import { cn } from "../utils/cn";
 import { Container, Reveal, SectionHead } from "./primitives";
-import { IMG, px, uploadShots } from "../data/media";
+import { IMG, px, demoImg, uploadShots } from "../data/media";
 
 function Card({
   title,
@@ -143,8 +143,8 @@ export function Benefits() {
                 <div className="mt-4 grid grid-cols-4 gap-1.5">
                   {uploadShots.slice(0, 4).map((s) => (
                     <img
-                      key={s.id}
-                      src={px(s.id, 140, 100)}
+                      key={s.file}
+                      src={demoImg(s.file)}
                       alt=""
                       aria-hidden="true"
                       loading="lazy"
@@ -206,12 +206,12 @@ export function Benefits() {
               <div className="grid grid-cols-4 gap-1.5">
                 {uploadShots.slice(0, 12).map((s, i) => (
                   <div
-                    key={s.id}
+                    key={s.file}
                     className="relative overflow-hidden rounded-md"
                     style={{ opacity: 1 - i * 0.055 }}
                   >
                     <img
-                      src={px(s.id, 140, 140)}
+                      src={demoImg(s.file)}
                       alt=""
                       aria-hidden="true"
                       loading="lazy"
