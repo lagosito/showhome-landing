@@ -95,18 +95,23 @@ export function Hero() {
 
           {/* Three steps — inline over the video */}
           <Reveal delay={380}>
-            <div className="mt-6 grid w-full max-w-[720px] grid-cols-3 gap-3 text-left">
+            <div className="mt-8 grid w-full max-w-[860px] grid-cols-1 gap-2 sm:grid-cols-3">
               {steps.map((s) => (
-                <div key={s.k} className="min-w-0">
-                  <span className="font-mono text-[11px] font-semibold text-white/40">
+                <div
+                  key={s.k}
+                  className="flex items-start gap-4 rounded-xl bg-black/40 px-5 py-4 backdrop-blur-sm sm:px-6 sm:py-5"
+                >
+                  <span className="shrink-0 font-sans text-[40px] font-bold leading-none tracking-tight text-white/25 sm:text-[48px]">
                     {s.k}
                   </span>
-                  <p className="mt-0.5 text-[13px] font-semibold leading-snug text-white sm:text-[14px]">
-                    {s.t}
-                  </p>
-                  <p className="mt-0.5 text-[11px] leading-snug text-white/60 sm:text-[12px]">
-                    {s.d}
-                  </p>
+                  <div className="min-w-0 pt-1">
+                    <p className="text-[14px] font-semibold leading-snug text-white sm:text-[15px]">
+                      {s.t}
+                    </p>
+                    <p className="mt-1 text-[12px] leading-snug text-white/60 sm:text-[13px]">
+                      {s.d}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
