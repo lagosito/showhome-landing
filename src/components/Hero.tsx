@@ -59,8 +59,8 @@ export function Hero() {
 
           <Reveal delay={160}>
             <p className="mx-auto mt-5 max-w-xl text-pretty text-[17px] leading-relaxed text-white/80 sm:text-[19px]">
-              Lade deine Fotos hoch. Homemotion erstellt daraus ein hochwertiges
-              Immobilienvideo, das Lust macht, jeden Raum zu entdecken.
+              Lade deine Fotos hoch — ohne Dreh, ohne Kamera, ohne Schnitt.
+              Homemotion erstellt daraus ein hochwertiges Immobilienvideo.
             </p>
           </Reveal>
 
@@ -91,14 +91,6 @@ export function Hero() {
                 So funktioniert&apos;s
               </Button>
             </div>
-          </Reveal>
-
-          <Reveal delay={300}>
-            <p className="mt-5 text-[13.5px] font-medium tracking-[-0.01em] text-white/60">
-              Kein Dreh <span className="mx-1">·</span> Keine
-              Kamera <span className="mx-1">·</span> Kein
-              Videoschnitt
-            </p>
           </Reveal>
 
           {/* Three steps — inline over the video */}
