@@ -99,12 +99,12 @@ export function Hero() {
               {steps.map((s) => (
                 <div
                   key={s.k}
-                  className="flex items-start gap-2 rounded-xl bg-black/40 px-3 py-3 text-left backdrop-blur-sm sm:gap-4 sm:px-6 sm:py-5"
+                  className="flex items-center gap-2 rounded-xl bg-black/40 px-3 py-3 text-left backdrop-blur-sm sm:gap-4 sm:px-6 sm:py-5"
                 >
                   <span className="shrink-0 font-sans text-[16px] font-bold leading-none tracking-tight text-white/25 sm:text-[48px]">
                     {s.k}
                   </span>
-                  <div className="min-w-0 pt-1.5">
+                  <div className="min-w-0">
                     <p className="text-[12px] font-semibold leading-snug text-white sm:text-[13px]">
                       {s.t}
                     </p>
