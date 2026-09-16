@@ -65,9 +65,9 @@ export default function SignInForm() {
   if (magicSent) {
     return (
       <div className="max-w-md text-center">
-        <h1 className="text-[28px] font-semibold tracking-[-0.03em]">Check your email</h1>
+        <h1 className="text-[28px] font-semibold tracking-[-0.03em]">Prüfe dein Postfach</h1>
         <p className="mt-4 text-[15px] text-ink-3">
-          We sent a link to <strong>{email}</strong>. Click it to sign in.
+          Wir haben einen Link an <strong>{email}</strong> gesendet. Klicke darauf, um dich anzumelden.
         </p>
       </div>
     );
@@ -75,17 +75,17 @@ export default function SignInForm() {
 
   return (
     <div className="w-full max-w-md">
-      <h1 className="text-center text-[28px] font-semibold tracking-[-0.03em]">Sign in to ShowHome</h1>
+      <h1 className="text-center text-[28px] font-semibold tracking-[-0.03em]">Bei ShowHome anmelden</h1>
       <p className="mt-3 text-center text-[15px] text-ink-3">
-        Or{' '}
+        Oder{' '}
         <button onClick={() => setMode(mode === 'password' ? 'magic' : 'password')} className="font-medium text-clay hover:underline">
-          {mode === 'password' ? 'use a magic link' : 'use password'}
+          {mode === 'password' ? 'Magic Link verwenden' : 'Passwort verwenden'}
         </button>
       </p>
 
       <form onSubmit={mode === 'password' ? handlePasswordSignIn : handleMagicLink} className="mt-8 space-y-4">
         <div>
-          <label className="block text-[13px] font-medium text-ink-2">Email</label>
+          <label className="block text-[13px] font-medium text-ink-2">E-Mail</label>
           <input
             type="email"
             required
@@ -96,7 +96,7 @@ export default function SignInForm() {
         </div>
         {mode === 'password' && (
           <div>
-            <label className="block text-[13px] font-medium text-ink-2">Password</label>
+            <label className="block text-[13px] font-medium text-ink-2">Passwort</label>
             <input
               type="password"
               required
@@ -112,14 +112,14 @@ export default function SignInForm() {
           disabled={loading}
           className="w-full rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-50"
         >
-          {loading ? 'Loading…' : mode === 'password' ? 'Sign in' : 'Send magic link'}
+          {loading ? 'Wird geladen…' : mode === 'password' ? 'Anmelden' : 'Magic Link senden'}
         </button>
       </form>
 
       <p className="mt-6 text-center text-[13px] text-ink-3">
-        Don&apos;t have an account?{' '}
+        Noch kein Konto?{' '}
         <button onClick={handleSignUp} className="font-medium text-clay hover:underline">
-          Create one
+          Jetzt erstellen
         </button>
       </p>
     </div>

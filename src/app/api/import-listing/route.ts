@@ -57,14 +57,14 @@ export async function POST(request: Request) {
   // Rate limit
   if (!checkRateLimit(user.id)) {
     return NextResponse.json(
-      { error: 'Too many requests. Please wait a moment and try again.' },
+      { error: 'Zu viele Anfragen. Bitte warte kurz und versuche es erneut.' },
       { status: 429 }
     );
   }
 
   const { url } = await request.json();
   if (!url || typeof url !== 'string') {
-    return NextResponse.json({ error: 'URL is required' }, { status: 400 });
+    return NextResponse.json({ error: 'Bitte gib eine URL ein' }, { status: 400 });
   }
 
   // Validate URL format
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     parsedUrl = new URL(url);
   } catch {
     return NextResponse.json(
-      { error: 'Please enter a valid URL' },
+      { error: 'Bitte gib eine gültige URL ein' },
       { status: 400 }
     );
   }
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: 'unsupported_portal',
-        message: 'This portal is not supported yet. We currently support: Evernest. You can also upload photos directly.',
+        message: 'Dieses Portal wird noch nicht unterstützt. Aktuell unterstützen wir: Evernest. Du kannst deine Fotos auch direkt hochladen.',
       },
       { status: 400 }
     );
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
   const allowed = await checkRobotsTxt(`${parsedUrl.origin}`);
   if (!allowed) {
     return NextResponse.json(
-      { error: 'This site does not allow automated access.' },
+      { error: 'Diese Website erlaubt keinen automatisierten Zugriff.' },
       { status: 403 }
     );
   }
@@ -108,14 +108,14 @@ export async function POST(request: Request) {
     });
     if (!res.ok) {
       return NextResponse.json(
-        { error: 'page_unreachable', message: "We couldn't reach this page. Please check the URL and try again." },
+        { error: 'page_unreachable', message: 'Wir konnten diese Seite nicht erreichen. Bitte prüfe die URL und versuche es erneut.' },
         { status: 404 }
       );
     }
     html = await res.text();
   } catch {
     return NextResponse.json(
-      { error: 'page_unreachable', message: "We couldn't reach this page. Please check the URL and try again." },
+      { error: 'page_unreachable', message: 'Wir konnten diese Seite nicht erreichen. Bitte prüfe die URL und versuche es erneut.' },
       { status: 502 }
     );
   }
@@ -126,7 +126,7 @@ export async function POST(request: Request) {
     listing = parser.parse(html);
   } catch {
     return NextResponse.json(
-      { error: 'parse_error', message: 'We had trouble reading this listing. Please try again or upload photos directly.' },
+      { error: 'parse_error', message: 'Wir konnten dieses Inserat nicht auslesen. Bitte versuche es erneut oder lade die Fotos direkt hoch.' },
       { status: 422 }
     );
   }
@@ -134,7 +134,7 @@ export async function POST(request: Request) {
   // Validate photos
   if (listing.photos.length === 0) {
     return NextResponse.json(
-      { error: 'no_photos', message: 'No photos were found on this listing.' },
+      { error: 'no_photos', message: 'In diesem Inserat wurden keine Fotos gefunden.' },
       { status: 422 }
     );
   }
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: 'fewer_than_3_photos',
-        message: `We found only ${listing.photos.length} photo${listing.photos.length !== 1 ? 's' : ''}. You need at least ${MIN_PHOTOS}. Please upload additional photos or try a different listing.`,
+        message: `Wir haben nur ${listing.photos.length} ${listing.photos.length !== 1 ? 'Fotos' : 'Foto'} gefunden. Du brauchst mindestens ${MIN_PHOTOS}. Bitte lade weitere Fotos hoch oder versuche ein anderes Inserat.`,
       },
       { status: 422 }
     );

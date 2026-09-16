@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   }
 
   if (photos.length < 3 || photos.length > 12) {
-    return NextResponse.json({ error: 'Between 3 and 12 photos required' }, { status: 400 });
+    return NextResponse.json({ error: 'Es werden 3 bis 12 Fotos benötigt' }, { status: 400 });
   }
 
   const jobId = randomUUID();
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   });
 
   if (insertError) {
-    return NextResponse.json({ error: 'Failed to create job' }, { status: 500 });
+    return NextResponse.json({ error: 'Auftrag konnte nicht erstellt werden' }, { status: 500 });
   }
 
   // Consume credit
@@ -88,9 +88,9 @@ export async function POST(request: Request) {
     // n8n unreachable — mark job as failed
     await sb.from('showhome_jobs').update({
       status: 'failed',
-      error: 'Video service temporarily unavailable. Please try again.',
+      error: 'Der Videodienst ist vorübergehend nicht verfügbar. Bitte versuche es erneut.',
     }).eq('id', jobId);
 
-    return NextResponse.json({ error: 'Video service temporarily unavailable' }, { status: 502 });
+    return NextResponse.json({ error: 'Der Videodienst ist vorübergehend nicht verfügbar' }, { status: 502 });
   }
 }

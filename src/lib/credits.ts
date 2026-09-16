@@ -37,7 +37,7 @@ export async function getUserCredits(userId: string): Promise<UserCredits | null
 
 export async function canCreateJob(userId: string): Promise<{ allowed: boolean; reason?: string }> {
   const credits = await getUserCredits(userId);
-  if (!credits) return { allowed: false, reason: 'Account not found' };
+  if (!credits) return { allowed: false, reason: 'Konto nicht gefunden' };
 
   if (credits.plan === 'enterprise') return { allowed: true };
 
@@ -46,9 +46,9 @@ export async function canCreateJob(userId: string): Promise<{ allowed: boolean; 
   // Metered: check credits
   if (credits.remaining !== null && credits.remaining <= 0) {
     if (credits.isTrialActive) {
-      return { allowed: false, reason: 'Your trial has ended. Upgrade to continue creating videos.' };
+      return { allowed: false, reason: 'Dein Testzeitraum ist abgelaufen. Upgrade deinen Tarif, um weitere Videos zu erstellen.' };
     }
-    return { allowed: false, reason: 'No credits remaining. Upgrade your plan to create more videos.' };
+    return { allowed: false, reason: 'Kein Guthaben mehr. Upgrade deinen Tarif, um weitere Videos zu erstellen.' };
   }
 
   return { allowed: true };
