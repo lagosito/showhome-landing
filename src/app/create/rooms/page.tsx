@@ -26,16 +26,16 @@ interface RoomSection {
 }
 
 const ROOM_LABELS: Record<Room, string> = {
-  'Exterior': 'Exterior',
-  'Hallway': 'Hallway',
-  'Living Room': 'Living Room',
-  'Dining Room': 'Dining Room',
-  'Kitchen': 'Kitchen',
-  'Bedroom': 'Bedroom',
-  'Bathroom': 'Bathroom',
-  'Other': 'Other',
-  'Presenter': 'Presenter',
-  'Unsorted': 'Unsorted — file these photos',
+  'Exterior': 'Außenbereich',
+  'Hallway': 'Flur',
+  'Living Room': 'Wohnzimmer',
+  'Dining Room': 'Esszimmer',
+  'Kitchen': 'Küche',
+  'Bedroom': 'Schlafzimmer',
+  'Bathroom': 'Badezimmer',
+  'Other': 'Sonstiges',
+  'Presenter': 'Präsentator',
+  'Unsorted': 'Unsortiert: bitte zuordnen',
 };
 
 export default function RoomsPage() {
@@ -248,22 +248,22 @@ export default function RoomsPage() {
           <div className="mx-auto max-w-2xl">
             <div className="text-center">
               <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
-                <span className="h-1 w-1 rounded-full bg-clay" /> Step 2 of 4
+                <span className="h-1 w-1 rounded-full bg-clay" /> Schritt 2 von 4
               </span>
               <h1 className="mt-5 text-balance text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
-                {detecting ? 'Detecting rooms…' : 'Check the room sorting'}
+                {detecting ? 'Räume werden erkannt…' : 'Raumzuordnung prüfen'}
               </h1>
               <p className="mt-4 text-[15px] text-ink-3">
                 {detecting
-                  ? 'Our AI is identifying each room. This takes a few seconds.'
-                  : 'We grouped your photos into rooms in walkthrough order. Drag to fix anything that looks wrong.'}
+                  ? 'Unsere KI erkennt jeden Raum. Das dauert nur ein paar Sekunden.'
+                  : 'Wir haben deine Fotos in Rundgang-Reihenfolge nach Räumen gruppiert. Zieh sie einfach an die richtige Stelle, falls etwas nicht passt.'}
               </p>
             </div>
 
             {detecting && (
               <div className="mt-12 flex flex-col items-center gap-4">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-line border-t-clay" />
-                <p className="text-[13px] text-ink-3">Analysing {totalPhotos} photos…</p>
+                <p className="text-[13px] text-ink-3">{totalPhotos} Fotos werden analysiert…</p>
               </div>
             )}
 
@@ -273,10 +273,10 @@ export default function RoomsPage() {
                 {hasUnsorted && (
                   <div className="mt-8 rounded-2xl border border-clay/30 bg-clay-tint/30 p-4 text-center">
                     <p className="text-[14px] font-medium text-clay">
-                      {sections.find(s => s.room === 'Unsorted')?.photos.length} photos need a room
+                      {sections.find(s => s.room === 'Unsorted')?.photos.length} Fotos brauchen noch einen Raum
                     </p>
                     <p className="mt-1 text-[13px] text-ink-3">
-                      Move them to the correct section below before continuing.
+                      Verschiebe sie in den passenden Bereich, bevor du weitermachst.
                     </p>
                   </div>
                 )}
@@ -286,14 +286,14 @@ export default function RoomsPage() {
                   <div key="presenter" className="mt-8 overflow-hidden rounded-2xl border border-ink/15 bg-white">
                     <div className="flex items-center justify-between px-4 py-3 bg-paper-2/50">
                       <div className="flex items-center gap-3">
-                        <span className="text-[13px] font-semibold text-ink">👤 Presenter</span>
+                        <span className="text-[13px] font-semibold text-ink">👤 Präsentator</span>
                       </div>
-                      <span className="text-[12px] text-ink-3">{section.photos.length} photo{section.photos.length !== 1 ? 's' : ''}</span>
+                      <span className="text-[12px] text-ink-3">{section.photos.length} {section.photos.length !== 1 ? 'Fotos' : 'Foto'}</span>
                     </div>
                     <div className="px-4 py-3">
                       <p className="text-[13px] text-ink-2 mb-3">
-                        This person will appear on camera presenting the property. Only the first photo is used.
-                        {!hasPresenter && ' No presenter — video will have voiceover narration.'}
+                        Diese Person präsentiert die Immobilie vor der Kamera. Es wird nur das erste Foto verwendet.
+                        {!hasPresenter && ' Kein Präsentator: Das Video erhält einen Voiceover-Sprecher.'}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {section.photos.map((photo, pIdx) => (
@@ -322,7 +322,7 @@ export default function RoomsPage() {
                             />
                             {pIdx === 0 && (
                               <span className="absolute -top-1 left-1/2 -translate-x-1/2 rounded-full bg-ink px-2 py-0.5 text-[9px] font-semibold text-paper whitespace-nowrap">
-                                First used
+                                Wird verwendet
                               </span>
                             )}
                             <button
@@ -342,7 +342,7 @@ export default function RoomsPage() {
                               className="mt-1 w-full rounded border border-line bg-paper px-1 py-0.5 text-[10px] text-ink-2"
                             >
                               {ALL_ROOMS.filter(r => r !== 'Unsorted').map(r => (
-                                <option key={r} value={r}>{r}</option>
+                                <option key={r} value={r}>{ROOM_LABELS[r]}</option>
                               ))}
                             </select>
                           </div>
@@ -359,7 +359,7 @@ export default function RoomsPage() {
                             className="mt-0.5 h-4 w-4 rounded border-line accent-ink"
                           />
                           <span className="text-[13px] text-ink-2">
-                            This person is me or has authorized me to use their image in this video.
+                            Diese Person bin ich oder sie hat mir erlaubt, ihr Bild in diesem Video zu verwenden.
                           </span>
                         </label>
                       )}
@@ -370,8 +370,8 @@ export default function RoomsPage() {
                 {!hasPresenter && !detecting && (
                   <div className="mt-8 rounded-2xl border border-line bg-white p-4">
                     <p className="text-[13px] text-ink-2">
-                      No presenter photo. Video will have voiceover narration without anyone on camera.
-                      To add a presenter, move a photo of the person presenting to the <strong>Presenter</strong> room.
+                      Kein Präsentator-Foto. Das Video erhält einen Voiceover-Sprecher, ohne Person vor der Kamera.
+                      Wenn du einen Präsentator möchtest, verschiebe ein Foto der Person in den Bereich <strong>Präsentator</strong>.
                     </p>
                   </div>
                 )}
@@ -422,7 +422,7 @@ export default function RoomsPage() {
                                 autoFocus
                               >
                                 {ALL_ROOMS.filter(r => r !== 'Unsorted').map(r => (
-                                  <option key={r} value={r}>{r}</option>
+                                  <option key={r} value={r}>{ROOM_LABELS[r]}</option>
                                 ))}
                               </select>
                             ) : (
@@ -430,11 +430,11 @@ export default function RoomsPage() {
                                 onClick={() => setEditingRoom(section.room)}
                                 className="text-[13px] font-semibold text-ink hover:text-clay"
                               >
-                                {section.room === 'Unsorted' ? '📁 Unsorted' : ROOM_LABELS[section.room]}
+                                {section.room === 'Unsorted' ? '📁 Unsortiert' : ROOM_LABELS[section.room]}
                               </button>
                             )}
                           </div>
-                          <span className="text-[12px] text-ink-3">{section.photos.length} photo{section.photos.length !== 1 ? 's' : ''}</span>
+                          <span className="text-[12px] text-ink-3">{section.photos.length} {section.photos.length !== 1 ? 'Fotos' : 'Foto'}</span>
                         </div>
 
                         {/* Photos grid */}
@@ -469,7 +469,7 @@ export default function RoomsPage() {
                                 className="mt-1 w-full rounded border border-line bg-paper px-1 py-0.5 text-[10px] text-ink-2"
                               >
                                 {ALL_ROOMS.filter(r => r !== 'Unsorted').map(r => (
-                                  <option key={r} value={r}>{r}</option>
+                                  <option key={r} value={r}>{ROOM_LABELS[r]}</option>
                                 ))}
                               </select>
                             </div>
@@ -482,7 +482,7 @@ export default function RoomsPage() {
 
                 {/* Walkthrough order hint */}
                 <p className="mt-6 text-center text-[12px] text-ink-3">
-                  Sections appear in walkthrough order: Exterior → Hallway → Living → Dining → Kitchen → Bedroom → Bathroom
+                  Die Bereiche erscheinen in Rundgang-Reihenfolge: Außen → Flur → Wohnen → Essen → Küche → Schlafen → Bad
                 </p>
 
                 {/* Actions */}
@@ -490,13 +490,13 @@ export default function RoomsPage() {
                   <button
                     onClick={() => router.push('/create/upload')}
                     className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
-                  >Back</button>
+                  >Zurück</button>
                   <button
                     onClick={handleSubmit}
                     disabled={!canSubmit}
                     className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-40 disabled:hover:translate-y-0"
                   >
-                    {hasUnsorted ? 'File all photos first' : hasPresenter && !presenterConsent ? 'Consent required for presenter' : 'Continue to options'}
+                    {hasUnsorted ? 'Erst alle Fotos zuordnen' : hasPresenter && !presenterConsent ? 'Einwilligung für Präsentator nötig' : 'Weiter zu den Optionen'}
                   </button>
                 </div>
               </>
