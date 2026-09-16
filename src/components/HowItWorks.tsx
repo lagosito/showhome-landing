@@ -40,22 +40,22 @@ function StepUpload() {
       </div>
       <div className="mt-5 rounded-xl border border-dashed border-line-2 bg-paper/60 px-4 py-3 text-center">
         <p className="text-[12.5px] font-medium text-ink-2">
-          Drop photos here <span className="text-ink-3">or browse</span>
+          Fotos hier ablegen <span className="text-ink-3">oder auswählen</span>
         </p>
-        <p className="mt-0.5 text-[11px] text-ink-3">JPG, PNG, HEIC · up to 200 photos</p>
+        <p className="mt-0.5 text-[11px] text-ink-3">JPG, PNG, HEIC · bis zu 200 Fotos</p>
       </div>
     </div>
   );
 }
 
 function StepBuild() {
-  const chips = ["Hall", "Living", "Kitchen", "Bedroom", "Bath", "Terrace"];
+  const chips = ["Flur", "Wohnen", "Küche", "Schlafen", "Bad", "Terrasse"];
   return (
     <div className="flex h-full flex-col justify-between p-5 sm:p-6">
       <div className="rounded-xl border border-line bg-white p-4">
         <div className="flex items-center justify-between">
           <span className="text-[11.5px] font-semibold text-ink">
-            Building walkthrough
+            Rundgang wird erstellt
           </span>
           <span className="font-mono text-[10.5px] text-clay">82%</span>
         </div>
@@ -100,7 +100,7 @@ function StepBuild() {
           ))}
         </div>
         <div className="mt-3 flex items-center justify-between text-[10.5px] text-ink-3">
-          <span>Sequence · natural walkthrough order</span>
+          <span>Abfolge · natürlicher Rundgang</span>
           <span className="font-mono">0:24</span>
         </div>
       </div>
@@ -110,7 +110,7 @@ function StepBuild() {
 
 function StepShare() {
   const targets = [
-    { n: "Portals", d: "16:9" },
+    { n: "Portale", d: "16:9" },
     { n: "Instagram", d: "9:16" },
     { n: "Website", d: "16:9" },
     { n: "WhatsApp", d: "1:1" },
@@ -120,7 +120,7 @@ function StepShare() {
       <div className="relative overflow-hidden rounded-xl bg-ink">
         <img
           src={px(tourShots[1].id, 640, 360)}
-          alt="Finished property tour ready to share"
+          alt="Fertige Immobilientour, bereit zum Teilen"
           loading="lazy"
           decoding="async"
           className="aspect-[16/9] w-full object-cover opacity-95"
@@ -158,20 +158,20 @@ function StepShare() {
 const steps = [
   {
     k: "01",
-    title: "Upload your photos",
-    body: "Select the photos of your property.",
+    title: "Fotos hochladen",
+    body: "Wähle die Fotos deiner Immobilie aus.",
     visual: <StepUpload />,
   },
   {
     k: "02",
-    title: "ShowHome creates the tour",
-    body: "Our AI understands the rooms and creates a natural property walkthrough.",
+    title: "ShowHome erstellt die Tour",
+    body: "Unsere KI erkennt die Räume und erstellt einen natürlichen Rundgang durch die Immobilie.",
     visual: <StepBuild />,
   },
   {
     k: "03",
-    title: "Share your video",
-    body: "Download your video and use it on property portals, social media, websites, or send it directly to prospects.",
+    title: "Video teilen",
+    body: "Lade dein Video herunter und nutze es auf Immobilienportalen, Social Media und Websites oder schick es direkt an Interessenten.",
     visual: <StepShare />,
   },
 ];
@@ -181,9 +181,9 @@ export function HowItWorks() {
     <section id="how" className="py-20 sm:py-28">
       <Container>
         <SectionHead
-          eyebrow="How it works"
-          title="Three steps. No production crew."
-          sub="From a folder of photos to a finished property tour — the whole process takes about as long as writing the listing description."
+          eyebrow="So funktioniert's"
+          title="Drei Schritte. Kein Filmteam."
+          sub="Vom Fotoordner zur fertigen Immobilientour: Das Ganze dauert etwa so lange wie das Schreiben der Exposé-Beschreibung."
         />
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">

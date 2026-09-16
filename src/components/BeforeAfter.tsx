@@ -13,10 +13,10 @@ function PhotoFolder() {
           <span className="h-2.5 w-2.5 rounded-full bg-white/18" />
         </span>
         <span className="ml-2 truncate text-[12px] font-medium text-white/55">
-          Photos / Apartment_Verde
+          Fotos / Wohnung_Verde
         </span>
         <span className="ml-auto font-mono text-[10.5px] text-white/35">
-          24 items
+          24 Objekte
         </span>
       </div>
       <div className="grid grid-cols-3 gap-3 p-4 sm:p-5">
@@ -55,13 +55,13 @@ export function BeforeAfter() {
           <Reveal>
             <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
               <span className="h-1 w-1 rounded-full bg-clay" aria-hidden="true" />
-              Before / After
+              Vorher / Nachher
             </span>
           </Reveal>
           <Reveal delay={70}>
             <h2 className="mt-5 text-balance text-[clamp(2rem,4.6vw,3.5rem)] font-semibold leading-[1.02] tracking-[-0.04em]">
-              Your photos already have the story.
-              <span className="text-white/45"> ShowHome tells it.</span>
+              Deine Fotos erzählen schon die Geschichte.
+              <span className="text-white/45"> ShowHome macht sie sichtbar.</span>
             </h2>
           </Reveal>
         </div>
@@ -69,7 +69,7 @@ export function BeforeAfter() {
         <div className="mt-14 grid items-center gap-8 lg:grid-cols-[1fr_auto_1.25fr] lg:gap-6">
           <Reveal>
             <p className="mb-4 text-[14px] font-medium text-white/55">
-              From a folder of photos…
+              Aus einem Fotoordner …
             </p>
             <PhotoFolder />
           </Reveal>
@@ -95,19 +95,19 @@ export function BeforeAfter() {
 
           <Reveal delay={200}>
             <p className="mb-4 text-[14px] font-medium text-white">
-              …to a professional property tour.
+              … wird eine professionelle Immobilientour.
             </p>
             <TourPlayer
               shots={shots}
-              title="Apartment Verde · 86 m² · Guided tour"
+              title="Wohnung Verde · 86 m² · Geführte Tour"
               className="ring-white/10"
             />
             <div className="mt-4 flex flex-wrap gap-2">
               {[
-                "Natural room order",
-                "Cinematic movement",
-                "Smooth transitions",
-                "Ready to publish",
+                "Natürliche Raumabfolge",
+                "Filmische Bewegung",
+                "Fließende Übergänge",
+                "Bereit zur Veröffentlichung",
               ].map((t) => (
                 <span
                   key={t}
