@@ -3,6 +3,24 @@ import { TourPlayer } from "./TourPlayer";
 import { tourShots } from "../data/media";
 
 export function Hero() {
+  const steps = [
+    {
+      k: "01",
+      t: "Fotos rein",
+      d: "Oder Link zum Inserat. Jede Reihenfolge.",
+    },
+    {
+      k: "02",
+      t: "Homemotion analysiert",
+      d: "Avatar wählen oder nur Voiceover.",
+    },
+    {
+      k: "03",
+      t: "Video raus",
+      d: "Fertige Tour, bereit zur Veröffentlichung.",
+    },
+  ];
+
   return (
     <section id="top" className="relative overflow-hidden">
       {/* Video as full-bleed hero background */}
@@ -23,7 +41,7 @@ export function Hero() {
         />
 
         {/* Content overlaid on video */}
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center sm:px-6">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 py-1.5 pl-1.5 pr-3.5 text-[12.5px] font-medium text-white/90 backdrop-blur-md">
               <span className="rounded-full bg-white px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-ink">
@@ -34,14 +52,14 @@ export function Hero() {
           </Reveal>
 
           <Reveal delay={80}>
-            <h1 className="mt-6 max-w-3xl text-balance text-[clamp(2.2rem,5.5vw,4rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-white">
+            <h1 className="mt-6 max-w-3xl text-balance text-[clamp(2rem,5.5vw,4rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-white">
               Aus Immobilienfotos werden professionelle Videotouren.
             </h1>
           </Reveal>
 
           <Reveal delay={160}>
             <p className="mx-auto mt-5 max-w-xl text-pretty text-[17px] leading-relaxed text-white/80 sm:text-[19px]">
-              Lade deine Fotos hoch. ShowHome erstellt daraus ein hochwertiges
+              Lade deine Fotos hoch. Homemotion erstellt daraus ein hochwertiges
               Immobilienvideo, das Lust macht, jeden Raum zu entdecken.
             </p>
           </Reveal>
@@ -76,58 +94,33 @@ export function Hero() {
           </Reveal>
 
           <Reveal delay={300}>
-            <p className="mt-6 text-[13.5px] font-medium tracking-[-0.01em] text-white/60">
-              Kein Dreh <span className="mx-1.5">·</span> Keine
-              Kamera <span className="mx-1.5">·</span> Kein
+            <p className="mt-5 text-[13.5px] font-medium tracking-[-0.01em] text-white/60">
+              Kein Dreh <span className="mx-1">·</span> Keine
+              Kamera <span className="mx-1">·</span> Kein
               Videoschnitt
             </p>
           </Reveal>
-        </div>
-      </div>
 
-      {/* Three compact steps below the hero video */}
-      <Container>
-        <Reveal delay={100}>
-          <div className="relative -mt-10 z-20 mx-auto max-w-[980px] overflow-hidden rounded-2xl border border-line bg-white/80 shadow-[0_2px_4px_rgba(13,14,16,.04),0_24px_50px_-28px_rgba(13,14,16,.35)] backdrop-blur-md">
-            <div className="grid grid-cols-1 sm:grid-cols-3">
-              {[
-                {
-                  k: "01",
-                  t: "Fotos rein",
-                  d: "Jede Galerie. Jede Reihenfolge.",
-                },
-                {
-                  k: "02",
-                  t: "ShowHome analysiert",
-                  d: "Räume, Abfolge, Tempo, Bewegung.",
-                },
-                {
-                  k: "03",
-                  t: "Video raus",
-                  d: "Eine fertige Tour, bereit zur Veröffentlichung.",
-                },
-              ].map((s, i) => (
-                <div
-                  key={s.k}
-                  className={`px-6 py-5 ${i < 2 ? "border-b sm:border-b-0 sm:border-r border-line" : ""}`}
-                >
-                  <div className="flex items-baseline gap-2.5">
-                    <span className="font-mono text-[12px] font-semibold text-clay">
-                      {s.k}
-                    </span>
-                    <span className="text-[15px] font-semibold tracking-[-0.02em] text-ink">
-                      {s.t}
-                    </span>
-                  </div>
-                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-3">
+          {/* Three steps — inline over the video */}
+          <Reveal delay={380}>
+            <div className="mt-6 grid w-full max-w-[720px] grid-cols-3 gap-3 text-left">
+              {steps.map((s) => (
+                <div key={s.k} className="min-w-0">
+                  <span className="font-mono text-[11px] font-semibold text-white/40">
+                    {s.k}
+                  </span>
+                  <p className="mt-0.5 text-[13px] font-semibold leading-snug text-white sm:text-[14px]">
+                    {s.t}
+                  </p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-white/60 sm:text-[12px]">
                     {s.d}
                   </p>
                 </div>
               ))}
             </div>
-          </div>
-        </Reveal>
-      </Container>
+          </Reveal>
+        </div>
+      </div>
     </section>
   );
 }
