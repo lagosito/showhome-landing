@@ -6,12 +6,13 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       {/* Video as full-bleed hero background */}
-      <div className="relative h-[85vh] min-h-[560px] max-h-[800px] w-full overflow-hidden">
+      <div className="relative h-screen w-full overflow-hidden">
         {/* TourPlayer fills the entire hero */}
         <div className="absolute inset-0">
           <TourPlayer
             shots={tourShots}
             className="h-full w-full rounded-none ring-0 shadow-none"
+            minimal
           />
         </div>
 

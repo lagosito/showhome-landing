@@ -11,11 +11,13 @@ export function TourPlayer({
   className,
   title = "Maison Verde · 3-Zimmer-Wohnung",
   compact = false,
+  minimal = false,
 }: {
   shots: Shot[];
   className?: string;
   title?: string;
   compact?: boolean;
+  minimal?: boolean;
 }) {
   const [i, setI] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -57,7 +59,10 @@ export function TourPlayer({
         className,
       )}
     >
-      <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[16/9]">
+      <div className={cn(
+        "relative w-full overflow-hidden",
+        minimal ? "h-full" : "aspect-[16/10] sm:aspect-[16/9]",
+      )}>
         {shots.map((s, idx) => (
           <img
             key={s.id}
@@ -80,8 +85,9 @@ export function TourPlayer({
         {/* cinematic vignette */}
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(8,9,10,.82)_0%,rgba(8,9,10,.18)_34%,rgba(8,9,10,0)_58%,rgba(8,9,10,.28)_100%)]" />
 
-        {/* top row */}
-        <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-3.5 sm:p-5">
+        {/* top row — hidden in minimal mode */}
+        {!minimal && (
+          <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-3.5 sm:p-5">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-black/35 px-2.5 py-1 text-[11px] font-medium tracking-[-0.01em] text-white/95 backdrop-blur-md ring-1 ring-white/15">
               <span className="h-1.5 w-1.5 rounded-full bg-clay animate-sheen" />
@@ -95,8 +101,9 @@ export function TourPlayer({
           </div>
           <span className="rounded-full bg-white/12 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/85 backdrop-blur-md ring-1 ring-white/15">
             ShowHome
-          </span>
-        </div>
+            </span>
+          </div>
+        )}
 
         {/* center play affordance */}
         <button

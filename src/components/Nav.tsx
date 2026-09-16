@@ -27,20 +27,21 @@ export function Nav() {
   }, []);
 
   const isLanding = pathname === '/';
+  const light = isLanding && !scrolled;
 
   return (
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-500',
-        scrolled
-          ? 'border-b border-line/80 bg-paper/85 backdrop-blur-xl'
-          : 'border-b border-transparent',
+        light
+          ? 'border-b border-white/10 bg-transparent'
+          : 'border-b border-line/80 bg-paper/85 backdrop-blur-xl',
       )}
     >
       <Container>
         <div className="flex h-[68px] items-center justify-between gap-6">
           <Link href="/" className="shrink-0" aria-label="ShowHome Startseite">
-            <Logo />
+            <Logo tone={light ? 'light' : 'dark'} />
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex" aria-label="Hauptnavigation">
@@ -48,7 +49,12 @@ export function Nav() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="relative text-[14.5px] font-medium tracking-[-0.01em] text-ink-2 transition-colors hover:text-ink"
+                className={cn(
+                  'relative text-[14.5px] font-medium tracking-[-0.01em] transition-colors',
+                  light
+                    ? 'text-white/80 hover:text-white'
+                    : 'text-ink-2 hover:text-ink',
+                )}
               >
                 {l.label}
               </Link>
@@ -58,16 +64,26 @@ export function Nav() {
           <div className="hidden items-center gap-2 md:flex">
             <Link
               href="/auth/signin"
-              className="rounded-full px-4 py-2 text-[14.5px] font-medium text-ink-2 transition hover:text-ink"
+              className={cn(
+                'rounded-full px-4 py-2 text-[14.5px] font-medium transition',
+                light ? 'text-white/80 hover:text-white' : 'text-ink-2 hover:text-ink',
+              )}
             >
               Anmelden
             </Link>
-            <Button href="/create/upload">Video erstellen</Button>
+            <Button href="/create/upload" variant={light ? 'secondary' : 'primary'} className={light ? '!bg-white/15 !text-white hover:!bg-white/25' : ''}>
+              Video erstellen
+            </Button>
           </div>
 
           <button
             type="button"
-            className="grid h-10 w-10 place-items-center rounded-full border border-line-2 bg-white/60 md:hidden"
+            className={cn(
+              'grid h-10 w-10 place-items-center rounded-full border md:hidden',
+              light
+                ? 'border-white/20 bg-white/10'
+                : 'border-line-2 bg-white/60',
+            )}
             aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -75,13 +91,15 @@ export function Nav() {
             <span className="relative block h-[10px] w-[18px]">
               <span
                 className={cn(
-                  'absolute left-0 h-[1.6px] w-full bg-ink transition-all duration-300',
+                  'absolute left-0 h-[1.6px] w-full transition-all duration-300',
+                  light ? 'bg-white' : 'bg-ink',
                   open ? 'top-1/2 rotate-45' : 'top-0',
                 )}
               />
               <span
                 className={cn(
-                  'absolute left-0 h-[1.6px] w-full bg-ink transition-all duration-300',
+                  'absolute left-0 h-[1.6px] w-full transition-all duration-300',
+                  light ? 'bg-white' : 'bg-ink',
                   open ? 'top-1/2 -rotate-45' : 'top-full',
                 )}
               />
@@ -92,7 +110,8 @@ export function Nav() {
 
       <div
         className={cn(
-          'overflow-hidden border-t border-line bg-paper/95 backdrop-blur-xl transition-[max-height,opacity] duration-400 md:hidden',
+          'overflow-hidden border-t bg-paper/95 backdrop-blur-xl transition-[max-height,opacity] duration-400 md:hidden',
+          light ? 'border-white/10' : 'border-line',
           open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
         )}
       >
