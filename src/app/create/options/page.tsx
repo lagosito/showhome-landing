@@ -58,7 +58,7 @@ export default function OptionsPage() {
 
     const data = await res.json();
     if (!res.ok) {
-      alert(data.error || 'Something went wrong');
+      alert(data.error || 'Etwas ist schiefgelaufen');
       return;
     }
     router.push(`/create/wait/${data.jobId}`);
@@ -72,17 +72,17 @@ export default function OptionsPage() {
           <div className="mx-auto max-w-2xl">
             <div className="text-center">
               <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
-                <span className="h-1 w-1 rounded-full bg-clay" /> Step 3 of 4
+                <span className="h-1 w-1 rounded-full bg-clay" /> Schritt 3 von 4
               </span>
               <h1 className="mt-5 text-balance text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
-                Choose your video options
+                Wähle deine Videooptionen
               </h1>
             </div>
 
             <div className="mt-10 space-y-8">
               {/* Property type */}
               <fieldset>
-                <legend className="text-[14px] font-semibold text-ink">Property type</legend>
+                <legend className="text-[14px] font-semibold text-ink">Art des Angebots</legend>
                 <div className="mt-3 flex gap-3">
                   {(['rent', 'sale'] as const).map(t => (
                     <button
@@ -94,7 +94,7 @@ export default function OptionsPage() {
                           : 'border-line bg-white text-ink hover:border-ink/25'
                       }`}
                     >
-                      {t === 'rent' ? 'For rent' : 'For sale'}
+                      {t === 'rent' ? 'Zur Miete' : 'Zum Kauf'}
                     </button>
                   ))}
                 </div>
@@ -112,7 +112,7 @@ export default function OptionsPage() {
                         : 'border-line bg-white text-ink hover:border-ink/25'
                     }`}
                   >
-                    <span className="text-[14px] font-medium">9:16 Vertical</span>
+                    <span className="text-[14px] font-medium">9:16 Hochformat</span>
                     <span className="mt-1 block text-[12px] opacity-70">Instagram, TikTok, WhatsApp</span>
                   </button>
                   <button
@@ -123,8 +123,8 @@ export default function OptionsPage() {
                         : 'border-line bg-white text-ink hover:border-ink/25'
                     }`}
                   >
-                    <span className="text-[14px] font-medium">16:9 Landscape</span>
-                    <span className="mt-1 block text-[12px] opacity-70">Portals, email, website</span>
+                    <span className="text-[14px] font-medium">16:9 Querformat</span>
+                    <span className="mt-1 block text-[12px] opacity-70">Portale, E-Mail, Website</span>
                   </button>
                 </div>
               </fieldset>
@@ -132,12 +132,12 @@ export default function OptionsPage() {
               {/* Highlights */}
               <div>
                 <label className="text-[14px] font-semibold text-ink">
-                  Anything to highlight? <span className="font-normal text-ink-3">(optional)</span>
+                  Was soll hervorgehoben werden? <span className="font-normal text-ink-3">(optional)</span>
                 </label>
                 <textarea
                   value={highlights}
                   onChange={(e) => setHighlights(e.target.value.slice(0, 200))}
-                  placeholder="e.g. recently renovated, south facing terrace, brand new kitchen"
+                  placeholder="z. B. frisch renoviert, Südterrasse, neue Einbauküche"
                   rows={3}
                   className="mt-3 w-full rounded-xl border border-line bg-white px-4 py-3 text-[14px] outline-none transition placeholder:text-ink-3 focus:border-ink focus:ring-1 focus:ring-ink"
                 />
@@ -146,12 +146,12 @@ export default function OptionsPage() {
 
               {/* Summary */}
               <div className="rounded-2xl border border-line bg-paper-2/50 p-5">
-                <p className="text-[13px] font-semibold text-ink">Summary</p>
+                <p className="text-[13px] font-semibold text-ink">Zusammenfassung</p>
                 <div className="mt-3 space-y-2 text-[13px] text-ink-2">
-                  <p>Property: <strong>{propertyType === 'rent' ? 'For rent' : 'For sale'}</strong></p>
-                  <p>Style: <strong>{derivedStyle === 'presenter' ? 'Presenter on camera' : 'AI Voiceover'}</strong></p>
-                  <p>Format: <strong>{aspectRatio === '9:16' ? '9:16 Vertical' : '16:9 Landscape'}</strong></p>
-                  <p>Photos: <strong>{photos.length}</strong></p>
+                  <p>Angebot: <strong>{propertyType === 'rent' ? 'Zur Miete' : 'Zum Kauf'}</strong></p>
+                  <p>Stil: <strong>{derivedStyle === 'presenter' ? 'Präsentator vor der Kamera' : 'KI-Voiceover'}</strong></p>
+                  <p>Format: <strong>{aspectRatio === '9:16' ? '9:16 Hochformat' : '16:9 Querformat'}</strong></p>
+                  <p>Fotos: <strong>{photos.length}</strong></p>
                   {highlights && <p>Highlights: <strong>{highlights}</strong></p>}
                 </div>
               </div>
@@ -161,12 +161,12 @@ export default function OptionsPage() {
                 <button
                   onClick={() => router.push('/create/rooms')}
                   className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
-                >Back</button>
+                >Zurück</button>
                 <button
                   onClick={handleSubmit}
                   className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20]"
                 >
-                  Create video
+                  Video erstellen
                 </button>
               </div>
             </div>

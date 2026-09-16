@@ -53,7 +53,7 @@ export default function UploadPage() {
     const arr = Array.from(files);
     const valid = arr.filter(f => {
       if (f.size > MAX_SIZE) {
-        alert(`${f.name} is over 10 MB. Please use a smaller file.`);
+        alert(`${f.name} ist größer als 10 MB. Bitte verwende eine kleinere Datei.`);
         return false;
       }
       return true;
@@ -100,7 +100,7 @@ export default function UploadPage() {
           }),
         });
 
-        if (!uploadRes.ok) throw new Error('Upload failed');
+        if (!uploadRes.ok) throw new Error('Upload fehlgeschlagen');
         const { publicUrl } = await uploadRes.json();
 
         setPhotos(prev => prev.map(p => p.id === photo.id ? { ...p, status: 'done', url: publicUrl, progress: 100 } : p));
@@ -133,19 +133,19 @@ export default function UploadPage() {
           <div className="mx-auto max-w-2xl">
             <div className="text-center">
               <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
-                <span className="h-1 w-1 rounded-full bg-clay" /> Step 1 of 4
+                <span className="h-1 w-1 rounded-full bg-clay" /> Schritt 1 von 4
               </span>
               <h1 className="mt-5 text-balance text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
-                Upload your property photos
+                Lade deine Immobilienfotos hoch
               </h1>
               <p className="mt-4 text-[15px] text-ink-3">
-                Between 3 and 12 photos. Drop everything at once — we&apos;ll sort the rooms automatically.
+                Zwischen 3 und 12 Fotos. Lade einfach alles auf einmal hoch, wir sortieren die Räume automatisch.
                 {' '}
                 <button
                   onClick={() => router.push('/create/import')}
                   className="font-medium text-ink underline underline-offset-2 hover:text-clay"
                 >
-                  Or paste a listing link
+                  Oder Inseratslink einfügen
                 </button>
               </p>
             </div>
@@ -174,16 +174,16 @@ export default function UploadPage() {
                 </svg>
               </div>
               <p className="mt-4 text-[15px] font-medium text-ink">
-                Drop photos here <span className="text-ink-3">or browse</span>
+                Fotos hier ablegen <span className="text-ink-3">oder auswählen</span>
               </p>
-              <p className="mt-1 text-[13px] text-ink-3">JPG, PNG, HEIC · Max 10 MB each · Up to {MAX_FILES} photos</p>
+              <p className="mt-1 text-[13px] text-ink-3">JPG, PNG, HEIC · max. 10 MB pro Foto · bis zu {MAX_FILES} Fotos</p>
             </div>
 
             {/* Photo grid — thumbnails only, no room dropdown */}
             {photos.length > 0 && (
               <div className="mt-8">
                 <p className="mb-3 text-[13px] font-medium text-ink-3">
-                  {photos.length} of {MAX_FILES} photos · {photos.filter(p => p.status === 'done').length} uploaded
+                  {photos.length} von {MAX_FILES} Fotos · {photos.filter(p => p.status === 'done').length} hochgeladen
                 </p>
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                   {photos.map((photo, idx) => (
@@ -210,7 +210,7 @@ export default function UploadPage() {
                       )}
                       {photo.status === 'error' && (
                         <div className="absolute inset-x-0 bottom-0 bg-red-600 px-1 py-0.5 text-center text-[9px] text-white">
-                          Failed
+                          Fehler
                         </div>
                       )}
                     </div>
@@ -221,7 +221,7 @@ export default function UploadPage() {
 
             {photos.length > 0 && photos.length < MIN_FILES && (
               <p className="mt-4 text-center text-[13px] text-clay">
-                Add at least {MIN_FILES - photos.length} more photo{MIN_FILES - photos.length !== 1 ? 's' : ''} to continue
+                Füge noch mindestens {MIN_FILES - photos.length} {MIN_FILES - photos.length !== 1 ? 'Fotos' : 'Foto'} hinzu, um fortzufahren
               </p>
             )}
 
@@ -231,7 +231,7 @@ export default function UploadPage() {
                   onClick={uploadAll}
                   className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
                 >
-                  Upload all
+                  Alle hochladen
                 </button>
               )}
               <button
@@ -239,7 +239,7 @@ export default function UploadPage() {
                 disabled={!canSubmit}
                 className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-40 disabled:hover:translate-y-0"
               >
-                {allUploaded ? 'Sort rooms' : `Upload ${photos.filter(p => p.status === 'pending').length} photos first`}
+                {allUploaded ? 'Räume sortieren' : `Zuerst ${photos.filter(p => p.status === 'pending').length} Fotos hochladen`}
               </button>
             </div>
           </div>
