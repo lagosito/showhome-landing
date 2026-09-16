@@ -5,13 +5,13 @@ import { Container, Reveal, SectionHead } from "./primitives";
 import { px, tourShots } from "../data/media";
 
 const channels = [
-  { n: "Property portals", d: "16:9 · MP4" },
-  { n: "Website listings", d: "Embed link" },
+  { n: "Immobilienportale", d: "16:9 · MP4" },
+  { n: "Website-Inserate", d: "Einbettungslink" },
   { n: "Instagram", d: "9:16 · Reels" },
   { n: "TikTok", d: "9:16 · 30s" },
-  { n: "WhatsApp", d: "Compressed" },
-  { n: "Email", d: "GIF preview" },
-  { n: "Digital ads", d: "1:1 · 15s" },
+  { n: "WhatsApp", d: "Komprimiert" },
+  { n: "E-Mail", d: "GIF-Vorschau" },
+  { n: "Online-Werbung", d: "1:1 · 15s" },
 ];
 
 function PortraitMock() {
@@ -58,14 +58,14 @@ function PortraitMock() {
               {tourShots[i].room}
             </p>
             <p className="mt-0.5 text-[11px] text-white/70">
-              Apartment Verde · €1,450 / month
+              Wohnung Verde · 1.450 € / Monat
             </p>
             <div className="mt-3 flex items-center gap-2">
               <span className="rounded-full bg-white px-3 py-1.5 text-[10.5px] font-semibold text-ink">
-                Book a viewing
+                Besichtigung buchen
               </span>
               <span className="rounded-full bg-white/15 px-2.5 py-1.5 text-[10.5px] font-medium text-white ring-1 ring-white/20 backdrop-blur">
-                Save
+                Merken
               </span>
             </div>
           </div>
@@ -84,9 +84,9 @@ export function UseCases() {
     <section className="overflow-hidden py-20 sm:py-28">
       <Container>
         <SectionHead
-          eyebrow="Use cases"
-          title="One property video. Everywhere you list."
-          sub="ShowHome exports every format you need — so the same tour works on the portal, in the inbox, and in the feed."
+          eyebrow="Einsatzbereiche"
+          title="Ein Immobilienvideo. Überall, wo du inserierst."
+          sub="ShowHome exportiert jedes Format, das du brauchst: So funktioniert dieselbe Tour im Portal, im Postfach und im Feed."
         />
 
         <div className="mt-14 grid items-center gap-12 lg:grid-cols-[1.1fr_auto] lg:gap-16">
@@ -117,14 +117,14 @@ export function UseCases() {
           {[0, 1].map((dup) => (
             <div key={dup} className="flex items-center gap-10 sm:gap-14" aria-hidden={dup === 1}>
               {[
-                "Property portals",
+                "Immobilienportale",
                 "Instagram Reels",
                 "TikTok",
                 "WhatsApp",
-                "Email campaigns",
-                "Website embeds",
-                "Digital ads",
-                "Agency showreels",
+                "E-Mail-Kampagnen",
+                "Website-Einbindungen",
+                "Online-Werbung",
+                "Agentur-Showreels",
               ].map((t) => (
                 <span
                   key={t}

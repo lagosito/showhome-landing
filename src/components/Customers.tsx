@@ -16,45 +16,45 @@ type Block = {
 const blocks: Block[] = [
   {
     id: "owners",
-    eyebrow: "For Property Owners",
-    title: "Make your property impossible to ignore.",
-    body: "You don't need professional equipment or editing skills. Upload your photos and create a video that makes your apartment feel real before someone even visits.",
-    cta: "Create a property video",
+    eyebrow: "Für Eigentümer",
+    title: "Mach deine Immobilie unübersehbar.",
+    body: "Du brauchst weder Profi-Equipment noch Schnittkenntnisse. Lade deine Fotos hoch und erstelle ein Video, das deine Wohnung erlebbar macht, noch bevor jemand zur Besichtigung kommt.",
+    cta: "Immobilienvideo erstellen",
     bullets: [
-      "No videographer, no rental fees",
-      "Ready for every major portal",
-      "One property, one simple price",
+      "Kein Videograf, keine Mietkosten",
+      "Bereit für alle großen Portale",
+      "Eine Immobilie, ein einfacher Preis",
     ],
     img: IMG.owners,
-    alt: "Warm, inviting living space of a private apartment",
+    alt: "Warmer, einladender Wohnbereich einer Privatwohnung",
   },
   {
     id: "agents",
-    eyebrow: "For Real-Estate Agents",
-    title: "Turn every listing into a better presentation.",
-    body: "Create professional property tours without spending hours filming and editing. Spend your time selling properties, not producing videos.",
-    cta: "For agents",
+    eyebrow: "Für Immobilienmakler",
+    title: "Mach aus jedem Inserat eine bessere Präsentation.",
+    body: "Erstelle professionelle Immobilientouren, ohne stundenlang zu drehen und zu schneiden. Nutze deine Zeit zum Verkaufen, nicht zum Videoproduzieren.",
+    cta: "Für Makler",
     bullets: [
-      "Unlimited tours on one subscription",
-      "Your logo, colours and contact card",
-      "Portrait cuts for social, automatically",
+      "Unbegrenzte Touren in einem Abo",
+      "Dein Logo, deine Farben und deine Kontaktkarte",
+      "Hochformat-Schnitte für Social Media, automatisch",
     ],
     img: IMG.agents,
-    alt: "Modern apartment interior photographed for a listing",
+    alt: "Modernes Wohnungsinterieur, fotografiert für ein Inserat",
   },
   {
     id: "enterprise",
-    eyebrow: "For Real-Estate Companies",
-    title: "Video tours at scale.",
-    body: "Give your entire team a simple way to create consistent, professional property videos across your portfolio.",
-    cta: "Talk to sales",
+    eyebrow: "Für Immobilienunternehmen",
+    title: "Videotouren im großen Maßstab.",
+    body: "Gib deinem ganzen Team eine einfache Möglichkeit, einheitliche, professionelle Immobilienvideos für das gesamte Portfolio zu erstellen.",
+    cta: "Vertrieb kontaktieren",
     bullets: [
-      "Team workspaces & shared templates",
-      "Bulk rendering and API access",
-      "SSO, roles and centralised billing",
+      "Team-Workspaces & gemeinsame Vorlagen",
+      "Sammel-Rendering und API-Zugang",
+      "SSO, Rollen und zentrale Abrechnung",
     ],
     img: IMG.teams,
-    alt: "Minimalist architectural facade of a residential building",
+    alt: "Minimalistische Fassade eines Wohngebäudes",
   },
 ];
 
@@ -92,24 +92,24 @@ export function Customers() {
                   >
                     <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-clay">
                       {b.id === "owners"
-                        ? "1 property"
+                        ? "1 Immobilie"
                         : b.id === "agents"
-                          ? "This month"
+                          ? "Diesen Monat"
                           : "Portfolio"}
                     </p>
                     <p className="mt-1.5 text-[22px] font-semibold tracking-[-0.04em] text-ink">
                       {b.id === "owners"
-                        ? "1 tour · 3 min"
+                        ? "1 Tour · 3 Min."
                         : b.id === "agents"
-                          ? "38 tours"
-                          : "1,240 tours"}
+                          ? "38 Touren"
+                          : "1.240 Touren"}
                     </p>
                     <p className="mt-1 text-[11.5px] text-ink-3">
                       {b.id === "owners"
-                        ? "From upload to download"
+                        ? "Vom Upload bis zum Download"
                         : b.id === "agents"
-                          ? "Created without a camera"
-                          : "Across 14 offices"}
+                          ? "Ohne Kamera erstellt"
+                          : "In 14 Büros"}
                     </p>
                   </div>
                 </div>

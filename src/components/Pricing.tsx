@@ -4,52 +4,52 @@ import { ArrowIcon, Button, Container, Reveal, SectionHead } from "./primitives"
 const plans = [
   {
     name: "Starter",
-    for: "For property owners",
-    price: "€XX",
-    unit: "/month",
-    note: "Or a one-off price per property.",
-    cta: "Create a video",
+    for: "Für Eigentümer",
+    price: "XX €",
+    unit: "/Monat",
+    note: "Oder einmaliger Preis pro Immobilie.",
+    cta: "Video erstellen",
     variant: "secondary" as const,
     features: [
-      "3 property videos per month",
-      "Up to 40 photos per property",
-      "Full HD export, 16:9 and 9:16",
-      "Cinematic transitions & movement",
-      "Music library",
+      "3 Immobilienvideos pro Monat",
+      "Bis zu 40 Fotos pro Immobilie",
+      "Full-HD-Export, 16:9 und 9:16",
+      "Filmische Übergänge & Bewegung",
+      "Musikbibliothek",
     ],
   },
   {
     name: "Professional",
-    for: "For independent agents",
-    price: "€XX",
-    unit: "/month",
-    note: "Everything you need for daily listings.",
-    cta: "Start free trial",
+    for: "Für selbstständige Makler",
+    price: "XX €",
+    unit: "/Monat",
+    note: "Alles für deine täglichen Inserate.",
+    cta: "Kostenlos testen",
     variant: "light" as const,
     features: [
-      "Unlimited property videos",
-      "Up to 200 photos per property",
-      "4K export, all aspect ratios",
-      "Your logo, colours & contact card",
-      "Custom intro and outro",
-      "Priority rendering queue",
+      "Unbegrenzte Immobilienvideos",
+      "Bis zu 200 Fotos pro Immobilie",
+      "4K-Export, alle Seitenverhältnisse",
+      "Dein Logo, deine Farben & Kontaktkarte",
+      "Individuelles Intro und Outro",
+      "Priorisiertes Rendering",
     ],
   },
   {
     name: "Enterprise",
-    for: "For real-estate companies",
-    price: "Custom",
+    for: "Für Immobilienunternehmen",
+    price: "Individuell",
     unit: "",
-    note: "Volume pricing from €XXX/month.",
-    cta: "Talk to sales",
+    note: "Mengenpreise ab XXX €/Monat.",
+    cta: "Vertrieb kontaktieren",
     variant: "secondary" as const,
     features: [
-      "Everything in Professional",
-      "Team workspaces & shared templates",
-      "Bulk upload and batch rendering",
-      "API & CRM/portal integrations",
-      "SSO, roles and audit log",
-      "Dedicated success manager",
+      "Alles aus Professional",
+      "Team-Workspaces & gemeinsame Vorlagen",
+      "Sammel-Upload und Batch-Rendering",
+      "API- & CRM-/Portal-Integrationen",
+      "SSO, Rollen und Audit-Log",
+      "Persönlicher Success Manager",
     ],
   },
 ];
@@ -81,9 +81,9 @@ export function Pricing() {
     <section id="pricing" className="scroll-mt-20 border-t border-line bg-paper-2/40 py-20 sm:py-28">
       <Container>
         <SectionHead
-          eyebrow="Pricing"
-          title="Simple plans for every kind of listing."
-          sub="Start with one property. Scale to an entire portfolio. No production costs, no per-video surprises."
+          eyebrow="Preise"
+          title="Einfache Tarife für jede Art von Inserat."
+          sub="Starte mit einer Immobilie. Wachse bis zum ganzen Portfolio. Keine Produktionskosten, keine Überraschungen pro Video."
           align="center"
         />
 
@@ -102,7 +102,7 @@ export function Pricing() {
                 >
                   {featured && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-clay px-3 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white">
-                      Recommended
+                      Empfohlen
                     </span>
                   )}
 
@@ -187,8 +187,8 @@ export function Pricing() {
 
         <Reveal delay={120}>
           <p className="mt-10 text-center text-[13px] text-ink-3">
-            All plans include unlimited re-renders, commercial usage rights and
-            GDPR-compliant EU hosting.
+            Alle Tarife enthalten unbegrenztes Neu-Rendern, kommerzielle Nutzungsrechte und
+            DSGVO-konformes Hosting in der EU.
           </p>
         </Reveal>
       </Container>
