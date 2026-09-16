@@ -1,6 +1,4 @@
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
-import { TourPlayer } from "./TourPlayer";
-import { tourShots } from "../data/media";
 
 export function Hero() {
   const steps = [
@@ -23,24 +21,22 @@ export function Hero() {
 
   return (
     <section id="top" className="relative overflow-hidden">
-      {/* Video as full-bleed hero background */}
       <div className="relative h-screen w-full overflow-hidden">
-        {/* TourPlayer fills the entire hero */}
-        <div className="absolute inset-0">
-          <TourPlayer
-            shots={tourShots}
-            className="h-full w-full rounded-none ring-0 shadow-none"
-            minimal
-          />
-        </div>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
 
-        {/* Gradient overlays for text readability */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70"
         />
 
-        {/* Content overlaid on video */}
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center sm:px-6">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 py-1.5 pl-1.5 pr-3.5 text-[12.5px] font-medium text-white/90 backdrop-blur-md">
@@ -93,7 +89,6 @@ export function Hero() {
             </div>
           </Reveal>
 
-          {/* Three steps — inline over the video */}
           <Reveal delay={380}>
             <div className="mt-10 grid w-full max-w-[860px] grid-cols-3 gap-2 text-left">
               {steps.map((s) => (
