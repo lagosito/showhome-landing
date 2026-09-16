@@ -99,19 +99,18 @@ export function Hero() {
               {steps.map((s) => (
                 <div
                   key={s.k}
-                  className="flex items-center gap-2 rounded-xl bg-black/40 px-3 py-3 text-left backdrop-blur-sm sm:gap-3 sm:px-5 sm:py-4"
+                  className="flex items-start gap-2 rounded-xl bg-black/40 px-3 py-3 text-left backdrop-blur-sm sm:gap-3 sm:px-5 sm:py-4"
                 >
-                  <span className="shrink-0 font-sans text-[16px] font-bold leading-none tracking-tight text-white/25 sm:text-[40px]">
+                  <span className="shrink-0 pt-px font-sans text-[16px] font-bold leading-none tracking-tight text-white/25 sm:text-[40px]">
                     {s.k}
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[11px] font-semibold text-white sm:text-[13px]">
+                    <p className="text-[11px] font-semibold text-white sm:text-[13px]">
                       {s.t}
-                    </span>
-                    <span className="hidden text-[10px] text-white/50 sm:inline"> — </span>
-                    <span className="hidden text-[10px] text-white/50 sm:inline sm:text-[11px]">
+                    </p>
+                    <p className="mt-0.5 hidden text-[10px] text-white/50 sm:block sm:text-[11px]">
                       {s.d}
-                    </span>
+                    </p>
                   </div>
                 </div>
               ))}
