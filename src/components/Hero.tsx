@@ -104,11 +104,11 @@ export function Hero() {
                   <span className="shrink-0 font-sans text-[40px] font-bold leading-none tracking-tight text-white/25 sm:text-[48px]">
                     {s.k}
                   </span>
-                  <div className="min-w-0 pt-1">
-                    <p className="text-[14px] font-semibold leading-snug text-white sm:text-[15px]">
+                  <div className="min-w-0 pt-1.5">
+                    <p className="text-[12px] font-semibold leading-snug text-white sm:text-[13px]">
                       {s.t}
                     </p>
-                    <p className="mt-1 text-[12px] leading-snug text-white/60 sm:text-[13px]">
+                    <p className="mt-0.5 text-[10.5px] leading-snug text-white/55 sm:text-[11.5px]">
                       {s.d}
                     </p>
                   </div>
