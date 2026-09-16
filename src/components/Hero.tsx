@@ -6,18 +6,18 @@ export function Hero() {
   const steps = [
     {
       k: "01",
-      t: "Fotos rein",
-      d: "Oder Link zum Inserat. Jede Reihenfolge.",
+      t: "Hochladen",
+      d: "Fotos oder Inseratslink",
     },
     {
       k: "02",
-      t: "Homemotion analysiert",
-      d: "Avatar wählen oder nur Voiceover.",
+      t: "Erstellen",
+      d: "KI analysiert deine Immobilie",
     },
     {
       k: "03",
-      t: "Video raus",
-      d: "Fertige Tour, bereit zur Veröffentlichung.",
+      t: "Video fertig",
+      d: "Fertiges Video herunterladen",
     },
   ];
 
