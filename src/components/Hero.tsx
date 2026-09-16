@@ -1,4 +1,6 @@
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
+import { TourPlayer } from "./TourPlayer";
+import { tourShots } from "../data/media";
 
 export function Hero() {
   const steps = [
@@ -23,16 +25,14 @@ export function Hero() {
     <section id="top" className="relative overflow-hidden">
       {/* Video as full-bleed hero background */}
       <div className="relative h-screen w-full overflow-hidden">
-        {/* Video background */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
+        {/* TourPlayer fills the entire hero */}
+        <div className="absolute inset-0">
+          <TourPlayer
+            shots={tourShots}
+            className="h-full w-full rounded-none ring-0 shadow-none"
+            minimal
+          />
+        </div>
 
         {/* Gradient overlays for text readability */}
         <div
