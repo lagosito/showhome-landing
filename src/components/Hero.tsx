@@ -101,7 +101,7 @@ export function Hero() {
                   key={s.k}
                   className="flex items-start gap-2 rounded-xl bg-black/40 px-3 py-3 text-left backdrop-blur-sm sm:gap-4 sm:px-6 sm:py-5"
                 >
-                  <span className="shrink-0 font-sans text-[28px] font-bold leading-none tracking-tight text-white/25 sm:text-[48px]">
+                  <span className="shrink-0 font-sans text-[22px] font-bold leading-none tracking-tight text-white/25 sm:text-[48px]">
                     {s.k}
                   </span>
                   <div className="min-w-0 pt-1.5">
