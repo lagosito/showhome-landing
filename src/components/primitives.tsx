@@ -203,9 +203,9 @@ export function Logo({
     <span
       className={cn(
         "inline-flex items-center",
-        tone === "dark" ? "text-ink" : "text-white",
         className,
       )}
+      style={tone === "dark" ? { color: "var(--ink)" } : { color: "white" }}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
