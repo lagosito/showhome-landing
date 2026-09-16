@@ -1,95 +1,31 @@
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
 import { TourPlayer } from "./TourPlayer";
-import { px, tourShots, uploadShots } from "../data/media";
-
-function UploadCard() {
-  return (
-    <div className="w-[228px] rounded-2xl border border-line bg-white/90 p-3.5 shadow-[0_2px_4px_rgba(13,14,16,.04),0_24px_50px_-28px_rgba(13,14,16,.35)] backdrop-blur">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-[11.5px] font-semibold tracking-[-0.01em] text-ink">
-          Deine Fotos
-        </span>
-        <span className="rounded-full bg-paper-2 px-2 py-0.5 text-[10.5px] font-medium text-ink-3">
-          24 Dateien
-        </span>
-      </div>
-      <div className="grid grid-cols-3 gap-1.5">
-        {uploadShots.slice(0, 9).map((s) => (
-          <img
-            key={s.id}
-            src={px(s.id, 160, 160)}
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-            decoding="async"
-            className="aspect-square w-full rounded-md object-cover"
-          />
-        ))}
-      </div>
-      <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-paper-2">
-        <div className="h-full w-full rounded-full bg-ink" />
-      </div>
-      <p className="mt-2 text-[10.5px] font-medium text-ink-3">
-        Upload abgeschlossen
-      </p>
-    </div>
-  );
-}
-
-function AnalysisCard() {
-  const rooms = ["Wohnzimmer", "Küche", "Schlafzimmer", "Badezimmer", "Terrasse"];
-  return (
-    <div className="w-[218px] rounded-2xl border border-line bg-white/90 p-4 shadow-[0_2px_4px_rgba(13,14,16,.04),0_24px_50px_-28px_rgba(13,14,16,.35)] backdrop-blur">
-      <div className="flex items-center gap-2">
-        <span className="grid h-6 w-6 place-items-center rounded-lg bg-clay-tint">
-          <span className="h-1.5 w-1.5 rounded-full bg-clay animate-sheen" />
-        </span>
-        <span className="text-[11.5px] font-semibold tracking-[-0.01em] text-ink">
-          Räume erkannt
-        </span>
-      </div>
-      <ul className="mt-3 space-y-2">
-        {rooms.map((r) => (
-          <li key={r} className="flex items-center justify-between">
-            <span className="text-[12px] text-ink-2">{r}</span>
-            <svg viewBox="0 0 14 14" className="h-3.5 w-3.5 text-clay" aria-hidden="true">
-              <path
-                d="M2.6 7.4 5.6 10.4 11.4 4.2"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </li>
-        ))}
-      </ul>
-      <p className="mt-3 border-t border-line pt-2.5 text-[10.5px] font-medium text-ink-3">
-        Abfolge erstellt · 0:24 Tour
-      </p>
-    </div>
-  );
-}
+import { tourShots } from "../data/media";
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden pt-[104px] sm:pt-[124px]">
-      {/* soft ambient backdrop */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px] bg-[radial-gradient(120%_70%_at_50%_-10%,#ffffff_0%,#ffffff_60%,#f7f7f7_100%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="grain pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px] opacity-60"
-      />
+    <section id="top" className="relative overflow-hidden">
+      {/* Video as full-bleed hero background */}
+      <div className="relative h-[85vh] min-h-[560px] max-h-[800px] w-full overflow-hidden">
+        {/* TourPlayer fills the entire hero */}
+        <div className="absolute inset-0">
+          <TourPlayer
+            shots={tourShots}
+            className="h-full w-full rounded-none ring-0 shadow-none"
+          />
+        </div>
 
-      <Container>
-        <div className="mx-auto max-w-3xl text-center">
+        {/* Gradient overlays for text readability */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70"
+        />
+
+        {/* Content overlaid on video */}
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
           <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-white/70 py-1.5 pl-1.5 pr-3.5 text-[12.5px] font-medium text-ink-2 backdrop-blur">
-              <span className="rounded-full bg-ink px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-paper">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 py-1.5 pl-1.5 pr-3.5 text-[12.5px] font-medium text-white/90 backdrop-blur-md">
+              <span className="rounded-full bg-white px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-ink">
                 Neu
               </span>
               KI-Raumabfolge für Immobilientouren
@@ -97,13 +33,13 @@ export function Hero() {
           </Reveal>
 
           <Reveal delay={80}>
-            <h1 className="mt-6 text-balance text-[clamp(2.5rem,6.6vw,4.6rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-ink">
+            <h1 className="mt-6 max-w-3xl text-balance text-[clamp(2.2rem,5.5vw,4rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-white">
               Aus Immobilienfotos werden professionelle Videotouren.
             </h1>
           </Reveal>
 
           <Reveal delay={160}>
-            <p className="mx-auto mt-6 max-w-xl text-pretty text-[17px] leading-relaxed text-ink-3 sm:text-[19px]">
+            <p className="mx-auto mt-5 max-w-xl text-pretty text-[17px] leading-relaxed text-white/80 sm:text-[19px]">
               Lade deine Fotos hoch. ShowHome erstellt daraus ein hochwertiges
               Immobilienvideo, das Lust macht, jeden Raum zu entdecken.
             </p>
@@ -123,7 +59,7 @@ export function Hero() {
                 href="#how"
                 size="lg"
                 variant="secondary"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto !bg-white/15 !text-white hover:!bg-white/25"
                 icon={
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">
                     <path
@@ -133,73 +69,61 @@ export function Hero() {
                   </svg>
                 }
               >
-                So funktioniert's
+                So funktioniert&apos;s
               </Button>
             </div>
           </Reveal>
 
           <Reveal delay={300}>
-            <p className="mt-6 text-[13.5px] font-medium tracking-[-0.01em] text-ink-3">
-              Kein Dreh <span className="mx-1.5 text-line-2">·</span> Keine
-              Kamera <span className="mx-1.5 text-line-2">·</span> Kein
+            <p className="mt-6 text-[13.5px] font-medium tracking-[-0.01em] text-white/60">
+              Kein Dreh <span className="mx-1.5">·</span> Keine
+              Kamera <span className="mx-1.5">·</span> Kein
               Videoschnitt
             </p>
           </Reveal>
         </div>
-      </Container>
+      </div>
 
-      {/* Hero visual */}
-      <Container className="mt-14 sm:mt-16">
-        <Reveal delay={120}>
-          <div className="relative mx-auto max-w-[980px]">
-            <div
-              aria-hidden="true"
-              className="absolute -inset-x-6 -bottom-8 top-10 -z-10 rounded-[32px] bg-white/60 blur-2xl"
-            />
-            <TourPlayer shots={tourShots} />
-
-            <div className="pointer-events-none absolute -left-[130px] top-14 hidden animate-float xl:block">
-              <UploadCard />
-            </div>
-            <div
-              className="pointer-events-none absolute -bottom-7 -right-[118px] hidden animate-float xl:block"
-              style={{ animationDelay: "1.4s" }}
-            >
-              <AnalysisCard />
-            </div>
-          </div>
-        </Reveal>
-
-        {/* Pipeline strip */}
-        <Reveal delay={200}>
-          <div className="mx-auto mt-8 grid max-w-[980px] grid-cols-1 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
-            {[
-              {
-                k: "01",
-                t: "Fotos rein",
-                d: "Jede Galerie. Jede Reihenfolge.",
-              },
-              {
-                k: "02",
-                t: "ShowHome analysiert",
-                d: "Räume, Abfolge, Tempo, Bewegung.",
-              },
-              {
-                k: "03",
-                t: "Video raus",
-                d: "Eine fertige Tour, bereit zur Veröffentlichung.",
-              },
-            ].map((s) => (
-              <div key={s.k} className="bg-white/70 px-5 py-4 backdrop-blur">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-mono text-[11px] text-clay">{s.k}</span>
-                  <span className="text-[14.5px] font-semibold tracking-[-0.02em] text-ink">
-                    {s.t}
-                  </span>
+      {/* Three compact steps below the hero video */}
+      <Container>
+        <Reveal delay={100}>
+          <div className="relative -mt-10 z-20 mx-auto max-w-[980px] overflow-hidden rounded-2xl border border-line bg-white/80 shadow-[0_2px_4px_rgba(13,14,16,.04),0_24px_50px_-28px_rgba(13,14,16,.35)] backdrop-blur-md">
+            <div className="grid grid-cols-1 sm:grid-cols-3">
+              {[
+                {
+                  k: "01",
+                  t: "Fotos rein",
+                  d: "Jede Galerie. Jede Reihenfolge.",
+                },
+                {
+                  k: "02",
+                  t: "ShowHome analysiert",
+                  d: "Räume, Abfolge, Tempo, Bewegung.",
+                },
+                {
+                  k: "03",
+                  t: "Video raus",
+                  d: "Eine fertige Tour, bereit zur Veröffentlichung.",
+                },
+              ].map((s, i) => (
+                <div
+                  key={s.k}
+                  className={`px-6 py-5 ${i < 2 ? "border-b sm:border-b-0 sm:border-r border-line" : ""}`}
+                >
+                  <div className="flex items-baseline gap-2.5">
+                    <span className="font-mono text-[12px] font-semibold text-clay">
+                      {s.k}
+                    </span>
+                    <span className="text-[15px] font-semibold tracking-[-0.02em] text-ink">
+                      {s.t}
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-3">
+                    {s.d}
+                  </p>
                 </div>
-                <p className="mt-1 text-[13px] text-ink-3">{s.d}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </Reveal>
       </Container>
