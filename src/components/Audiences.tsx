@@ -3,26 +3,26 @@ import { Container, Reveal } from "./primitives";
 const groups = [
   {
     k: "01",
-    title: "Private Owners",
-    body: "Create a professional listing without hiring a videographer.",
+    title: "Private Eigentümer",
+    body: "Erstelle ein professionelles Inserat, ganz ohne Videografen.",
   },
   {
     k: "02",
-    title: "Real-Estate Agents",
-    body: "Create better property tours in minutes.",
+    title: "Immobilienmakler",
+    body: "Bessere Immobilientouren in wenigen Minuten.",
   },
   {
     k: "03",
-    title: "Real-Estate Teams",
-    body: "Create consistent video content across your entire portfolio.",
+    title: "Immobilienunternehmen",
+    body: "Einheitliche Videoinhalte für das gesamte Portfolio.",
   },
 ];
 
 const stats = [
-  { v: "3 min", l: "Average time to a finished tour" },
-  { v: "40+", l: "Cinematic camera moves & transitions" },
-  { v: "4K", l: "Export quality, portrait or landscape" },
-  { v: "12", l: "Room types recognised automatically" },
+  { v: "3 min", l: "Durchschnittliche Zeit bis zur fertigen Tour" },
+  { v: "40+", l: "Filmische Kamerafahrten & Übergänge" },
+  { v: "4K", l: "Exportqualität, hoch oder quer" },
+  { v: "12", l: "Raumtypen automatisch erkannt" },
 ];
 
 export function Audiences() {
@@ -31,14 +31,14 @@ export function Audiences() {
       <Container>
         <Reveal>
           <h2 className="max-w-3xl text-balance text-[clamp(1.6rem,3.2vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.035em] text-ink">
-            Built for everyone who needs to showcase property better.
+            Für alle, die Immobilien besser präsentieren wollen.
           </h2>
         </Reveal>
 
         <div className="mt-12 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:mt-14 md:grid-cols-3">
           {groups.map((g, idx) => (
             <Reveal key={g.k} delay={idx * 90} className="h-full">
-              <div className="group relative h-full bg-white p-7 transition-colors duration-300 hover:bg-paper sm:p-9">
+              <div className="group relative h-full bg-white p-7 transition-colors duration-300 hover:bg-paper-2 sm:p-9">
                 <span className="font-mono text-[11px] tracking-[0.1em] text-clay">
                   {g.k}
                 </span>

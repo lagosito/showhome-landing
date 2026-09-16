@@ -7,10 +7,10 @@ function UploadCard() {
     <div className="w-[228px] rounded-2xl border border-line bg-white/90 p-3.5 shadow-[0_2px_4px_rgba(13,14,16,.04),0_24px_50px_-28px_rgba(13,14,16,.35)] backdrop-blur">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-[11.5px] font-semibold tracking-[-0.01em] text-ink">
-          Your photos
+          Deine Fotos
         </span>
         <span className="rounded-full bg-paper-2 px-2 py-0.5 text-[10.5px] font-medium text-ink-3">
-          24 files
+          24 Dateien
         </span>
       </div>
       <div className="grid grid-cols-3 gap-1.5">
@@ -30,14 +30,14 @@ function UploadCard() {
         <div className="h-full w-full rounded-full bg-ink" />
       </div>
       <p className="mt-2 text-[10.5px] font-medium text-ink-3">
-        Upload complete
+        Upload abgeschlossen
       </p>
     </div>
   );
 }
 
 function AnalysisCard() {
-  const rooms = ["Living room", "Kitchen", "Bedroom", "Bathroom", "Terrace"];
+  const rooms = ["Wohnzimmer", "Küche", "Schlafzimmer", "Badezimmer", "Terrasse"];
   return (
     <div className="w-[218px] rounded-2xl border border-line bg-white/90 p-4 shadow-[0_2px_4px_rgba(13,14,16,.04),0_24px_50px_-28px_rgba(13,14,16,.35)] backdrop-blur">
       <div className="flex items-center gap-2">
@@ -45,7 +45,7 @@ function AnalysisCard() {
           <span className="h-1.5 w-1.5 rounded-full bg-clay animate-sheen" />
         </span>
         <span className="text-[11.5px] font-semibold tracking-[-0.01em] text-ink">
-          Rooms detected
+          Räume erkannt
         </span>
       </div>
       <ul className="mt-3 space-y-2">
@@ -66,7 +66,7 @@ function AnalysisCard() {
         ))}
       </ul>
       <p className="mt-3 border-t border-line pt-2.5 text-[10.5px] font-medium text-ink-3">
-        Sequence built · 0:24 tour
+        Abfolge erstellt · 0:24 Tour
       </p>
     </div>
   );
@@ -78,7 +78,7 @@ export function Hero() {
       {/* soft ambient backdrop */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px] bg-[radial-gradient(120%_70%_at_50%_-10%,#ffffff_0%,#faf8f5_45%,#f2efe9_100%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px] bg-[radial-gradient(120%_70%_at_50%_-10%,#ffffff_0%,#ffffff_60%,#f7f7f7_100%)]"
       />
       <div
         aria-hidden="true"
@@ -90,22 +90,22 @@ export function Hero() {
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-white/70 py-1.5 pl-1.5 pr-3.5 text-[12.5px] font-medium text-ink-2 backdrop-blur">
               <span className="rounded-full bg-ink px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-paper">
-                New
+                Neu
               </span>
-              AI room sequencing for property tours
+              KI-Raumabfolge für Immobilientouren
             </span>
           </Reveal>
 
           <Reveal delay={80}>
             <h1 className="mt-6 text-balance text-[clamp(2.5rem,6.6vw,4.6rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-ink">
-              Turn property photos into professional video tours.
+              Aus Immobilienfotos werden professionelle Videotouren.
             </h1>
           </Reveal>
 
           <Reveal delay={160}>
             <p className="mx-auto mt-6 max-w-xl text-pretty text-[17px] leading-relaxed text-ink-3 sm:text-[19px]">
-              Upload your photos. ShowHome creates a polished property video
-              that makes every room feel worth exploring.
+              Lade deine Fotos hoch. ShowHome erstellt daraus ein hochwertiges
+              Immobilienvideo, das Lust macht, jeden Raum zu entdecken.
             </p>
           </Reveal>
 
@@ -117,7 +117,7 @@ export function Hero() {
                 className="w-full sm:w-auto"
                 icon={<ArrowIcon />}
               >
-                Create your first video
+                Erstes Video erstellen
               </Button>
               <Button
                 href="#how"
@@ -133,16 +133,16 @@ export function Hero() {
                   </svg>
                 }
               >
-                See how it works
+                So funktioniert's
               </Button>
             </div>
           </Reveal>
 
           <Reveal delay={300}>
             <p className="mt-6 text-[13.5px] font-medium tracking-[-0.01em] text-ink-3">
-              No filming <span className="mx-1.5 text-line-2">·</span> No camera
-              equipment <span className="mx-1.5 text-line-2">·</span> No video
-              editing
+              Kein Dreh <span className="mx-1.5 text-line-2">·</span> Keine
+              Kamera <span className="mx-1.5 text-line-2">·</span> Kein
+              Videoschnitt
             </p>
           </Reveal>
         </div>
@@ -176,18 +176,18 @@ export function Hero() {
             {[
               {
                 k: "01",
-                t: "Photos in",
-                d: "Any camera roll. Any order.",
+                t: "Fotos rein",
+                d: "Jede Galerie. Jede Reihenfolge.",
               },
               {
                 k: "02",
-                t: "ShowHome analyses",
-                d: "Rooms, order, pacing, movement.",
+                t: "ShowHome analysiert",
+                d: "Räume, Abfolge, Tempo, Bewegung.",
               },
               {
                 k: "03",
-                t: "Video out",
-                d: "A finished tour, ready to publish.",
+                t: "Video raus",
+                d: "Eine fertige Tour, bereit zur Veröffentlichung.",
               },
             ].map((s) => (
               <div key={s.k} className="bg-white/70 px-5 py-4 backdrop-blur">

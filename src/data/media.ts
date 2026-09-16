@@ -8,33 +8,33 @@ export type Shot = { id: number; room: string; alt: string };
 export const tourShots: Shot[] = [
   {
     id: 8135496,
-    room: "Entrance & Hall",
-    alt: "Open-plan entrance hall of a luxury apartment",
+    room: "Eingang & Flur",
+    alt: "Offener Eingangsbereich einer Luxuswohnung",
   },
   {
     id: 7546323,
-    room: "Living Room",
-    alt: "Minimalist living room with designer furniture",
+    room: "Wohnzimmer",
+    alt: "Minimalistisches Wohnzimmer mit Designermöbeln",
   },
   {
     id: 8089172,
-    room: "Kitchen",
-    alt: "Modern open kitchen with island",
+    room: "Küche",
+    alt: "Moderne offene Küche mit Kochinsel",
   },
   {
     id: 7060826,
-    room: "Master Bedroom",
-    alt: "Contemporary bedroom with built-in wardrobe",
+    room: "Hauptschlafzimmer",
+    alt: "Modernes Schlafzimmer mit Einbauschrank",
   },
   {
     id: 6782570,
-    room: "Bathroom",
-    alt: "Bright modern bathroom with stone counter",
+    room: "Badezimmer",
+    alt: "Helles modernes Bad mit Steinwaschtisch",
   },
   {
     id: 7031604,
-    room: "Terrace",
-    alt: "Villa terrace with panoramic glass walls",
+    room: "Terrasse",
+    alt: "Villenterrasse mit Panorama-Glaswänden",
   },
 ];
 

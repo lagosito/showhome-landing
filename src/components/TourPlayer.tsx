@@ -9,7 +9,7 @@ const SHOT_MS = 4200;
 export function TourPlayer({
   shots,
   className,
-  title = "Maison Verde · 3-room apartment",
+  title = "Maison Verde · 3-Zimmer-Wohnung",
   compact = false,
 }: {
   shots: Shot[];
@@ -102,7 +102,7 @@ export function TourPlayer({
         <button
           type="button"
           onClick={() => setPlaying((v) => !v)}
-          aria-label={playing ? "Pause tour preview" : "Play tour preview"}
+          aria-label={playing ? "Tour-Vorschau pausieren" : "Tour-Vorschau abspielen"}
           className="absolute inset-0 grid place-items-center focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-white"
         >
           <span
@@ -137,7 +137,7 @@ export function TourPlayer({
             <button
               type="button"
               onClick={() => setPlaying((v) => !v)}
-              aria-label={playing ? "Pause" : "Play"}
+              aria-label={playing ? "Pause" : "Abspielen"}
               className="shrink-0 text-white/90 transition hover:text-white"
             >
               {playing ? (
@@ -158,7 +158,7 @@ export function TourPlayer({
                 <button
                   key={s.id}
                   type="button"
-                  aria-label={`Jump to ${s.room}`}
+                  aria-label={`Springe zu ${s.room}`}
                   onClick={() => {
                     setI(idx);
                     setP(0);
