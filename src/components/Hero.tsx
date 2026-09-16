@@ -59,8 +59,8 @@ export function Hero() {
 
           <Reveal delay={160}>
             <p className="mx-auto mt-5 max-w-xl text-pretty text-[17px] leading-relaxed text-white/80 sm:text-[19px]">
-              Lade deine Fotos hoch — ohne Dreh, ohne Kamera, ohne Schnitt.
-              Homemotion erstellt daraus ein hochwertiges Immobilienvideo.
+              Lade deine Fotos hoch, wähle Avatar, Voice-over oder keinen Sprecher
+              – und Homemotion erstellt dein fertiges Immobilienvideo.
             </p>
           </Reveal>
 
