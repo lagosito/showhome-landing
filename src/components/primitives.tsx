@@ -202,29 +202,18 @@ export function Logo({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.03em]",
+        "inline-flex items-center",
         tone === "dark" ? "text-ink" : "text-paper",
         className,
       )}
     >
-      <span
-        className={cn(
-          "grid h-7 w-7 place-items-center rounded-[9px]",
-          tone === "dark" ? "bg-ink text-paper" : "bg-paper text-ink",
-        )}
-      >
-        <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true">
-          <path
-            d="M3 8.6 10 3.2l7 5.4V16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8.6Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-            fill="none"
-          />
-          <path d="M8.6 9.4v3.6l3.4-1.8-3.4-1.8Z" fill="currentColor" />
-        </svg>
-      </span>
-      ShowHome
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo.svg"
+        alt="ShowHome"
+        className="h-[19px] w-auto"
+        style={{ color: "inherit" }}
+      />
     </span>
   );
 }
