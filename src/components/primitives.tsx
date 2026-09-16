@@ -210,7 +210,7 @@ export function Logo({
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 172.7 75.5"
-        className="h-[19px] w-auto"
+        className="h-[28px] w-auto"
         aria-label="ShowHome"
       >
         <polygon points="39.4 30.8 32.6 30.8 32.6 24.3 29.6 24.3 29.6 40.5 32.6 40.5 32.6 33.7 39.4 33.7 39.4 40.5 42.4 40.5 42.4 24.3 39.4 24.3 39.4 30.8" fill="currentColor" />
