@@ -1,58 +1,8 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { cn } from "../utils/cn";
 import { ArrowIcon, Button, Container, Reveal, SectionHead } from "./primitives";
-
-const plans = [
-  {
-    name: "Starter",
-    for: "Für Eigentümer",
-    price: "XX €",
-    unit: "/Monat",
-    note: "Oder einmaliger Preis pro Immobilie.",
-    cta: "Video erstellen",
-    variant: "secondary" as const,
-    features: [
-      "3 Immobilienvideos pro Monat",
-      "Bis zu 40 Fotos pro Immobilie",
-      "Full-HD-Export, 16:9 und 9:16",
-      "Filmische Übergänge & Bewegung",
-      "Musikbibliothek",
-    ],
-  },
-  {
-    name: "Professional",
-    for: "Für selbstständige Makler",
-    price: "XX €",
-    unit: "/Monat",
-    note: "Alles für deine täglichen Inserate.",
-    cta: "Kostenlos testen",
-    variant: "light" as const,
-    features: [
-      "Unbegrenzte Immobilienvideos",
-      "Bis zu 200 Fotos pro Immobilie",
-      "4K-Export, alle Seitenverhältnisse",
-      "Dein Logo, deine Farben & Kontaktkarte",
-      "Individuelles Intro und Outro",
-      "Priorisiertes Rendering",
-    ],
-  },
-  {
-    name: "Enterprise",
-    for: "Für Immobilienunternehmen",
-    price: "Individuell",
-    unit: "",
-    note: "Mengenpreise ab XXX €/Monat.",
-    cta: "Vertrieb kontaktieren",
-    variant: "secondary" as const,
-    features: [
-      "Alles aus Professional",
-      "Team-Workspaces & gemeinsame Vorlagen",
-      "Sammel-Upload und Batch-Rendering",
-      "API- & CRM-/Portal-Integrationen",
-      "SSO, Rollen und Audit-Log",
-      "Persönlicher Success Manager",
-    ],
-  },
-];
 
 function Check({ dark }: { dark?: boolean }) {
   return (
@@ -77,13 +27,68 @@ function Check({ dark }: { dark?: boolean }) {
 }
 
 export function Pricing() {
+  const t = useTranslations("Pricing");
+
+  const plans = [
+    {
+      name: "Starter",
+      for: t("ownerFor"),
+      price: "XX €",
+      unit: t("perMonth"),
+      note: t("ownerNote"),
+      cta: t("ownerCta"),
+      variant: "secondary" as const,
+      features: [
+        t("ownerF1"),
+        t("ownerF2"),
+        t("ownerF3"),
+        t("ownerF4"),
+        t("ownerF5"),
+      ],
+    },
+    {
+      name: "Professional",
+      for: t("agentFor"),
+      price: "XX €",
+      unit: t("perMonth"),
+      note: t("agentNote"),
+      cta: t("agentCta"),
+      variant: "light" as const,
+      features: [
+        t("agentF1"),
+        t("agentF2"),
+        t("agentF3"),
+        t("agentF4"),
+        t("agentF5"),
+        t("agentF6"),
+      ],
+    },
+    {
+      name: "Enterprise",
+      for: t("companyFor"),
+      price: t("companyPrice"),
+      unit: "",
+      note: t("companyNote"),
+      cta: t("companyCta"),
+      variant: "secondary" as const,
+      features: [
+        t("companyF1"),
+        t("companyF2"),
+        t("companyF3"),
+        t("companyF4"),
+        t("companyF5"),
+        t("companyF6"),
+      ],
+    },
+  ];
+
   return (
     <section id="pricing" className="scroll-mt-20 border-t border-line bg-paper-2/40 py-20 sm:py-28">
       <Container>
         <SectionHead
-          eyebrow="Preise"
-          title="Einfache Tarife für jede Art von Inserat."
-          sub="Starte mit einer Immobilie. Wachse bis zum ganzen Portfolio. Keine Produktionskosten, keine Überraschungen pro Video."
+          eyebrow={t("eyebrow")}
+          title={t("heading")}
+          sub={t("subheading")}
           align="center"
         />
 
@@ -102,7 +107,7 @@ export function Pricing() {
                 >
                   {featured && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-clay px-3 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white">
-                      Empfohlen
+                      {t("recommended")}
                     </span>
                   )}
 
@@ -187,8 +192,7 @@ export function Pricing() {
 
         <Reveal delay={120}>
           <p className="mt-10 text-center text-[13px] text-ink-3">
-            Alle Tarife enthalten unbegrenztes Neu-Rendern, kommerzielle Nutzungsrechte und
-            DSGVO-konformes Hosting in der EU.
+            {t("disclaimer")}
           </p>
         </Reveal>
       </Container>

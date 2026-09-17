@@ -1,24 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Container, Reveal, SectionHead } from "./primitives";
 import { demoImg, tourShots } from "../data/media";
 
-const channels = [
-  { n: "Immobilienportale", d: "16:9 · MP4" },
-  { n: "Website-Inserate", d: "Einbettungslink" },
-  { n: "Instagram", d: "9:16 · Reels" },
-  { n: "TikTok", d: "9:16 · 30s" },
-  { n: "WhatsApp", d: "Komprimiert" },
-  { n: "E-Mail", d: "GIF-Vorschau" },
-  { n: "Online-Werbung", d: "1:1 · 15s" },
-];
-
 function PortraitMock() {
+  const t = useTranslations("UseCases");
   const [i, setI] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % tourShots.length), 3200);
-    return () => clearInterval(t);
+    const t2 = setInterval(() => setI((v) => (v + 1) % tourShots.length), 3200);
+    return () => clearInterval(t2);
   }, []);
 
   return (
@@ -58,14 +50,14 @@ function PortraitMock() {
               {tourShots[i].room}
             </p>
             <p className="mt-0.5 text-[11px] text-white/70">
-              Wohnung Verde · 1.450 € / Monat
+              {t("mockLabel")}
             </p>
             <div className="mt-3 flex items-center gap-2">
               <span className="rounded-full bg-white px-3 py-1.5 text-[10.5px] font-semibold text-ink">
-                Besichtigung buchen
+                {t("bookBtn")}
               </span>
               <span className="rounded-full bg-white/15 px-2.5 py-1.5 text-[10.5px] font-medium text-white ring-1 ring-white/20 backdrop-blur">
-                Merken
+                {t("saveBtn")}
               </span>
             </div>
           </div>
@@ -80,13 +72,25 @@ function PortraitMock() {
 }
 
 export function UseCases() {
+  const t = useTranslations("UseCases");
+
+  const channels = [
+    { n: t("channel1"), d: "16:9 · MP4" },
+    { n: t("channel2"), d: t("desc1") },
+    { n: "Instagram", d: "9:16 · Reels" },
+    { n: "TikTok", d: "9:16 · 30s" },
+    { n: t("channel3"), d: t("desc3") },
+    { n: t("channel4"), d: t("desc2") },
+    { n: t("channel5"), d: "1:1 · 15s" },
+  ];
+
   return (
     <section className="overflow-hidden py-20 sm:py-28">
       <Container>
         <SectionHead
-          eyebrow="Einsatzbereiche"
-          title="Ein Immobilienvideo. Überall, wo du inserierst."
-          sub="ShowHome exportiert jedes Format, das du brauchst: So funktioniert dieselbe Tour im Portal, im Postfach und im Feed."
+          eyebrow={t("eyebrow")}
+          title={t("heading")}
+          sub={t("subheading")}
         />
 
         <div className="mt-14 grid items-center gap-12 lg:grid-cols-[1.1fr_auto] lg:gap-16">
@@ -117,20 +121,20 @@ export function UseCases() {
           {[0, 1].map((dup) => (
             <div key={dup} className="flex items-center gap-10 sm:gap-14" aria-hidden={dup === 1}>
               {[
-                "Immobilienportale",
-                "Instagram Reels",
-                "TikTok",
-                "WhatsApp",
-                "E-Mail-Kampagnen",
-                "Website-Einbindungen",
-                "Online-Werbung",
-                "Agentur-Showreels",
-              ].map((t) => (
+                t("marquee1"),
+                t("marquee2"),
+                t("marquee3"),
+                t("marquee4"),
+                t("marquee5"),
+                t("marquee6"),
+                t("marquee7"),
+                t("marquee8"),
+              ].map((item) => (
                 <span
-                  key={t}
+                  key={item}
                   className="flex items-center gap-10 text-[15px] font-medium tracking-[-0.02em] text-ink-3 sm:gap-14"
                 >
-                  {t}
+                  {item}
                   <span className="h-1 w-1 rounded-full bg-clay/60" />
                 </span>
               ))}

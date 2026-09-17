@@ -1,64 +1,55 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { cn } from "../utils/cn";
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
 import { IMG, px } from "../data/media";
 
-type Block = {
-  id: string;
-  eyebrow: string;
-  title: string;
-  body: string;
-  cta: string;
-  bullets: string[];
-  img: number;
-  alt: string;
-};
-
-const blocks: Block[] = [
-  {
-    id: "owners",
-    eyebrow: "Für Eigentümer",
-    title: "Mach deine Immobilie unübersehbar.",
-    body: "Du brauchst weder Profi-Equipment noch Schnittkenntnisse. Lade deine Fotos hoch und erstelle ein Video, das deine Wohnung erlebbar macht, noch bevor jemand zur Besichtigung kommt.",
-    cta: "Immobilienvideo erstellen",
-    bullets: [
-      "Kein Videograf, keine Mietkosten",
-      "Bereit für alle großen Portale",
-      "Eine Immobilie, ein einfacher Preis",
-    ],
-    img: IMG.owners,
-    alt: "Warmer, einladender Wohnbereich einer Privatwohnung",
-  },
-  {
-    id: "agents",
-    eyebrow: "Für Immobilienmakler",
-    title: "Mach aus jedem Inserat eine bessere Präsentation.",
-    body: "Erstelle professionelle Immobilientouren, ohne stundenlang zu drehen und zu schneiden. Nutze deine Zeit zum Verkaufen, nicht zum Videoproduzieren.",
-    cta: "Für Makler",
-    bullets: [
-      "Unbegrenzte Touren in einem Abo",
-      "Dein Logo, deine Farben und deine Kontaktkarte",
-      "Hochformat-Schnitte für Social Media, automatisch",
-    ],
-    img: IMG.agents,
-    alt: "Modernes Wohnungsinterieur, fotografiert für ein Inserat",
-  },
-  {
-    id: "enterprise",
-    eyebrow: "Für Immobilienunternehmen",
-    title: "Videotouren im großen Maßstab.",
-    body: "Gib deinem ganzen Team eine einfache Möglichkeit, einheitliche, professionelle Immobilienvideos für das gesamte Portfolio zu erstellen.",
-    cta: "Vertrieb kontaktieren",
-    bullets: [
-      "Team-Workspaces & gemeinsame Vorlagen",
-      "Sammel-Rendering und API-Zugang",
-      "SSO, Rollen und zentrale Abrechnung",
-    ],
-    img: IMG.teams,
-    alt: "Minimalistische Fassade eines Wohngebäudes",
-  },
-];
-
 export function Customers() {
+  const t = useTranslations("Customers");
+
+  const blocks = [
+    {
+      id: "owners",
+      eyebrow: t("ownerEyebrow"),
+      title: t("ownerHeading"),
+      body: t("ownerBody"),
+      cta: t("ownerCta"),
+      bullets: [t("ownerBullet1"), t("ownerBullet2"), t("ownerBullet3")],
+      img: IMG.owners,
+      alt: "Warmer, einladender Wohnbereich einer Privatwohnung",
+      statLabel: t("ownerStatLabel"),
+      statValue: t("ownerStatValue"),
+      statDesc: t("ownerStatDesc"),
+    },
+    {
+      id: "agents",
+      eyebrow: t("agentEyebrow"),
+      title: t("agentHeading"),
+      body: t("agentBody"),
+      cta: t("agentCta"),
+      bullets: [t("agentBullet1"), t("agentBullet2"), t("agentBullet3")],
+      img: IMG.agents,
+      alt: "Modernes Wohnungsinterieur, fotografiert für ein Inserat",
+      statLabel: t("agentStatLabel"),
+      statValue: t("agentStatValue"),
+      statDesc: t("agentStatDesc"),
+    },
+    {
+      id: "enterprise",
+      eyebrow: t("companyEyebrow"),
+      title: t("companyHeading"),
+      body: t("companyBody"),
+      cta: t("companyCta"),
+      bullets: [t("companyBullet1"), t("companyBullet2"), t("companyBullet3")],
+      img: IMG.teams,
+      alt: "Minimalistische Fassade eines Wohngebäudes",
+      statLabel: t("companyStatLabel"),
+      statValue: t("companyStatValue"),
+      statDesc: t("companyStatDesc"),
+    },
+  ];
+
   return (
     <section className="border-y border-line bg-white">
       <Container>
@@ -91,25 +82,13 @@ export function Customers() {
                     )}
                   >
                     <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-clay">
-                      {b.id === "owners"
-                        ? "1 Immobilie"
-                        : b.id === "agents"
-                          ? "Diesen Monat"
-                          : "Portfolio"}
+                      {b.statLabel}
                     </p>
                     <p className="mt-1.5 text-[22px] font-semibold tracking-[-0.04em] text-ink">
-                      {b.id === "owners"
-                        ? "1 Tour · 3 Min."
-                        : b.id === "agents"
-                          ? "38 Touren"
-                          : "1.240 Touren"}
+                      {b.statValue}
                     </p>
                     <p className="mt-1 text-[11.5px] text-ink-3">
-                      {b.id === "owners"
-                        ? "Vom Upload bis zum Download"
-                        : b.id === "agents"
-                          ? "Ohne Kamera erstellt"
-                          : "In 14 Büros"}
+                      {b.statDesc}
                     </p>
                   </div>
                 </div>

@@ -1,22 +1,15 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
 
 export function Hero() {
+  const t = useTranslations("Hero");
+
   const steps = [
-    {
-      k: "01",
-      t: "Hochladen",
-      d: "Fotos oder Inseratslink",
-    },
-    {
-      k: "02",
-      t: "Erstellen",
-      d: "KI analysiert deine Immobilie",
-    },
-    {
-      k: "03",
-      t: "Video fertig",
-      d: "Fertiges Video herunterladen",
-    },
+    { k: "01", t: t("step1Title"), d: t("step1Desc") },
+    { k: "02", t: t("step2Title"), d: t("step2Desc") },
+    { k: "03", t: t("step3Title"), d: t("step3Desc") },
   ];
 
   return (
@@ -41,22 +34,21 @@ export function Hero() {
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 py-1.5 pl-1.5 pr-3.5 text-[12.5px] font-medium text-white/90 backdrop-blur-md">
               <span className="rounded-full bg-white px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-ink">
-                Neu
+                {t("badge")}
               </span>
-              KI-Raumabfolge für Immobilientouren
+              {t("badgeText")}
             </span>
           </Reveal>
 
           <Reveal delay={80}>
             <h1 className="mt-6 max-w-3xl text-balance text-[clamp(2rem,5.5vw,4rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-white">
-              Aus Immobilienfotos werden professionelle Videotouren.
+              {t("heading")}
             </h1>
           </Reveal>
 
           <Reveal delay={160}>
             <p className="mx-auto mt-5 max-w-xl text-pretty text-[17px] leading-relaxed text-white/80 sm:text-[19px]">
-              Lade deine Fotos hoch, wähle Avatar, Voice-over oder keinen Sprecher
-              – und Homemotion erstellt dein fertiges Immobilienvideo.
+              {t("subtitle")}
             </p>
           </Reveal>
 
@@ -68,7 +60,7 @@ export function Hero() {
                 className="w-full sm:w-auto"
                 icon={<ArrowIcon />}
               >
-                Erstes Video erstellen
+                {t("cta")}
               </Button>
               <Button
                 href="#how"
@@ -84,7 +76,7 @@ export function Hero() {
                   </svg>
                 }
               >
-                So funktioniert&apos;s
+                {t("secondary")}
               </Button>
             </div>
           </Reveal>

@@ -1,7 +1,11 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Container, Reveal } from "./primitives";
 import { demoImg, uploadShots } from "../data/media";
 
 function PhotoFolder() {
+  const t = useTranslations("BeforeAfter");
   const files = uploadShots.slice(0, 9);
   return (
     <div className="overflow-hidden rounded-[20px] border border-white/12 bg-[#141518] shadow-[0_40px_80px_-50px_rgba(0,0,0,.9)]">
@@ -15,7 +19,7 @@ function PhotoFolder() {
           Fotos / Wohnung_Verde
         </span>
         <span className="ml-auto font-mono text-[10.5px] text-white/35">
-          24 Objekte
+          {t("folderCount")}
         </span>
       </div>
       <div className="grid grid-cols-3 gap-3 p-4 sm:p-5">
@@ -42,6 +46,8 @@ function PhotoFolder() {
 }
 
 export function BeforeAfter() {
+  const t = useTranslations("BeforeAfter");
+
   return (
     <section className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
       <div
@@ -53,13 +59,13 @@ export function BeforeAfter() {
           <Reveal>
             <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
               <span className="h-1 w-1 rounded-full bg-clay" aria-hidden="true" />
-              Vorher / Nachher
+              {t("eyebrow")}
             </span>
           </Reveal>
           <Reveal delay={70}>
             <h2 className="mt-5 text-balance text-[clamp(2rem,4.6vw,3.5rem)] font-semibold leading-[1.02] tracking-[-0.04em]">
-              Deine Fotos erzählen schon die Geschichte.
-              <span className="text-white/45"> ShowHome macht sie sichtbar.</span>
+              {t("heading1")}
+              <span className="text-white/45"> {t("heading2")}</span>
             </h2>
           </Reveal>
         </div>
@@ -67,7 +73,7 @@ export function BeforeAfter() {
         <div className="mt-14 grid items-center gap-8 lg:grid-cols-[1fr_auto_1.25fr] lg:gap-6">
           <Reveal>
             <p className="mb-4 text-[14px] font-medium text-white/55">
-              Aus einem Fotoordner …
+              {t("folderLabel")}
             </p>
             <PhotoFolder />
           </Reveal>
@@ -93,7 +99,7 @@ export function BeforeAfter() {
 
           <Reveal delay={200}>
             <p className="mb-4 text-[14px] font-medium text-white">
-              … wird eine professionelle Immobilientour.
+              {t("resultLabel")}
             </p>
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#141518] shadow-[0_20px_60px_-30px_rgba(0,0,0,.8)]">
               <div className="relative">
@@ -114,7 +120,7 @@ export function BeforeAfter() {
                       </svg>
                     </span>
                     <span className="text-[11.5px] font-medium text-white/90">
-                      Wohnung Verde · Geführte Tour
+                      {t("videoLabel")}
                     </span>
                   </div>
                 </div>
@@ -122,16 +128,16 @@ export function BeforeAfter() {
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {[
-                "Natürliche Raumabfolge",
-                "Filmische Bewegung",
-                "Fließende Übergänge",
-                "Bereit zur Veröffentlichung",
-              ].map((t) => (
+                t("tag1"),
+                t("tag2"),
+                t("tag3"),
+                t("tag4"),
+              ].map((tag) => (
                 <span
-                  key={t}
+                  key={tag}
                   className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[12px] text-white/70"
                 >
-                  {t}
+                  {tag}
                 </span>
               ))}
             </div>

@@ -1,9 +1,13 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Container, Reveal, SectionHead } from "./primitives";
 import { demoImg, tourShots, uploadShots } from "../data/media";
 
 /* ---------- Step visuals ---------- */
 
 function StepUpload() {
+  const t = useTranslations("HowItWorks");
   return (
     <div className="flex h-full flex-col justify-between p-5 sm:p-6">
       <div className="grid grid-cols-3 gap-2">
@@ -40,22 +44,23 @@ function StepUpload() {
       </div>
       <div className="mt-5 rounded-xl border border-dashed border-line-2 bg-paper/60 px-4 py-3 text-center">
         <p className="text-[12.5px] font-medium text-ink-2">
-          Fotos hier ablegen <span className="text-ink-3">oder auswählen</span>
+          {t("uploadLabel")} <span className="text-ink-3">{t("uploadOr")}</span>
         </p>
-        <p className="mt-0.5 text-[11px] text-ink-3">JPG, PNG, HEIC · bis zu 200 Fotos</p>
+        <p className="mt-0.5 text-[11px] text-ink-3">{t("uploadMeta")}</p>
       </div>
     </div>
   );
 }
 
 function StepBuild() {
-  const chips = ["Flur", "Wohnen", "Küche", "Schlafen", "Bad", "Terrasse"];
+  const t = useTranslations("HowItWorks");
+  const chips = [t("chip1"), t("chip2"), t("chip3"), t("chip4"), t("chip5"), t("chip6")];
   return (
     <div className="flex h-full flex-col justify-between p-5 sm:p-6">
       <div className="rounded-xl border border-line bg-white p-4">
         <div className="flex items-center justify-between">
           <span className="text-[11.5px] font-semibold text-ink">
-            Rundgang wird erstellt
+            {t("buildStatus")}
           </span>
           <span className="font-mono text-[10.5px] text-clay">82%</span>
         </div>
@@ -100,7 +105,7 @@ function StepBuild() {
           ))}
         </div>
         <div className="mt-3 flex items-center justify-between text-[10.5px] text-ink-3">
-          <span>Abfolge · natürlicher Rundgang</span>
+          <span>{t("timelineLabel")}</span>
           <span className="font-mono">0:24</span>
         </div>
       </div>
@@ -155,35 +160,37 @@ function StepShare() {
   );
 }
 
-const steps = [
-  {
-    k: "01",
-    title: "Fotos hochladen",
-    body: "Wähle die Fotos deiner Immobilie aus.",
-    visual: <StepUpload />,
-  },
-  {
-    k: "02",
-    title: "ShowHome erstellt die Tour",
-    body: "Unsere KI erkennt die Räume und erstellt einen natürlichen Rundgang durch die Immobilie.",
-    visual: <StepBuild />,
-  },
-  {
-    k: "03",
-    title: "Video teilen",
-    body: "Lade dein Video herunter und nutze es auf Immobilienportalen, Social Media und Websites oder schick es direkt an Interessenten.",
-    visual: <StepShare />,
-  },
-];
-
 export function HowItWorks() {
+  const t = useTranslations("HowItWorks");
+
+  const steps = [
+    {
+      k: "01",
+      title: t("step1Title"),
+      body: t("step1Body"),
+      visual: <StepUpload />,
+    },
+    {
+      k: "02",
+      title: t("step2Title"),
+      body: t("step2Body"),
+      visual: <StepBuild />,
+    },
+    {
+      k: "03",
+      title: t("step3Title"),
+      body: t("step3Body"),
+      visual: <StepShare />,
+    },
+  ];
+
   return (
     <section id="how" className="py-20 sm:py-28">
       <Container>
         <SectionHead
-          eyebrow="So funktioniert's"
-          title="Drei Schritte. Kein Filmteam."
-          sub="Vom Fotoordner zur fertigen Immobilientour: Das Ganze dauert etwa so lange wie das Schreiben der Exposé-Beschreibung."
+          eyebrow={t("eyebrow")}
+          title={t("heading")}
+          sub={t("subheading")}
         />
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">

@@ -1,16 +1,21 @@
-import { ArrowIcon, Button, Container, Logo } from "./primitives";
+'use client';
 
-const nav = [
-  { label: "Produkt", href: "#product" },
-  { label: "So funktioniert's", href: "#how" },
-  { label: "Preise", href: "#pricing" },
-  { label: "Für Makler", href: "#agents" },
-  { label: "Enterprise", href: "#enterprise" },
-];
-
-const legal = ["Datenschutz", "AGB", "Sicherheit", "Impressum"];
+import { useTranslations } from 'next-intl';
+import { ArrowIcon, Button, Container, Logo } from './primitives';
 
 export function Footer() {
+  const t = useTranslations('Footer');
+
+  const nav = [
+    { label: t('product'), href: '#product' },
+    { label: t('howItWorks'), href: '#how' },
+    { label: t('pricing'), href: '#pricing' },
+    { label: t('forAgents'), href: '#agents' },
+    { label: t('enterprise'), href: '#enterprise' },
+  ];
+
+  const legal = [t('privacy'), t('terms'), t('security'), t('imprint')];
+
   return (
     <footer className="border-t border-line bg-white">
       <Container>
@@ -18,8 +23,7 @@ export function Footer() {
           <div className="max-w-sm">
             <Logo />
             <p className="mt-4 text-[14px] leading-relaxed text-ink-3">
-              Professionelle Immobilien-Videotouren, erstellt aus den Fotos, die du
-              schon hast.
+              {t('description')}
             </p>
           </div>
 
@@ -40,14 +44,14 @@ export function Footer() {
 
           <div className="shrink-0">
             <Button href="#cta" size="lg" icon={<ArrowIcon />}>
-              Video erstellen
+              {t('createVideo')}
             </Button>
           </div>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-line py-7 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[12.5px] text-ink-3">
-            © {new Date().getFullYear()} ShowHome. Alle Rechte vorbehalten.
+            {t('copyright', { year: new Date().getFullYear() })}
           </p>
           <ul className="flex flex-wrap gap-6">
             {legal.map((l) => (

@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { cn } from "../utils/cn";
 import { Container, Reveal, SectionHead } from "./primitives";
 import { IMG, px, demoImg, uploadShots } from "../data/media";
@@ -33,30 +36,32 @@ function Card({
 }
 
 export function Benefits() {
+  const t = useTranslations("Benefits");
+
   return (
     <section className="py-20 sm:py-28">
       <Container>
         <SectionHead
-          eyebrow="Warum ShowHome"
-          title="Bessere Inserate, ohne Produktionsaufwand."
-          sub="Alles, was eine Immobilie braucht, um richtig wahrgenommen zu werden: erstellt aus Fotos, die du schon hast."
+          eyebrow={t("eyebrow")}
+          title={t("heading")}
+          sub={t("subheading")}
         />
 
         <div className="mt-14 grid gap-5 md:grid-cols-6">
           {/* Save hours */}
           <Card
-            title="Stunden sparen"
-            body="Kein Dreh, kein Schnitt, keine komplizierte Videosoftware."
+            title={t("card1Title")}
+            body={t("card1Body")}
             className="md:col-span-3"
           >
             <div className="relative overflow-hidden border-b border-line bg-paper-2/60 p-7">
               <div className="flex items-end gap-8">
                 <div>
                   <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">
-                    Klassisch
+                    {t("labelClassic")}
                   </p>
                   <p className="mt-1 text-[clamp(1.6rem,3vw,2.1rem)] font-semibold tracking-[-0.04em] text-ink-3 line-through decoration-clay/60 decoration-2">
-                    6–8 Std.
+                    {t("timeClassic")}
                   </p>
                 </div>
                 <svg viewBox="0 0 20 20" className="mb-3 h-4 w-4 text-line-2" aria-hidden="true">
@@ -64,19 +69,19 @@ export function Benefits() {
                 </svg>
                 <div>
                   <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-clay">
-                    ShowHome
+                    {t("labelShowHome")}
                   </p>
                   <p className="mt-1 text-[clamp(1.6rem,3vw,2.1rem)] font-semibold tracking-[-0.04em] text-ink">
-                    3 min
+                    {t("timeShowHome")}
                   </p>
                 </div>
               </div>
               <div className="mt-6 space-y-2">
                 {[
-                  { l: "Termine & Anfahrt", w: "78%", muted: true },
-                  { l: "Dreh vor Ort", w: "62%", muted: true },
-                  { l: "Schnitt & Export", w: "88%", muted: true },
-                  { l: "ShowHome-Rendering", w: "14%", muted: false },
+                  { l: t("bar1"), w: "78%", muted: true },
+                  { l: t("bar2"), w: "62%", muted: true },
+                  { l: t("bar3"), w: "88%", muted: true },
+                  { l: t("bar4"), w: "14%", muted: false },
                 ].map((r) => (
                   <div key={r.l} className="flex items-center gap-3">
                     <span className="w-[128px] shrink-0 text-[11.5px] text-ink-3">
@@ -99,8 +104,8 @@ export function Benefits() {
 
           {/* Look professional */}
           <Card
-            title="Professionell auftreten"
-            body="Aus einfachen Immobilienfotos werden hochwertige Videotouren."
+            title={t("card2Title")}
+            body={t("card2Body")}
             className="md:col-span-3"
             delay={80}
           >
@@ -115,10 +120,10 @@ export function Benefits() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
               <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 p-4">
                 <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md ring-1 ring-white/20">
-                  Color Grading
+                  {t("badge1")}
                 </span>
                 <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md ring-1 ring-white/20">
-                  Langsame Kamerafahrt
+                  {t("badge2")}
                 </span>
               </div>
             </div>
@@ -126,15 +131,15 @@ export function Benefits() {
 
           {/* List faster */}
           <Card
-            title="Schneller inserieren"
-            body="Ein fertiges Immobilienvideo in wenigen Minuten."
+            title={t("card3Title")}
+            body={t("card3Body")}
             className="md:col-span-2"
             delay={40}
           >
             <div className="border-b border-line bg-paper-2/60 p-7">
               <div className="rounded-2xl border border-line bg-white p-4">
                 <div className="flex items-center justify-between text-[11.5px] font-medium text-ink">
-                  <span>Tour wird gerendert</span>
+                  <span>{t("renderStatus")}</span>
                   <span className="font-mono text-clay">00:47</span>
                 </div>
                 <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-paper-2">
@@ -159,16 +164,16 @@ export function Benefits() {
 
           {/* Stand out */}
           <Card
-            title="Herausstechen"
-            body="Biete Mietern und Käufern eine bessere Möglichkeit, die Immobilie zu erleben."
+            title={t("card4Title")}
+            body={t("card4Body")}
             className="md:col-span-2"
             delay={110}
           >
             <div className="border-b border-line bg-paper-2/60 p-7">
               <div className="space-y-2.5">
                 {[
-                  { l: "Inserat nur mit Fotos", v: 32, tone: "muted" },
-                  { l: "Inserat mit Videotour", v: 100, tone: "clay" },
+                  { l: t("barPhotos"), v: 32, tone: "muted" },
+                  { l: t("barVideo"), v: 100, tone: "clay" },
                 ].map((r) => (
                   <div key={r.l}>
                     <div className="mb-1.5 flex items-baseline justify-between">
@@ -189,7 +194,7 @@ export function Benefits() {
                   </div>
                 ))}
                 <p className="pt-1 text-[11px] text-ink-3">
-                  Relative Anfragequote, beispielhaft
+                  {t("disclaimer")}
                 </p>
               </div>
             </div>
@@ -197,8 +202,8 @@ export function Benefits() {
 
           {/* Scale */}
           <Card
-            title="Mühelos skalieren"
-            body="Videos für eine Immobilie oder für Hunderte."
+            title={t("card5Title")}
+            body={t("card5Body")}
             className="md:col-span-2"
             delay={170}
           >
@@ -222,7 +227,7 @@ export function Benefits() {
                 ))}
               </div>
               <p className="mt-4 text-[11.5px] font-medium text-ink-3">
-                Sammel-Upload · gemeinsame Markenvorlage · ein Klick
+                {t("caption")}
               </p>
             </div>
           </Card>

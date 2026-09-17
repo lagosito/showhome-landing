@@ -1,23 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
 import { cn } from '@/utils/cn';
 import { Button, Container, Logo } from './primitives';
 
-const links = [
-  { label: 'Produkt', href: '/#product' },
-  { label: "So funktioniert's", href: '/#how' },
-  { label: 'Preise', href: '/#pricing' },
-  { label: 'Für Makler', href: '/#agents' },
-  { label: 'Enterprise', href: '/#enterprise' },
-];
-
 export function Nav() {
+  const t = useTranslations('Nav');
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  const links = [
+    { label: t('product'), href: '/#product' },
+    { label: t('howItWorks'), href: '/#how' },
+    { label: t('pricing'), href: '/#pricing' },
+    { label: t('forAgents'), href: '/#agents' },
+    { label: t('enterprise'), href: '/#enterprise' },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -40,11 +41,11 @@ export function Nav() {
     >
       <Container>
         <div className="flex h-[68px] items-center justify-between gap-6">
-          <Link href="/" className="shrink-0" aria-label="ShowHome Startseite">
+          <Link href="/" className="shrink-0" aria-label={t('homeLabel')}>
             <Logo tone={light ? 'light' : 'dark'} />
           </Link>
 
-          <nav className="hidden items-center gap-8 md:flex" aria-label="Hauptnavigation">
+          <nav className="hidden items-center gap-8 md:flex" aria-label={t('mainNav')}>
             {links.map((l) => (
               <Link
                 key={l.href}
@@ -69,10 +70,10 @@ export function Nav() {
                 light ? 'text-white/80 hover:text-white' : 'text-ink-2 hover:text-ink',
               )}
             >
-              Anmelden
+              {t('login')}
             </Link>
             <Button href="/create/upload" variant={light ? 'secondary' : 'primary'} className={light ? '!bg-white/15 !text-white hover:!bg-white/25' : ''}>
-              Video erstellen
+              {t('createVideo')}
             </Button>
           </div>
 
@@ -84,7 +85,7 @@ export function Nav() {
                 ? 'border-white/20 bg-white/10'
                 : 'border-line-2 bg-white/60',
             )}
-            aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
+            aria-label={open ? t('menuClose') : t('menuOpen')}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
@@ -132,10 +133,10 @@ export function Nav() {
               onClick={() => setOpen(false)}
               className="border-b border-line/70 py-3 text-[15px] font-medium text-ink-2"
             >
-              Anmelden
+              {t('login')}
             </Link>
             <Button href="/create/upload" className="mt-4 mb-4 w-full py-3">
-              Video erstellen
+              {t('createVideo')}
             </Button>
           </nav>
         </Container>
