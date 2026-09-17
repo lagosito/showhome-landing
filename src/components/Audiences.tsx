@@ -1,37 +1,30 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { Container, Reveal } from "./primitives";
 
-const groups = [
-  {
-    k: "01",
-    title: "Private Eigentümer",
-    body: "Erstelle ein professionelles Inserat, ganz ohne Videografen.",
-  },
-  {
-    k: "02",
-    title: "Immobilienmakler",
-    body: "Bessere Immobilientouren in wenigen Minuten.",
-  },
-  {
-    k: "03",
-    title: "Immobilienunternehmen",
-    body: "Einheitliche Videoinhalte für das gesamte Portfolio.",
-  },
-];
-
-const stats = [
-  { v: "3 min", l: "Durchschnittliche Zeit bis zur fertigen Tour" },
-  { v: "40+", l: "Filmische Kamerafahrten & Übergänge" },
-  { v: "4K", l: "Exportqualität, hoch oder quer" },
-  { v: "12", l: "Raumtypen automatisch erkannt" },
-];
-
 export function Audiences() {
+  const t = useTranslations('Audiences');
+
+  const groups = [
+    { k: "01", title: t('group1Title'), body: t('group1Body') },
+    { k: "02", title: t('group2Title'), body: t('group2Body') },
+    { k: "03", title: t('group3Title'), body: t('group3Body') },
+  ];
+
+  const stats = [
+    { v: "3 min", l: t('stat1Label') },
+    { v: "40+", l: t('stat2Label') },
+    { v: "4K", l: t('stat3Label') },
+    { v: "12", l: t('stat4Label') },
+  ];
+
   return (
     <section id="product" className="border-y border-line bg-white py-20 sm:py-28">
       <Container>
         <Reveal>
           <h2 className="max-w-3xl text-balance text-[clamp(1.6rem,3.2vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.035em] text-ink">
-            Für alle, die Immobilien besser präsentieren wollen.
+            {t('heading')}
           </h2>
         </Reveal>
 

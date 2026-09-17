@@ -208,5 +208,18 @@
     "description": "Professional property video tours, created from the photos you already have.",
     "createVideo": "Create video",
     "copyright": "© {year} ShowHome. All rights reserved."
+  },
+  "Audiences": {
+    "heading": "For everyone who wants to present properties better.",
+    "group1Title": "Private owners",
+    "group1Body": "Create a professional listing, no videographer needed.",
+    "group2Title": "Real estate agents",
+    "group2Body": "Better property tours in minutes.",
+    "group3Title": "Real estate companies",
+    "group3Body": "Consistent video content for the entire portfolio.",
+    "stat1Label": "Average time to finished tour",
+    "stat2Label": "Cinematic camera movements & transitions",
+    "stat3Label": "Export quality, landscape or portrait",
+    "stat4Label": "Room types automatically detected"
   }
 }

@@ -208,5 +208,18 @@
     "description": "Professionelle Immobilien-Videotouren, erstellt aus den Fotos, die du schon hast.",
     "createVideo": "Video erstellen",
     "copyright": "© {year} ShowHome. Alle Rechte vorbehalten."
+  },
+  "Audiences": {
+    "heading": "Für alle, die Immobilien besser präsentieren wollen.",
+    "group1Title": "Private Eigentümer",
+    "group1Body": "Erstelle ein professionelles Inserat, ganz ohne Videografen.",
+    "group2Title": "Immobilienmakler",
+    "group2Body": "Bessere Immobilientouren in wenigen Minuten.",
+    "group3Title": "Immobilienunternehmen",
+    "group3Body": "Einheitliche Videoinhalte für das gesamte Portfolio.",
+    "stat1Label": "Durchschnittliche Zeit bis zur fertigen Tour",
+    "stat2Label": "Filmische Kamerafahrten & Übergänge",
+    "stat3Label": "Exportqualität, hoch oder quer",
+    "stat4Label": "Raumtypen automatisch erkannt"
   }
 }
