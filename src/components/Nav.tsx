@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { cn } from '@/utils/cn';
 import { Button, Container, Logo } from './primitives';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function Nav() {
   const t = useTranslations('Nav');
@@ -63,6 +64,7 @@ export function Nav() {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
+            <LanguageSwitcher />
             <Link
               href="/auth/signin"
               className={cn(
@@ -128,6 +130,9 @@ export function Nav() {
                 {l.label}
               </Link>
             ))}
+            <div className="py-3">
+              <LanguageSwitcher />
+            </div>
             <Link
               href="/auth/signin"
               onClick={() => setOpen(false)}
