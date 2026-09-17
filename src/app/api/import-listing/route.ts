@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getParserForUrl } from '@/lib/portals';
 
-const USER_AGENT = 'ShowHome-Import/1.0 (https://homeshow-landing.vercel.app)';
+const USER_AGENT = 'Homemotion-Import/1.0 (https://homeshow-landing.vercel.app)';
 const MAX_PHOTOS = 12;
 const MIN_PHOTOS = 3;
 
@@ -29,7 +29,7 @@ async function checkRobotsTxt(origin: string): Promise<boolean> {
     });
     if (!res.ok) return true; // No robots.txt = allowed
     const text = await res.text();
-    // Check for ShowHome user-agent or wildcard
+    // Check for Homemotion user-agent or wildcard
     const lines = text.split('\n');
     let appliesToUs = false;
     for (const line of lines) {

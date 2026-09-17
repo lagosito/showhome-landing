@@ -100,7 +100,7 @@ export function TourPlayer({
             )}
           </div>
           <span className="rounded-full bg-white/12 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/85 backdrop-blur-md ring-1 ring-white/15">
-            ShowHome
+            Homemotion
             </span>
           </div>
         )}

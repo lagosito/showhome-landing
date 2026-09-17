@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "ShowHome — Aus Immobilienfotos werden professionelle Videotouren",
-    "description": "ShowHome verwandelt einfache Immobilienfotos in professionelle Videotouren. Fotos hochladen und in wenigen Minuten ein hochwertiges Immobilienvideo erhalten."
+    "title": "Homemotion — Aus Immobilienfotos werden professionelle Videotouren",
+    "description": "Homemotion verwandelt einfache Immobilienfotos in professionelle Videotouren. Fotos hochladen und in wenigen Minuten ein hochwertiges Immobilienvideo erhalten."
   },
   "Nav": {
     "product": "Produkt",
@@ -14,7 +14,7 @@
     "myVideos": "Meine Videos",
     "signOut": "Abmelden",
     "createVideo": "Video erstellen",
-    "homeLabel": "ShowHome Startseite",
+    "homeLabel": "Homemotion Startseite",
     "menuClose": "Menü schließen",
     "menuOpen": "Menü öffnen",
     "mainNav": "Hauptnavigation"
@@ -51,7 +51,7 @@
     "videoLabel": "Wohnung Verde · Geführte Tour",
     "step1Title": "Fotos hochladen",
     "step1Body": "Wähle die Fotos deiner Immobilie aus.",
-    "step2Title": "ShowHome erstellt die Tour",
+    "step2Title": "Homemotion erstellt die Tour",
     "step2Body": "Unsere KI erkennt die Räume und erstellt einen natürlichen Rundgang durch die Immobilie.",
     "step3Title": "Video teilen",
     "step3Body": "Lade dein Video herunter und nutze es auf Immobilienportalen, Social Media und Websites oder schick es direkt an Interessenten."
@@ -59,7 +59,7 @@
   "BeforeAfter": {
     "eyebrow": "Vorher / Nachher",
     "heading1": "Deine Fotos erzählen schon die Geschichte.",
-    "heading2": "ShowHome macht sie sichtbar.",
+    "heading2": "Homemotion macht sie sichtbar.",
     "folderLabel": "Aus einem Fotoordner …",
     "folderCount": "24 Objekte",
     "resultLabel": "… wird eine professionelle Immobilientour.",
@@ -70,19 +70,19 @@
     "tag4": "Bereit zur Veröffentlichung"
   },
   "Benefits": {
-    "eyebrow": "Warum ShowHome",
+    "eyebrow": "Warum Homemotion",
     "heading": "Bessere Inserate, ohne Produktionsaufwand.",
     "subheading": "Alles, was eine Immobilie braucht, um richtig wahrgenommen zu werden: erstellt aus Fotos, die du schon hast.",
     "card1Title": "Stunden sparen",
     "card1Body": "Kein Dreh, kein Schnitt, keine komplizierte Videosoftware.",
     "labelClassic": "Klassisch",
-    "labelShowHome": "ShowHome",
+    "labelHomemotion": "Homemotion",
     "timeClassic": "6–8 Std.",
-    "timeShowHome": "3 min",
+    "timeHomemotion": "3 min",
     "bar1": "Termine & Anfahrt",
     "bar2": "Dreh vor Ort",
     "bar3": "Schnitt & Export",
-    "bar4": "ShowHome-Rendering",
+    "bar4": "Homemotion-Rendering",
     "card2Title": "Professionell auftreten",
     "card2Body": "Aus einfachen Immobilienfotos werden hochwertige Videotouren.",
     "badge1": "Color Grading",
@@ -134,7 +134,7 @@
   "UseCases": {
     "eyebrow": "Einsatzbereiche",
     "heading": "Ein Immobilienvideo. Überall, wo du inserierst.",
-    "subheading": "ShowHome exportiert jedes Format, das du brauchst: So funktioniert dieselbe Tour im Portal, im Postfach und im Feed.",
+    "subheading": "Homemotion exportiert jedes Format, das du brauchst: So funktioniert dieselbe Tour im Portal, im Postfach und im Feed.",
     "channel1": "Immobilienportale",
     "channel2": "Website-Inserate",
     "channel3": "WhatsApp",
@@ -193,7 +193,7 @@
   "FinalCTA": {
     "badge": "Kostenlos starten",
     "heading": "Deine nächste Immobilie verdient mehr als eine Fotogalerie.",
-    "subtitle": "Mach aus deinen Immobilienfotos mit ShowHome eine professionelle Videotour.",
+    "subtitle": "Mach aus deinen Immobilienfotos mit Homemotion eine professionelle Videotour.",
     "cta": "Erstes Video erstellen",
     "secondary": "Vertrieb kontaktieren",
     "disclaimer": "Erstes Video gratis · Keine Kreditkarte nötig · Jederzeit kündbar"
@@ -210,7 +210,7 @@
     "imprint": "Impressum",
     "description": "Professionelle Immobilien-Videotouren, erstellt aus den Fotos, die du schon hast.",
     "createVideo": "Video erstellen",
-    "copyright": "© {year} ShowHome. Alle Rechte vorbehalten."
+    "copyright": "© {year} Homemotion. Alle Rechte vorbehalten."
   },
   "Audiences": {
     "heading": "Für alle, die Immobilien besser präsentieren wollen.",

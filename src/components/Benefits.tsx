@@ -69,10 +69,10 @@ export function Benefits() {
                 </svg>
                 <div>
                   <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-clay">
-                    {t("labelShowHome")}
+                    {t("labelHomemotion")}
                   </p>
                   <p className="mt-1 text-[clamp(1.6rem,3vw,2.1rem)] font-semibold tracking-[-0.04em] text-ink">
-                    {t("timeShowHome")}
+                    {t("timeHomemotion")}
                   </p>
                 </div>
               </div>

@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     const { imageUrl } = body;
     try {
       const imgRes = await fetch(imageUrl, {
-        headers: { 'User-Agent': 'ShowHome-Import/1.0' },
+        headers: { 'User-Agent': 'Homemotion-Import/1.0' },
         signal: AbortSignal.timeout(15000),
       });
       if (!imgRes.ok) {

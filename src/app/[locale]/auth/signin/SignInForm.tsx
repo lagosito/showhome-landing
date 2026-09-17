@@ -75,7 +75,7 @@ export default function SignInForm() {
 
   return (
     <div className="w-full max-w-md">
-      <h1 className="text-center text-[28px] font-semibold tracking-[-0.03em]">Bei ShowHome anmelden</h1>
+      <h1 className="text-center text-[28px] font-semibold tracking-[-0.03em]">Bei Homemotion anmelden</h1>
       <p className="mt-3 text-center text-[15px] text-ink-3">
         Oder{' '}
         <button onClick={() => setMode(mode === 'password' ? 'magic' : 'password')} className="font-medium text-clay hover:underline">

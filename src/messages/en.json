@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "ShowHome — Turn real estate photos into professional video tours",
-    "description": "ShowHome transforms simple real estate photos into professional video tours. Upload photos and get a high-quality real estate video in minutes."
+    "title": "Homemotion — Turn real estate photos into professional video tours",
+    "description": "Homemotion transforms simple real estate photos into professional video tours. Upload photos and get a high-quality real estate video in minutes."
   },
   "Nav": {
     "product": "Product",
@@ -14,7 +14,7 @@
     "myVideos": "My Videos",
     "signOut": "Sign out",
     "createVideo": "Create video",
-    "homeLabel": "ShowHome homepage",
+    "homeLabel": "Homemotion homepage",
     "menuClose": "Close menu",
     "menuOpen": "Open menu",
     "mainNav": "Main navigation"
@@ -51,7 +51,7 @@
     "videoLabel": "Wohnung Verde · Guided Tour",
     "step1Title": "Upload photos",
     "step1Body": "Select your property photos.",
-    "step2Title": "ShowHome creates the tour",
+    "step2Title": "Homemotion creates the tour",
     "step2Body": "Our AI identifies the rooms and creates a natural walkthrough of the property.",
     "step3Title": "Share video",
     "step3Body": "Download your video and use it on property portals, social media and websites, or send it directly to prospects."
@@ -59,7 +59,7 @@
   "BeforeAfter": {
     "eyebrow": "Before / After",
     "heading1": "Your photos already tell the story.",
-    "heading2": "ShowHome makes it visible.",
+    "heading2": "Homemotion makes it visible.",
     "folderLabel": "From a photo folder …",
     "folderCount": "24 items",
     "resultLabel": "… becomes a professional property tour.",
@@ -70,19 +70,19 @@
     "tag4": "Ready to publish"
   },
   "Benefits": {
-    "eyebrow": "Why ShowHome",
+    "eyebrow": "Why Homemotion",
     "heading": "Better listings, without production effort.",
     "subheading": "Everything a property needs to be truly noticed: created from photos you already have.",
     "card1Title": "Save hours",
     "card1Body": "No shooting, no editing, no complicated video software.",
     "labelClassic": "Traditional",
-    "labelShowHome": "ShowHome",
+    "labelHomemotion": "Homemotion",
     "timeClassic": "6–8 hrs",
-    "timeShowHome": "3 min",
+    "timeHomemotion": "3 min",
     "bar1": "Appointments & travel",
     "bar2": "On-site shooting",
     "bar3": "Editing & export",
-    "bar4": "ShowHome rendering",
+    "bar4": "Homemotion rendering",
     "card2Title": "Look professional",
     "card2Body": "Turn simple property photos into high-quality video tours.",
     "badge1": "Color grading",
@@ -134,7 +134,7 @@
   "UseCases": {
     "eyebrow": "Use cases",
     "heading": "One property video. Everywhere you list.",
-    "subheading": "ShowHome exports every format you need: here's how the same tour works on the portal, in the inbox, and in the feed.",
+    "subheading": "Homemotion exports every format you need: here's how the same tour works on the portal, in the inbox, and in the feed.",
     "channel1": "Property portals",
     "channel2": "Website listings",
     "channel3": "WhatsApp",
@@ -193,7 +193,7 @@
   "FinalCTA": {
     "badge": "Start for free",
     "heading": "Your next property deserves more than a photo gallery.",
-    "subtitle": "Turn your property photos into a professional video tour with ShowHome.",
+    "subtitle": "Turn your property photos into a professional video tour with Homemotion.",
     "cta": "Create first video",
     "secondary": "Contact sales",
     "disclaimer": "First video free · No credit card required · Cancel anytime"
@@ -210,7 +210,7 @@
     "imprint": "Imprint",
     "description": "Professional property video tours, created from the photos you already have.",
     "createVideo": "Create video",
-    "copyright": "© {year} ShowHome. All rights reserved."
+    "copyright": "© {year} Homemotion. All rights reserved."
   },
   "Audiences": {
     "heading": "For everyone who wants to present properties better.",

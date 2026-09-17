@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
       if (userData?.email) {
         // TODO: integrate email sending (Resend, Brevo, etc.)
-        console.log(`[ShowHome] Would send notification to ${userData.email} for job ${jobId} — status: ${status}`);
+        console.log(`[Homemotion] Would send notification to ${userData.email} for job ${jobId} — status: ${status}`);
       }
     }
   }

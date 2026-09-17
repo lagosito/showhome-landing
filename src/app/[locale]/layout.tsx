@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const messages = await getMessages();
   const meta = messages.Metadata as { title: string; description: string };
   return {
-    title: meta?.title ?? "ShowHome",
+    title: meta?.title ?? "Homemotion",
     description: meta?.description ?? "",
   };
 }
