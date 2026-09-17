@@ -17,8 +17,8 @@ export async function proxy(request: NextRequest) {
   // Otherwise: run Supabase session management
   const {user, response} = await updateSession(request);
 
-  // Protect /create/* routes (now under /[locale]/create/*)
-  if (request.nextUrl.pathname.match(/^\/(de|en)\/create/)) {
+  // Protect /create/* and /account routes (now under /[locale]/…)
+  if (request.nextUrl.pathname.match(/^\/(de|en)\/(create|account)/)) {
     if (!user) {
       const url = request.nextUrl.clone();
       url.pathname = '/auth/signin';
