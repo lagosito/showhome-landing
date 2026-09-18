@@ -48,22 +48,28 @@ export default function RoomsPage() {
   const [dragSection, setDragSection] = useState<number | null>(null);
   const [editingRoom, setEditingRoom] = useState<string | null>(null);
   const [presenterConsent, setPresenterConsent] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   const handleAddPhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
+    setUploading(true);
+    setUploadError('');
 
     const stored = sessionStorage.getItem('showhome-photos');
     const existing: Photo[] = stored ? JSON.parse(stored) : [];
+    let added = 0;
 
-    const newPhotos: Photo[] = [];
     for (const file of Array.from(files)) {
       try {
         const arrayBuffer = await file.arrayBuffer();
-        const base64Data = btoa(
-          new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
-        );
+        const bytes = new Uint8Array(arrayBuffer);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        const base64Data = btoa(binary);
 
         const res = await fetch('/api/upload/presign', {
           method: 'POST',
@@ -74,27 +80,35 @@ export default function RoomsPage() {
             contentType: file.type || 'image/jpeg',
           }),
         });
-        if (res.ok) {
-          const { publicUrl } = await res.json();
-          newPhotos.push({
-            id: `photo-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-            url: publicUrl,
-            filename: file.name,
-            detectedRoom: 'Unsorted',
-            room: 'Unsorted',
-            description: '',
-            order: existing.length + newPhotos.length + 1,
-          });
+
+        const data = await res.json();
+        if (!res.ok) {
+          setUploadError(data.error || 'Upload failed');
+          continue;
         }
-      } catch { /* skip failed uploads */ }
+
+        const newPhoto: Photo = {
+          id: `photo-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          url: data.publicUrl,
+          filename: file.name,
+          detectedRoom: 'Unsorted',
+          room: 'Unsorted',
+          description: '',
+          order: existing.length + added + 1,
+        };
+
+        existing.push(newPhoto);
+        added++;
+      } catch (err: any) {
+        setUploadError(err.message || 'Upload failed');
+      }
     }
 
-    if (newPhotos.length > 0) {
-      const updated = [...existing, ...newPhotos];
-      sessionStorage.setItem('showhome-photos', JSON.stringify(updated));
-      // Reload to re-detect rooms for all photos including new ones
+    if (added > 0) {
+      sessionStorage.setItem('showhome-photos', JSON.stringify(existing));
       window.location.reload();
     }
+    setUploading(false);
     e.target.value = '';
   };
 
@@ -321,21 +335,28 @@ export default function RoomsPage() {
             {!detecting && (
               <>
                 {/* Add more photos button */}
-                <div className="mt-6 flex justify-center">
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-dashed border-line-2 bg-white/70 px-5 py-2.5 text-[13px] font-medium text-ink-2 transition hover:border-ink-2 hover:bg-white">
-                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
-                      <path d="M10 4v12M4 10h12" strokeLinecap="round" />
-                    </svg>
-                    Mehr Fotos hinzufügen
+                <div className="mt-6 flex flex-col items-center gap-2">
+                  <label className={`inline-flex items-center gap-2 rounded-full border border-dashed border-line-2 bg-white/70 px-5 py-2.5 text-[13px] font-medium text-ink-2 transition hover:border-ink-2 hover:bg-white ${uploading ? 'pointer-events-none opacity-50' : 'cursor-pointer'}`}>
+                    {uploading ? (
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-line border-t-clay" />
+                    ) : (
+                      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
+                        <path d="M10 4v12M4 10h12" strokeLinecap="round" />
+                      </svg>
+                    )}
+                    {uploading ? 'Wird hochgeladen…' : 'Mehr Fotos hinzufügen'}
                     <input
-                      ref={fileInputRef}
                       type="file"
                       accept="image/jpeg,image/png,image/heic"
                       multiple
                       className="hidden"
+                      disabled={uploading}
                       onChange={handleAddPhotos}
                     />
                   </label>
+                  {uploadError && (
+                    <p className="text-[13px] text-red-500">{uploadError}</p>
+                  )}
                 </div>
 
                 {/* Unsorted warning */}
