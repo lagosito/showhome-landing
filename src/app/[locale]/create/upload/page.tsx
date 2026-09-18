@@ -47,7 +47,7 @@ export default function UploadPage() {
   const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const MAX_FILES = 12;
+  const MAX_FILES = 25;
   const MIN_FILES = 3;
   const MAX_SIZE = 10 * 1024 * 1024;
 
@@ -141,7 +141,7 @@ export default function UploadPage() {
                 Lade deine Immobilienfotos hoch
               </h1>
               <p className="mt-4 text-[15px] text-ink-3">
-                Zwischen 3 und 12 Fotos. Lade einfach alles auf einmal hoch, wir sortieren die Räume automatisch.
+                Zwischen 3 und {MAX_FILES} Fotos. Lade einfach alles auf einmal hoch, wir sortieren die Räume automatisch.
                 {' '}
                 <button
                   onClick={() => router.push('/create/import')}
