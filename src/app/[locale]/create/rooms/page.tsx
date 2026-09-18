@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
@@ -48,6 +48,56 @@ export default function RoomsPage() {
   const [dragSection, setDragSection] = useState<number | null>(null);
   const [editingRoom, setEditingRoom] = useState<string | null>(null);
   const [presenterConsent, setPresenterConsent] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleAddPhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const stored = sessionStorage.getItem('showhome-photos');
+    const existing: Photo[] = stored ? JSON.parse(stored) : [];
+
+    const newPhotos: Photo[] = [];
+    for (const file of Array.from(files)) {
+      // Upload to Supabase storage
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const res = await fetch('/api/upload/presign', {
+          method: 'POST',
+          body: formData,
+        });
+        if (res.ok) {
+          const { url, key } = await res.json();
+          newPhotos.push({
+            id: key || `photo-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            url,
+            filename: file.name,
+            detectedRoom: 'Unsorted',
+            room: 'Unsorted',
+            description: '',
+            order: existing.length + newPhotos.length + 1,
+          });
+        }
+      } catch { /* skip failed uploads */ }
+    }
+
+    if (newPhotos.length > 0) {
+      const updated = [...existing, ...newPhotos];
+      sessionStorage.setItem('showhome-photos', JSON.stringify(updated));
+      // Re-run detection for new photos
+      setSections(prev => {
+        const unsorted = prev.find(s => s.room === 'Unsorted');
+        if (unsorted) {
+          return prev.map(s => s.room === 'Unsorted' ? { ...s, photos: [...s.photos, ...newPhotos] } : s);
+        }
+        return [...prev, { room: 'Unsorted', photos: newPhotos }];
+      });
+      detectRooms(newPhotos);
+    }
+    // Reset input
+    e.target.value = '';
+  };
 
   const presenterPhotos = sections
     .filter(s => s.room === 'Presenter')
@@ -271,6 +321,24 @@ export default function RoomsPage() {
 
             {!detecting && (
               <>
+                {/* Add more photos button */}
+                <div className="mt-6 flex justify-center">
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-dashed border-line-2 bg-white/70 px-5 py-2.5 text-[13px] font-medium text-ink-2 transition hover:border-ink-2 hover:bg-white">
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <path d="M10 4v12M4 10h12" strokeLinecap="round" />
+                    </svg>
+                    Mehr Fotos hinzufügen
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/heic"
+                      multiple
+                      className="hidden"
+                      onChange={handleAddPhotos}
+                    />
+                  </label>
+                </div>
+
                 {/* Unsorted warning */}
                 {hasUnsorted && (
                   <div className="mt-8 rounded-2xl border border-clay/30 bg-clay-tint/30 p-4 text-center">
