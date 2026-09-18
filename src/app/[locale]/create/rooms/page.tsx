@@ -51,6 +51,26 @@ export default function RoomsPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
 
+  // Resize image to max 1200px to avoid "Request Entity Too Large"
+  const resizeImage = (file: File): Promise<Blob> => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 1200;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Canvas failed')), 'image/jpeg', 0.85);
+    };
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = URL.createObjectURL(file);
+  });
+
   const handleAddPhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -63,7 +83,9 @@ export default function RoomsPage() {
 
     for (const file of Array.from(files)) {
       try {
-        const arrayBuffer = await file.arrayBuffer();
+        // Resize before upload
+        const resized = await resizeImage(file);
+        const arrayBuffer = await resized.arrayBuffer();
         const bytes = new Uint8Array(arrayBuffer);
         let binary = '';
         for (let i = 0; i < bytes.byteLength; i++) {
@@ -77,7 +99,7 @@ export default function RoomsPage() {
           body: JSON.stringify({
             filename: file.name,
             base64Data,
-            contentType: file.type || 'image/jpeg',
+            contentType: 'image/jpeg',
           }),
         });
 
