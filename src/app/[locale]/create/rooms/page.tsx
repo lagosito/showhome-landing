@@ -92,13 +92,8 @@ export default function RoomsPage() {
     if (newPhotos.length > 0) {
       const updated = [...existing, ...newPhotos];
       sessionStorage.setItem('showhome-photos', JSON.stringify(updated));
-      setSections(prev => {
-        const unsorted = prev.find(s => s.room === 'Unsorted');
-        if (unsorted) {
-          return prev.map(s => s.room === 'Unsorted' ? { ...s, photos: [...s.photos, ...newPhotos] } : s);
-        }
-        return [...prev, { room: 'Unsorted', photos: newPhotos }];
-      });
+      // Reload to re-detect rooms for all photos including new ones
+      window.location.reload();
     }
     e.target.value = '';
   };
