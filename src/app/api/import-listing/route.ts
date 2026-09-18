@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getParserForUrl } from '@/lib/portals';
 
 const USER_AGENT = 'Homemotion-Import/1.0 (https://homeshow-landing.vercel.app)';
-const MAX_PHOTOS = 12;
+const MAX_PHOTOS = 25;
 const MIN_PHOTOS = 3;
 
 // Simple in-memory rate limit: 10 fetches per user per hour
