@@ -99,7 +99,6 @@ export default function RoomsPage() {
         }
         return [...prev, { room: 'Unsorted', photos: newPhotos }];
       });
-      detectRooms(newPhotos);
     }
     e.target.value = '';
   };
