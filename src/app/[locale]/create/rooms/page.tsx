@@ -59,22 +59,19 @@ export default function RoomsPage() {
 
     const newPhotos: Photo[] = [];
     for (const file of Array.from(files)) {
-      // Convert to base64
-      const reader = new FileReader();
-      const base64 = await new Promise<string>((resolve) => {
-        reader.onload = () => resolve(reader.result as string);
-        reader.readAsDataURL(file);
-      });
-      const base64Data = base64.split(',')[1];
-
       try {
+        const arrayBuffer = await file.arrayBuffer();
+        const base64Data = btoa(
+          new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
+
         const res = await fetch('/api/upload/presign', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             filename: file.name,
             base64Data,
-            contentType: file.type,
+            contentType: file.type || 'image/jpeg',
           }),
         });
         if (res.ok) {
