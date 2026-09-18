@@ -59,19 +59,29 @@ export default function RoomsPage() {
 
     const newPhotos: Photo[] = [];
     for (const file of Array.from(files)) {
-      // Upload to Supabase storage
-      const formData = new FormData();
-      formData.append('file', file);
+      // Convert to base64
+      const reader = new FileReader();
+      const base64 = await new Promise<string>((resolve) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+      const base64Data = base64.split(',')[1];
+
       try {
         const res = await fetch('/api/upload/presign', {
           method: 'POST',
-          body: formData,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: file.name,
+            base64Data,
+            contentType: file.type,
+          }),
         });
         if (res.ok) {
-          const { url, key } = await res.json();
+          const { publicUrl } = await res.json();
           newPhotos.push({
-            id: key || `photo-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-            url,
+            id: `photo-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            url: publicUrl,
             filename: file.name,
             detectedRoom: 'Unsorted',
             room: 'Unsorted',
@@ -85,7 +95,6 @@ export default function RoomsPage() {
     if (newPhotos.length > 0) {
       const updated = [...existing, ...newPhotos];
       sessionStorage.setItem('showhome-photos', JSON.stringify(updated));
-      // Re-run detection for new photos
       setSections(prev => {
         const unsorted = prev.find(s => s.room === 'Unsorted');
         if (unsorted) {
@@ -95,7 +104,6 @@ export default function RoomsPage() {
       });
       detectRooms(newPhotos);
     }
-    // Reset input
     e.target.value = '';
   };
 
