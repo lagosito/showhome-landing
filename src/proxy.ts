@@ -6,18 +6,24 @@ import {updateSession} from '@/lib/supabase/middleware';
 const handleI18nRouting = createMiddleware(routing);
 
 export async function proxy(request: NextRequest) {
-  // First: run next-intl locale routing (may redirect/rewrite)
-  const i18nResponse = handleI18nRouting(request);
+  const isApi = request.nextUrl.pathname.startsWith('/api');
 
-  // If next-intl returned a redirect or rewrite, respect it
+  // API routes: only refresh Supabase session, skip i18n routing
+  if (isApi) {
+    const {response} = await updateSession(request);
+    return response;
+  }
+
+  // Non-API routes: run next-intl locale routing first
+  const i18nResponse = handleI18nRouting(request);
   if (i18nResponse.status === 307 || i18nResponse.status === 308) {
     return i18nResponse;
   }
 
-  // Otherwise: run Supabase session management
+  // Then run Supabase session management
   const {user, response} = await updateSession(request);
 
-  // Protect /create/* and /account routes (now under /[locale]/…)
+  // Protect /create/* and /account routes
   if (request.nextUrl.pathname.match(/^\/(de|en)\/(create|account)/)) {
     if (!user) {
       const url = request.nextUrl.clone();
@@ -32,6 +38,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|trpc|_next|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|webm)$).*)'
+    '/((?!_next|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|webm)$).*)'
   ]
 };
