@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Container, Reveal } from "./primitives";
 import { demoImg, uploadShots } from "../data/media";
@@ -47,6 +48,15 @@ function PhotoFolder() {
 
 export function BeforeAfter() {
   const t = useTranslations("BeforeAfter");
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+
+  const toggleSound = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+  };
 
   return (
     <section className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
@@ -106,6 +116,7 @@ export function BeforeAfter() {
             <div className="flex min-h-0 flex-[1_1_auto] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#141518] shadow-[0_20px_60px_-30px_rgba(0,0,0,.8)]">
               <div className="relative aspect-video min-h-0 lg:aspect-auto lg:flex-1">
                 <video
+                  ref={videoRef}
                   autoPlay
                   loop
                   muted
@@ -114,6 +125,24 @@ export function BeforeAfter() {
                 >
                   <source src="/demo-video.mp4" type="video/mp4" />
                 </video>
+                <button
+                  type="button"
+                  onClick={toggleSound}
+                  aria-label={muted ? t("soundOn") : t("soundOff")}
+                  className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-black/50 text-white backdrop-blur transition hover:bg-black/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  {muted ? (
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M4 8v4h3l4 3V5L7 8H4Z" />
+                      <path d="m14 8 4 4m0-4-4 4" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M4 8v4h3l4 3V5L7 8H4Z" />
+                      <path d="M14 7.5a3.5 3.5 0 0 1 0 5M16 5.5a6.5 6.5 0 0 1 0 9" />
+                    </svg>
+                  )}
+                </button>
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                   <div className="flex items-center gap-2">
                     <span className="grid h-7 w-7 place-items-center rounded-full bg-white/90 text-ink">
