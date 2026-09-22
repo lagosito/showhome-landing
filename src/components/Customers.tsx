@@ -51,69 +51,43 @@ export function Customers() {
   ];
 
   return (
-    <section className="border-y border-line bg-white">
+    <section className="border-y border-line bg-white py-16 sm:py-20 lg:py-24">
       <Container>
-        {blocks.map((b, i) => {
-          const flip = i % 2 === 1;
-          return (
-            <div
-              key={b.id}
-              id={b.id}
-              className={cn(
-                "grid scroll-mt-24 items-center gap-10 py-16 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:py-24",
-                i > 0 && "border-t border-line",
-              )}
-            >
-              <Reveal className={cn(flip && "lg:order-2")}>
-                <div className="relative">
-                  <div className="overflow-hidden rounded-3xl border border-line bg-paper-2">
-                    <img
-                      src={px(b.img, 1000, 750)}
-                      alt={b.alt}
-                      loading="lazy"
-                      decoding="async"
-                      className="aspect-[4/3] w-full object-cover"
-                    />
-                  </div>
-                  <div
-                    className={cn(
-                      "absolute -bottom-5 hidden w-[210px] rounded-2xl border border-line bg-white/95 p-4 shadow-[0_20px_44px_-26px_rgba(13,14,16,.45)] backdrop-blur sm:block",
-                      flip ? "-right-5" : "-left-5",
-                    )}
-                  >
-                    <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-clay">
-                      {b.statLabel}
-                    </p>
-                    <p className="mt-1.5 text-[22px] font-semibold tracking-[-0.04em] text-ink">
-                      {b.statValue}
-                    </p>
-                    <p className="mt-1 text-[11.5px] text-ink-3">
-                      {b.statDesc}
-                    </p>
-                  </div>
+        <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
+          {blocks.map((b, i) => (
+            <Reveal key={b.id} delay={i * 90} className="h-full">
+              <article
+                id={b.id}
+                className={cn(
+                  "group flex h-full scroll-mt-24 flex-col overflow-hidden rounded-3xl border border-line bg-white transition-colors duration-300",
+                )}
+              >
+                <div className="overflow-hidden border-b border-line bg-paper-2">
+                  <img
+                    src={px(b.img, 800, 600)}
+                    alt={b.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
                 </div>
-              </Reveal>
 
-              <div className={cn(flip && "lg:order-1")}>
-                <Reveal delay={80}>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-paper px-3 py-1 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-ink-2">
+                <div className="flex flex-1 flex-col p-6 sm:p-7">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-full border border-line-2 bg-paper px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-2">
                     {b.eyebrow}
                   </span>
-                </Reveal>
-                <Reveal delay={130}>
-                  <h3 className="mt-5 text-balance text-[clamp(1.85rem,3.6vw,2.7rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-ink">
+
+                  <h3 className="mt-4 text-balance text-[21px] font-semibold leading-[1.12] tracking-[-0.035em] text-ink sm:text-[23px]">
                     {b.title}
                   </h3>
-                </Reveal>
-                <Reveal delay={180}>
-                  <p className="mt-5 max-w-[46ch] text-pretty text-[16px] leading-relaxed text-ink-3">
+
+                  <p className="mt-3 text-pretty text-[14.5px] leading-relaxed text-ink-3">
                     {b.body}
                   </p>
-                </Reveal>
-                <Reveal delay={230}>
-                  <ul className="mt-7 space-y-3">
+
+                  <ul className="mt-5 space-y-2.5">
                     {b.bullets.map((x) => (
-                      <li key={x} className="flex items-start gap-3">
+                      <li key={x} className="flex items-start gap-2.5">
                         <span className="mt-[3px] grid h-4 w-4 shrink-0 place-items-center rounded-full bg-clay-tint">
                           <svg viewBox="0 0 12 12" className="h-2.5 w-2.5 text-clay" aria-hidden="true">
                             <path
@@ -126,27 +100,36 @@ export function Customers() {
                             />
                           </svg>
                         </span>
-                        <span className="text-[14.5px] text-ink-2">{x}</span>
+                        <span className="text-[14px] leading-snug text-ink-2">{x}</span>
                       </li>
                     ))}
                   </ul>
-                </Reveal>
-                <Reveal delay={280}>
-                  <div className="mt-9">
+
+                  <div className="mt-6 rounded-2xl border border-line bg-paper-2 p-4">
+                    <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-clay">
+                      {b.statLabel}
+                    </p>
+                    <p className="mt-1 text-[19px] font-semibold tracking-[-0.04em] text-ink">
+                      {b.statValue}
+                    </p>
+                    <p className="mt-0.5 text-[11.5px] text-ink-3">{b.statDesc}</p>
+                  </div>
+
+                  <div className="mt-6 pt-1">
                     <Button
                       href="#cta"
-                      size="lg"
+                      className="w-full"
                       variant={i === 1 ? "primary" : "secondary"}
                       icon={<ArrowIcon />}
                     >
                       {b.cta}
                     </Button>
                   </div>
-                </Reveal>
-              </div>
-            </div>
-          );
-        })}
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </Container>
     </section>
   );
