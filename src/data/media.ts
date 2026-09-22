@@ -6,7 +6,7 @@ export const px = (id: number, w = 1200, h = 800) =>
 export const demoImg = (file: string) => `/demo/${file}`;
 
 export type Shot = { id: number; room: string; alt: string; file?: string };
-export type LocalShot = { file: string; room: string; alt: string };
+export type LocalShot = { file: string; room: string; alt: string; pos?: string };
 
 /** The "tour" used inside the hero player — local demo images. */
 export const tourShots: LocalShot[] = [
@@ -52,7 +52,7 @@ export const uploadShots: LocalShot[] = [
   { file: "10640570-6615-4b14-bc8b-248ac5d1360e.webp", room: "Living", alt: "Bright living room" },
   { file: "b6db2443-230b-4cf4-995c-f20d49b7ee01.webp", room: "Suite", alt: "Bedroom with glass walls" },
   { file: "c86eb513-1436-4a91-8e34-75c5ee7165f0.webp", room: "Lounge", alt: "Cozy lounge with wooden details" },
-  { file: "Image 1.jpg", room: "Bedroom", alt: "Chic bedroom with accent wall" },
+  { file: "Image 1.jpg", room: "Presenter", alt: "Immobilien-Videopresenter", pos: "object-top" },
 ];
 
 export const IMG = {

@@ -8,7 +8,7 @@ function PhotoFolder() {
   const t = useTranslations("BeforeAfter");
   const files = uploadShots.slice(0, 9);
   return (
-    <div className="overflow-hidden rounded-[20px] border border-white/12 bg-[#141518] shadow-[0_40px_80px_-50px_rgba(0,0,0,.9)]">
+    <div className="h-full overflow-hidden rounded-[20px] border border-white/12 bg-[#141518] shadow-[0_40px_80px_-50px_rgba(0,0,0,.9)]">
       <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
         <span className="flex gap-1.5" aria-hidden="true">
           <span className="h-2.5 w-2.5 rounded-full bg-white/18" />
@@ -32,7 +32,7 @@ function PhotoFolder() {
                 aria-hidden="true"
                 loading="lazy"
                 decoding="async"
-                className="aspect-[4/3] w-full object-cover opacity-70 grayscale-[35%] transition duration-500 group-hover:opacity-90 group-hover:grayscale-0"
+                className={`aspect-[4/3] w-full object-cover ${f.pos ?? ""} opacity-70 grayscale-[35%] transition duration-500 group-hover:opacity-90 group-hover:grayscale-0`}
               />
             </div>
             <p className="mt-1.5 truncate font-mono text-[9.5px] text-white/35">
@@ -70,15 +70,17 @@ export function BeforeAfter() {
           </Reveal>
         </div>
 
-        <div className="mt-14 grid items-center gap-8 lg:grid-cols-[1fr_auto_1.25fr] lg:gap-6">
-          <Reveal>
+        <div className="mt-14 grid gap-8 lg:grid-cols-[1fr_auto_1.25fr] lg:gap-6">
+          <Reveal className="flex h-full flex-col">
             <p className="mb-4 text-[14px] font-medium text-white/55">
               {t("folderLabel")}
             </p>
-            <PhotoFolder />
+            <div className="flex-[1_1_auto]">
+              <PhotoFolder />
+            </div>
           </Reveal>
 
-          <Reveal delay={120} className="flex justify-center lg:px-2">
+          <Reveal delay={120} className="flex justify-center self-center lg:px-2">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.06] backdrop-blur">
               <svg
                 viewBox="0 0 20 20"
@@ -97,18 +99,18 @@ export function BeforeAfter() {
             </span>
           </Reveal>
 
-          <Reveal delay={200}>
+          <Reveal delay={200} className="flex h-full flex-col">
             <p className="mb-4 text-[14px] font-medium text-white">
               {t("resultLabel")}
             </p>
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#141518] shadow-[0_20px_60px_-30px_rgba(0,0,0,.8)]">
-              <div className="relative">
+            <div className="flex min-h-0 flex-[1_1_auto] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#141518] shadow-[0_20px_60px_-30px_rgba(0,0,0,.8)]">
+              <div className="relative aspect-video min-h-0 lg:aspect-auto lg:flex-1">
                 <video
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="w-full"
+                  className="absolute inset-0 h-full w-full object-cover"
                 >
                   <source src="/demo-video.mp4" type="video/mp4" />
                 </video>
@@ -125,21 +127,21 @@ export function BeforeAfter() {
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {[
-                t("tag1"),
-                t("tag2"),
-                t("tag3"),
-                t("tag4"),
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[12px] text-white/70"
-                >
-                  {tag}
-                </span>
-              ))}
+              <div className="flex flex-wrap gap-2 border-t border-white/10 p-3 sm:p-4">
+                {[
+                  t("tag1"),
+                  t("tag2"),
+                  t("tag3"),
+                  t("tag4"),
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[12px] text-white/70"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           </Reveal>
         </div>
