@@ -137,28 +137,43 @@ export function Benefits() {
             delay={40}
           >
             <div className="border-b border-line bg-paper-2/60 p-7">
-              <div className="rounded-2xl border border-line bg-white p-4">
-                <div className="flex items-center justify-between text-[11.5px] font-medium text-ink">
-                  <span>{t("renderStatus")}</span>
-                  <span className="font-mono text-clay">00:47</span>
-                </div>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-paper-2">
-                  <div className="h-full w-[72%] rounded-full bg-ink" />
-                </div>
-                <div className="mt-4 grid grid-cols-4 gap-1.5">
-                  {uploadShots.slice(0, 4).map((s) => (
-                    <img
-                      key={s.file}
-                      src={demoImg(s.file)}
-                      alt=""
-                      aria-hidden="true"
-                      loading="lazy"
-                      decoding="async"
-                      className="h-8 w-full rounded object-cover"
-                    />
-                  ))}
-                </div>
+              <div className="relative grid grid-cols-2 gap-2.5">
+                <figure className="relative overflow-hidden rounded-2xl border border-line">
+                  <img
+                    src={demoImg("clean-before.jpg")}
+                    alt="Wohnzimmer vor der Optimierung, mit Wäscheständer und Unordnung"
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[3/4] w-full object-cover"
+                  />
+                  <figcaption className="absolute left-2 top-2 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md">
+                    {t("beforeBadge")}
+                  </figcaption>
+                </figure>
+                <figure className="relative overflow-hidden rounded-2xl border border-line">
+                  <img
+                    src={demoImg("clean-after.jpg")}
+                    alt="Dasselbe Wohnzimmer nach der Optimierung, leer und aufgeräumt"
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[3/4] w-full object-cover"
+                  />
+                  <figcaption className="absolute left-2 top-2 rounded-full bg-clay px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md">
+                    {t("afterBadge")}
+                  </figcaption>
+                </figure>
+                <span
+                  aria-hidden="true"
+                  className="absolute left-1/2 top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-line bg-white shadow-sm"
+                >
+                  <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 text-ink" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 10h14m0 0-5-5m5 5-5 5" />
+                  </svg>
+                </span>
               </div>
+              <p className="mt-4 text-[11.5px] font-medium text-ink-3">
+                {t("cleanCaption")}
+              </p>
             </div>
           </Card>
 
