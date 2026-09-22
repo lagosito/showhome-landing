@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Container, Reveal } from "./primitives";
 import { demoImg, uploadShots } from "../data/media";
@@ -50,12 +50,32 @@ export function BeforeAfter() {
   const t = useTranslations("BeforeAfter");
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
+  const [playing, setPlaying] = useState(true);
+
+  // Sync the play/pause icon with the real element state after mount
+  // (autoplay can be delayed or blocked by the browser).
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v) setPlaying(!v.paused);
+  }, []);
 
   const toggleSound = () => {
     const v = videoRef.current;
     if (!v) return;
     v.muted = !v.muted;
     setMuted(v.muted);
+  };
+
+  const togglePlay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      void v.play();
+      setPlaying(true);
+    } else {
+      v.pause();
+      setPlaying(false);
+    }
   };
 
   return (
@@ -121,6 +141,8 @@ export function BeforeAfter() {
                   loop
                   muted
                   playsInline
+                  onPlay={() => setPlaying(true)}
+                  onPause={() => setPlaying(false)}
                   className="absolute inset-0 h-full w-full object-cover"
                 >
                   <source src="/demo-video.mp4" type="video/mp4" />
@@ -145,11 +167,23 @@ export function BeforeAfter() {
                 </button>
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                   <div className="flex items-center gap-2">
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-white/90 text-ink">
-                      <svg viewBox="0 0 16 16" className="ml-0.5 h-3 w-3" aria-hidden="true">
-                        <path d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9a.6.6 0 0 0-.92.5Z" fill="currentColor" />
-                      </svg>
-                    </span>
+                    <button
+                      type="button"
+                      onClick={togglePlay}
+                      aria-label={playing ? t("pauseLabel") : t("playLabel")}
+                      className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/90 text-ink transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    >
+                      {playing ? (
+                        <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden="true">
+                          <rect x="4" y="3" width="2.6" height="10" rx="0.8" fill="currentColor" />
+                          <rect x="9.4" y="3" width="2.6" height="10" rx="0.8" fill="currentColor" />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 16 16" className="ml-0.5 h-3 w-3" aria-hidden="true">
+                          <path d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9a.6.6 0 0 0-.92.5Z" fill="currentColor" />
+                        </svg>
+                      )}
+                    </button>
                     <span className="text-[11.5px] font-medium text-white/90">
                       {t("videoLabel")}
                     </span>
