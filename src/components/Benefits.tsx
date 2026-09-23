@@ -11,18 +11,44 @@ function Card({
   className,
   children,
   delay = 0,
+  thumbs,
+  thumbsLabel,
 }: {
   title: string;
   body: string;
   className?: string;
   children?: React.ReactNode;
   delay?: number;
+  thumbs?: string[];
+  thumbsLabel?: string;
 }) {
   return (
     <Reveal delay={delay} className={cn("h-full", className)}>
       <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_2px_4px_rgba(13,14,16,.03),0_30px_60px_-36px_rgba(13,14,16,.45)]">
         {children}
         <div className="mt-auto p-6 sm:p-7">
+          {thumbs && (
+            <div className="mb-5">
+              {thumbsLabel && (
+                <p className="mb-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-ink-3">
+                  {thumbsLabel}
+                </p>
+              )}
+              <div className="flex gap-2">
+                {thumbs.map((f) => (
+                  <img
+                    key={f}
+                    src={demoImg(f)}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[3/2] w-full rounded-lg border border-line object-cover"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <h3 className="text-[19px] font-semibold tracking-[-0.03em] text-ink sm:text-[21px]">
             {title}
           </h3>
@@ -54,7 +80,7 @@ export function Benefits() {
             body={t("card1Body")}
             className="md:col-span-3"
           >
-            <div className="relative overflow-hidden border-b border-line bg-paper-2/60 p-7">
+            <div className="relative flex-1 overflow-hidden border-b border-line bg-paper-2/60 p-7 flex flex-col justify-center">
               <div className="flex items-end gap-8">
                 <div>
                   <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">
@@ -108,15 +134,20 @@ export function Benefits() {
             body={t("card2Body")}
             className="md:col-span-3"
             delay={80}
+            thumbs={["source-makler.jpg", "source-haus.jpg", "source-esszimmer.jpg"]}
+            thumbsLabel={t("card2ThumbsLabel")}
           >
-            <div className="relative overflow-hidden border-b border-line">
-              <img
-                src={px(IMG.beforeAfter, 900, 560)}
-                alt="Filmisch inszeniertes Wohnzimmer"
-                loading="lazy"
-                decoding="async"
-                className="aspect-[16/10] w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
-              />
+            <div className="relative overflow-hidden border-b border-line bg-ink">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                aria-label="Fertige Immobilientour, erstellt aus drei Fotos"
+                className="aspect-[16/10] w-full object-contain"
+              >
+                <source src={demoImg("professionell-tour.mp4")} type="video/mp4" />
+              </video>
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
               <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 p-4">
                 <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md ring-1 ring-white/20">
