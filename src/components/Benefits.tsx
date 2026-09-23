@@ -128,14 +128,21 @@ export function Benefits() {
               >
                 <source src={demoImg("professionell-tour.mp4")} type="video/mp4" />
               </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 p-4">
-                <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md ring-1 ring-white/20">
-                  {t("badge1")}
-                </span>
-                <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md ring-1 ring-white/20">
-                  {t("badge2")}
-                </span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3">
+                <div className="flex gap-2">
+                  {["source-makler.jpg", "source-haus.jpg", "source-esszimmer.jpg"].map((f) => (
+                    <img
+                      key={f}
+                      src={demoImg(f)}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      decoding="async"
+                      className="h-14 w-auto rounded-lg border border-white/40 object-cover shadow-[0_8px_24px_-12px_rgba(0,0,0,.8)] sm:h-16"
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </Card>
