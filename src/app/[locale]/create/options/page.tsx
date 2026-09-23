@@ -8,7 +8,7 @@ import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
 import {
-  FORMATS, DURATIONS, QUALITY_LABELS,
+  MODEL_CONFIG, FORMATS, DURATIONS, QUALITY_LABELS,
   resolutionFor, costEstimate, selectReferencePhotos,
   type PropertyType, type Format, type Lang, type ModelId, type Quality, type Duration,
 } from '@/lib/v3/config';
@@ -131,8 +131,9 @@ export default function OptionsPage() {
               ])}
 
               {group('Modell', model, setModel, [
-                { id: 'seedance-2.5' as ModelId, text: 'Seedance 2.5' },
-                { id: 'minimax-h3' as ModelId, text: 'MiniMax H3' },
+                { id: 'seedance-2.5' as ModelId, text: 'Seedance 2.5 (fal)', sub: '720p / 1080p' },
+                { id: 'seedance-byteplus' as ModelId, text: 'Seedance 2.5 (BytePlus)', sub: '480p / 720p · −51%' },
+                { id: 'minimax-h3' as ModelId, text: 'MiniMax H3', sub: '768P / 2K' },
               ])}
 
               {group('Dauer', duration, setDuration, DURATIONS.map(d => ({ id: d, text: `${d} s` })))}
@@ -147,7 +148,7 @@ export default function OptionsPage() {
               <div className="rounded-2xl border border-line bg-paper-2/50 p-5">
                 <p className="text-[13px] font-semibold text-ink">Zusammenfassung</p>
                 <div className="mt-3 space-y-2 text-[13px] text-ink-2">
-                  <p>Modell: <strong>{model === 'seedance-2.5' ? 'Seedance 2.5' : 'MiniMax H3'}</strong> · Auflösung: <strong>{resolution}</strong> · Dauer: <strong>{duration} s</strong></p>
+                  <p>Modell: <strong>{MODEL_CONFIG[model].label}</strong> · Auflösung: <strong>{resolution}</strong> · Dauer: <strong>{duration} s</strong></p>
                   <p>Format: <strong>{FORMATS.find(f => f.id === format)?.label}</strong> · Sprache: <strong>{language.toUpperCase()}</strong> · Angebot: <strong>{PROPERTY_LABELS[propertyType]}</strong></p>
                   <p>Geschätzte Kosten: <strong>≈ {cost.toFixed(2)} USD</strong></p>
                 </div>

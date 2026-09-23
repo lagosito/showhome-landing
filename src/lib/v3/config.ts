@@ -1,7 +1,8 @@
 // Homemotion v3 — model config, quality mapping and cost estimation.
 // Prices verified from fal.ai model cards (23.09.2026), see brief.
 
-export type ModelId = 'seedance-2.5' | 'minimax-h3';
+export type ModelId = 'seedance-2.5' | 'seedance-byteplus' | 'minimax-h3';
+export type Provider = 'fal' | 'byteplus';
 export type Quality = 'standard' | 'high';
 export type Format = 'walkthrough' | 'lifestyle' | 'agent';
 export type Lang = 'de' | 'en';
@@ -11,6 +12,7 @@ export type Duration = 5 | 10 | 15;
 export const MODEL_CONFIG = {
   'seedance-2.5': {
     label: 'Seedance 2.5',
+    provider: 'fal' as const,
     endpoint: 'bytedance/seedance-2.5/reference-to-video',
     resolutions: { standard: '720p', high: '1080p' } as Record<Quality, string>,
     // USD per second
@@ -19,8 +21,21 @@ export const MODEL_CONFIG = {
     maxImages: 30,
     durationType: 'string' as const,
   },
+  'seedance-byteplus': {
+    label: 'Seedance 2.5 (BytePlus)',
+    provider: 'byteplus' as const,
+    endpoint: 'dreamina-seedance-2-5-260628',
+    // Official ModelArk API: 2.5 outputs 480p/720p ONLY (no 1080p tier).
+    resolutions: { standard: '480p', high: '720p' } as Record<Quality, string>,
+    // $10.70/1M tokens → published examples: 5s@480p $0.514, 5s@720p $1.156
+    costPerSec: { standard: 0.103, high: 0.231 } as Record<Quality, number>,
+    imageNotation: 'plain' as const, // "Image 1" (role: reference_image)
+    maxImages: 30,
+    durationType: 'int' as const,
+  },
   'minimax-h3': {
     label: 'MiniMax H3',
+    provider: 'fal' as const,
     endpoint: 'minimax/h3/reference-to-video',
     resolutions: { standard: '768P', high: '2K' } as Record<Quality, string>,
     costPerSec: { standard: 0.06, high: 0.13 } as Record<Quality, number>,
@@ -75,7 +90,7 @@ export function validateParams(p: any): { ok: true; params: RenderParams } | { o
     t(p?.propertyType, ['rent', 'sale', 'new'], 'propertyType') ||
     t(p?.format, ['walkthrough', 'lifestyle', 'agent'], 'format') ||
     t(p?.language, ['de', 'en'], 'language') ||
-    t(p?.model, ['seedance-2.5', 'minimax-h3'], 'model') ||
+    t(p?.model, ['seedance-2.5', 'seedance-byteplus', 'minimax-h3'], 'model') ||
     t(Number(p?.duration), [5, 10, 15], 'duration') ||
     t(p?.quality, ['standard', 'high'], 'quality');
   if (err) return { ok: false, error: err };

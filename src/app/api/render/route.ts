@@ -6,6 +6,7 @@ import {
 import { runShotPlanner } from '@/lib/v3/shotPlanner';
 import { buildVideoPrompt } from '@/lib/v3/buildPrompt';
 import { submitFal } from '@/lib/v3/fal';
+import { submitBytePlus } from '@/lib/v3/byteplus';
 import { insertJob, updateJob } from '@/lib/v3/db';
 import { randomUUID } from 'crypto';
 
@@ -57,6 +58,25 @@ export async function POST(request: Request) {
   try {
     const plan = await runShotPlanner(params, refs);
     const prompt = buildVideoPrompt(params, plan, refs);
+
+    const provider = modelCfg.provider;
+
+    if (provider === 'byteplus') {
+      // BytePlus ModelArk (official Seedance 2.5) — Bearer auth, task polling.
+      const taskId = await submitBytePlus({
+        prompt,
+        imageUrls: refs.map(p => p.url),
+        resolution: resolutionFor(params.model, params.quality),
+        duration: params.duration,
+      });
+      await updateJob(jobId, {
+        shot_plan: plan as any,
+        prompt,
+        fal_request_id: taskId,
+        status: 'rendering',
+      } as any);
+      return NextResponse.json({ job_id: jobId });
+    }
 
     const input: Record<string, unknown> = {
       prompt,
