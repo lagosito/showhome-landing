@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { cn } from "../utils/cn";
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
-import { IMG, px } from "../data/media";
+import { demoImg } from "../data/media";
 
 export function Customers() {
   const t = useTranslations("Customers");
@@ -16,8 +16,8 @@ export function Customers() {
       body: t("ownerBody"),
       cta: t("ownerCta"),
       bullets: [t("ownerBullet1"), t("ownerBullet2"), t("ownerBullet3")],
-      img: IMG.owners,
-      alt: "Warmer, einladender Wohnbereich einer Privatwohnung",
+      img: "customers-owner.jpg",
+      alt: "Wohnzimmer mit Ausblick ins Grüne und warmem Tageslicht",
       statLabel: t("ownerStatLabel"),
       statValue: t("ownerStatValue"),
       statDesc: t("ownerStatDesc"),
@@ -29,8 +29,8 @@ export function Customers() {
       body: t("agentBody"),
       cta: t("agentCta"),
       bullets: [t("agentBullet1"), t("agentBullet2"), t("agentBullet3")],
-      img: IMG.agents,
-      alt: "Modernes Wohnungsinterieur, fotografiert für ein Inserat",
+      img: "customers-agent.jpg",
+      alt: "Immobilienmakler mit verschränkten Armen vor neutralem Hintergrund",
       statLabel: t("agentStatLabel"),
       statValue: t("agentStatValue"),
       statDesc: t("agentStatDesc"),
@@ -42,8 +42,8 @@ export function Customers() {
       body: t("companyBody"),
       cta: t("companyCta"),
       bullets: [t("companyBullet1"), t("companyBullet2"), t("companyBullet3")],
-      img: IMG.teams,
-      alt: "Minimalistische Fassade eines Wohngebäudes",
+      img: "customers-company.jpg",
+      alt: "Mehrgeschossiges Wohngebäude mit Holzfassade und Balkonen",
       statLabel: t("companyStatLabel"),
       statValue: t("companyStatValue"),
       statDesc: t("companyStatDesc"),
@@ -64,7 +64,7 @@ export function Customers() {
               >
                 <div className="overflow-hidden border-b border-line bg-paper-2">
                   <img
-                    src={px(b.img, 800, 600)}
+                    src={demoImg(b.img)}
                     alt={b.alt}
                     loading="lazy"
                     decoding="async"
