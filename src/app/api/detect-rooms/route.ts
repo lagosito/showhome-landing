@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 
-const ROOMS = ['Kitchen', 'Living Room', 'Dining Room', 'Bedroom', 'Bathroom', 'Hallway', 'Exterior', 'Other'] as const;
+const ROOMS = ['Facade', 'Kitchen', 'Living Room', 'Dining Room', 'Bedroom', 'Bathroom', 'Hallway', 'Exterior', 'Other'] as const;
 type Room = typeof ROOMS[number];
 
 const ORCAROUTER_KEY = process.env.ORCAROUTER_API_KEY;
@@ -12,7 +11,8 @@ interface RoomClassification {
 }
 
 const DESCRIPTION_PROMPT = `You are a real estate photo analyst. Return a JSON object with two fields:
-- "room": one of Kitchen, Living Room, Dining Room, Bedroom, Bathroom, Hallway, Exterior, Other
+- "room": one of Facade, Kitchen, Living Room, Dining Room, Bedroom, Bathroom, Hallway, Exterior, Other
+- "Facade" is the front of the building / main exterior shot; use "Exterior" only for gardens, balconies or other outdoor areas
 - "description": one sentence (max 20 words) describing what is physically visible — materials, finishes, light, views. No sales adjectives ("spacious", "charming", "inviting", "modern"). No counts, measurements, prices, or guesses about other rooms. If you cannot describe the photo confidently, use an empty string "".
 
 Reply with ONLY valid JSON, nothing else.`;
@@ -64,13 +64,8 @@ async function detectRoomForImage(imageUrl: string): Promise<RoomClassification>
   }
 }
 
+// v3 (internal): no login required — protected by Vercel Deployment Protection.
 export async function POST(request: Request) {
-  const sb = await createClient();
-  const { data: { user } } = await sb.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-  }
-
   const { photos } = await request.json();
   if (!photos?.length) {
     return NextResponse.json({ error: 'photos required' }, { status: 400 });

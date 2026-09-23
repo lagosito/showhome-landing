@@ -8,7 +8,7 @@ import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
 
-const WALKTHROUGH_ORDER = ['Exterior', 'Hallway', 'Living Room', 'Dining Room', 'Kitchen', 'Bedroom', 'Bathroom', 'Other'] as const;
+const WALKTHROUGH_ORDER = ['Facade', 'Exterior', 'Hallway', 'Living Room', 'Dining Room', 'Kitchen', 'Bedroom', 'Bathroom', 'Other'] as const;
 const ALL_ROOMS = [...WALKTHROUGH_ORDER, 'Presenter', 'Unsorted'] as const;
 type Room = typeof ALL_ROOMS[number];
 
@@ -28,6 +28,7 @@ interface RoomSection {
 }
 
 const ROOM_LABELS: Record<Room, string> = {
+  'Facade': 'Fassade',
   'Exterior': 'Außenbereich',
   'Hallway': 'Flur',
   'Living Room': 'Wohnzimmer',

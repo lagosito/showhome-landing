@@ -2,18 +2,34 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
+import {
+  FORMATS, DURATIONS, QUALITY_LABELS,
+  resolutionFor, costEstimate, selectReferencePhotos,
+  type PropertyType, type Format, type Lang, type ModelId, type Quality, type Duration,
+} from '@/lib/v3/config';
+
+const PROPERTY_LABELS: Record<PropertyType, string> = {
+  rent: 'Miete',
+  sale: 'Kauf',
+  new: 'Neubau',
+};
 
 export default function OptionsPage() {
   const router = useRouter();
-  const [propertyType, setPropertyType] = useState<'rent' | 'sale'>('rent');
-  const [aspectRatio, setAspectRatio] = useState<'9:16' | '16:9'>('9:16');
-  const [highlights, setHighlights] = useState('');
   const [photos, setPhotos] = useState<any[]>([]);
+  const [propertyType, setPropertyType] = useState<PropertyType>('rent');
+  const [format, setFormat] = useState<Format>('walkthrough');
+  const [language, setLanguage] = useState<Lang>('de');
+  const [model, setModel] = useState<ModelId>('seedance-2.5');
+  const [duration, setDuration] = useState<Duration>(5);
+  const [quality, setQuality] = useState<Quality>('standard');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const stored = sessionStorage.getItem('showhome-photos');
@@ -24,47 +40,63 @@ export default function OptionsPage() {
     setPhotos(JSON.parse(stored));
   }, [router]);
 
-  // Derive style from photos — Presenter photo present = presenter video
-  const derivedStyle: 'voiceover' | 'presenter' =
-    photos.some((p: any) => p.room === 'Presenter') ? 'presenter' : 'voiceover';
+  const refs = useMemo(
+    () => selectReferencePhotos(photos.map((p: any, i: number) => ({ ...p, order: p.order ?? i + 1 }))),
+    [photos],
+  );
+
+  const resolution = resolutionFor(model, quality);
+  const cost = costEstimate(model, quality, duration);
 
   const handleSubmit = async () => {
-    sessionStorage.setItem('showhome-options', JSON.stringify({
-      propertyType, aspectRatio, highlights,
-    }));
-
-    const listingRaw = sessionStorage.getItem('showhome-listing');
-    const listing = listingRaw ? JSON.parse(listingRaw) : null;
-
-    const res = await fetch('/api/jobs/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        propertyType,
-        style: derivedStyle,
-        aspectRatio,
-        avatarId: null,
-        avatarUrl: null,
-        highlights,
-        photos,
-        // Import metadata
-        source: listing?.source || 'upload',
-        sourceUrl: listing?.sourceUrl || null,
-        rightsConfirmedAt: listing?.rightsConfirmedAt || null,
-        floorPlanUrl: listing?.floorPlanUrl || null,
-        listingText: listing?.listingText || null,
-        listingFacts: listing?.listingFacts || null,
-        presenterConsentAt: listing?.presenterConsentAt || null,
-      }),
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      alert(data.error || 'Etwas ist schiefgelaufen');
-      return;
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/render', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          propertyType, format, language, model, duration, quality,
+          photos: refs.map((p: any, i: number) => ({ room: p.room, url: p.url, order: i + 1 })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Etwas ist schiefgelaufen');
+        setSubmitting(false);
+        return;
+      }
+      sessionStorage.removeItem('showhome-photos');
+      sessionStorage.removeItem('showhome-options');
+      sessionStorage.removeItem('showhome-listing');
+      router.push(`/video/${data.job_id}`);
+    } catch (e: any) {
+      setError(e.message || 'Netzwerkfehler');
+      setSubmitting(false);
     }
-    router.push(`/create/wait/${data.jobId}`);
   };
+
+  const group = <T extends string | number>(label: string, value: T, set: (v: T) => void, options: { id: T; text: string; sub?: string }[]) => (
+    <fieldset>
+      <legend className="text-[14px] font-semibold text-ink">{label}</legend>
+      <div className={`mt-3 grid gap-3 ${options.length > 2 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+        {options.map(o => (
+          <button
+            key={o.id}
+            onClick={() => set(o.id)}
+            className={`rounded-xl border px-4 py-3.5 text-left transition ${
+              value === o.id
+                ? 'border-ink bg-ink text-paper'
+                : 'border-line bg-white text-ink hover:border-ink/25'
+            }`}
+          >
+            <span className="block text-[14px] font-medium">{o.text}</span>
+            {o.sub && <span className={`mt-1 block text-[12px] ${value === o.id ? 'opacity-70' : 'text-ink-3'}`}>{o.sub}</span>}
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  );
 
   return (
     <>
@@ -74,101 +106,71 @@ export default function OptionsPage() {
           <div className="mx-auto max-w-2xl">
             <div className="text-center">
               <span className="inline-flex items-center gap-2 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
-                <span className="h-1 w-1 rounded-full bg-clay" /> Schritt 3 von 4
+                <span className="h-1 w-1 rounded-full bg-clay" /> Interner Test · v3
               </span>
               <h1 className="mt-5 text-balance text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
-                Wähle deine Videooptionen
+                Video-Optionen
               </h1>
+              <p className="mt-3 text-[14px] text-ink-3">
+                {refs.length} Referenzfoto{refs.length !== 1 ? 's' : ''} · {refs.map((p: any) => p.room).join(' → ') || '–'}
+              </p>
             </div>
 
             <div className="mt-10 space-y-8">
-              {/* Property type */}
-              <fieldset>
-                <legend className="text-[14px] font-semibold text-ink">Art des Angebots</legend>
-                <div className="mt-3 flex gap-3">
-                  {(['rent', 'sale'] as const).map(t => (
-                    <button
-                      key={t}
-                      onClick={() => setPropertyType(t)}
-                      className={`flex-1 rounded-xl border px-4 py-3.5 text-[14px] font-medium transition ${
-                        propertyType === t
-                          ? 'border-ink bg-ink text-paper'
-                          : 'border-line bg-white text-ink hover:border-ink/25'
-                      }`}
-                    >
-                      {t === 'rent' ? 'Zur Miete' : 'Zum Kauf'}
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
+              {group('Art des Angebots', propertyType, setPropertyType, [
+                { id: 'rent' as PropertyType, text: 'Miete' },
+                { id: 'sale' as PropertyType, text: 'Kauf' },
+                { id: 'new' as PropertyType, text: 'Neubau' },
+              ])}
 
-              {/* Format */}
-              <fieldset>
-                <legend className="text-[14px] font-semibold text-ink">Format</legend>
-                <div className="mt-3 flex gap-3">
-                  <button
-                    onClick={() => setAspectRatio('9:16')}
-                    className={`flex-1 rounded-xl border px-4 py-3.5 text-left transition ${
-                      aspectRatio === '9:16'
-                        ? 'border-ink bg-ink text-paper'
-                        : 'border-line bg-white text-ink hover:border-ink/25'
-                    }`}
-                  >
-                    <span className="text-[14px] font-medium">9:16 Hochformat</span>
-                    <span className="mt-1 block text-[12px] opacity-70">Instagram, TikTok, WhatsApp</span>
-                  </button>
-                  <button
-                    onClick={() => setAspectRatio('16:9')}
-                    className={`flex-1 rounded-xl border px-4 py-3.5 text-left transition ${
-                      aspectRatio === '16:9'
-                        ? 'border-ink bg-ink text-paper'
-                        : 'border-line bg-white text-ink hover:border-ink/25'
-                    }`}
-                  >
-                    <span className="text-[14px] font-medium">16:9 Querformat</span>
-                    <span className="mt-1 block text-[12px] opacity-70">Portale, E-Mail, Website</span>
-                  </button>
-                </div>
-              </fieldset>
+              {group('Format', format, setFormat, FORMATS.map(f => ({ id: f.id, text: f.label, sub: f.hint })))}
 
-              {/* Highlights */}
-              <div>
-                <label className="text-[14px] font-semibold text-ink">
-                  Was soll hervorgehoben werden? <span className="font-normal text-ink-3">(optional)</span>
-                </label>
-                <textarea
-                  value={highlights}
-                  onChange={(e) => setHighlights(e.target.value.slice(0, 200))}
-                  placeholder="z. B. frisch renoviert, Südterrasse, neue Einbauküche"
-                  rows={3}
-                  className="mt-3 w-full rounded-xl border border-line bg-white px-4 py-3 text-[14px] outline-none transition placeholder:text-ink-3 focus:border-ink focus:ring-1 focus:ring-ink"
-                />
-                <p className="mt-1 text-right text-[12px] text-ink-3">{highlights.length}/200</p>
-              </div>
+              {group('Sprache', language, setLanguage, [
+                { id: 'de' as Lang, text: 'Deutsch' },
+                { id: 'en' as Lang, text: 'English' },
+              ])}
 
-              {/* Summary */}
+              {group('Modell', model, setModel, [
+                { id: 'seedance-2.5' as ModelId, text: 'Seedance 2.5' },
+                { id: 'minimax-h3' as ModelId, text: 'MiniMax H3' },
+              ])}
+
+              {group('Dauer', duration, setDuration, DURATIONS.map(d => ({ id: d, text: `${d} s` })))}
+
+              {group('Qualität', quality, setQuality, QUALITY_LABELS.map(q => ({
+                id: q.id,
+                text: q.label,
+                sub: resolutionFor(model, q.id),
+              })))}
+
+              {/* Cost + resolution summary */}
               <div className="rounded-2xl border border-line bg-paper-2/50 p-5">
                 <p className="text-[13px] font-semibold text-ink">Zusammenfassung</p>
                 <div className="mt-3 space-y-2 text-[13px] text-ink-2">
-                  <p>Angebot: <strong>{propertyType === 'rent' ? 'Zur Miete' : 'Zum Kauf'}</strong></p>
-                  <p>Stil: <strong>{derivedStyle === 'presenter' ? 'Präsentator vor der Kamera' : 'KI-Voiceover'}</strong></p>
-                  <p>Format: <strong>{aspectRatio === '9:16' ? '9:16 Hochformat' : '16:9 Querformat'}</strong></p>
-                  <p>Fotos: <strong>{photos.length}</strong></p>
-                  {highlights && <p>Highlights: <strong>{highlights}</strong></p>}
+                  <p>Modell: <strong>{model === 'seedance-2.5' ? 'Seedance 2.5' : 'MiniMax H3'}</strong> · Auflösung: <strong>{resolution}</strong> · Dauer: <strong>{duration} s</strong></p>
+                  <p>Format: <strong>{FORMATS.find(f => f.id === format)?.label}</strong> · Sprache: <strong>{language.toUpperCase()}</strong> · Angebot: <strong>{PROPERTY_LABELS[propertyType]}</strong></p>
+                  <p>Geschätzte Kosten: <strong>≈ {cost.toFixed(2)} USD</strong></p>
                 </div>
               </div>
 
-              {/* Actions */}
+              {error && (
+                <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-[13px] text-red-700">
+                  {error}
+                </div>
+              )}
+
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={() => router.push('/create/rooms')}
-                  className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
+                  disabled={submitting}
+                  className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white disabled:opacity-40"
                 >Zurück</button>
                 <button
                   onClick={handleSubmit}
-                  className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20]"
+                  disabled={submitting || refs.length === 0}
+                  className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-40 disabled:hover:translate-y-0"
                 >
-                  Video erstellen
+                  {submitting ? 'Plan wird erstellt…' : `Video erstellen (≈ ${cost.toFixed(2)} USD)`}
                 </button>
               </div>
             </div>

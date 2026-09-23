@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server';
 import { put } from '@vercel/blob';
 import { createClient } from '@/lib/supabase/server';
 
+// v3 (internal): no login required — protected by Vercel Deployment Protection.
 export async function POST(request: Request) {
-  const sb = await createClient();
-  const { data: { user } } = await sb.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-  }
+  // Best-effort: keep user id in the path when logged in, fallback to anonymous.
+  let prefix = 'anonymous';
+  try {
+    const sb = await createClient();
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) prefix = user.id;
+  } catch { /* not logged in — fine in v3 */ }
 
   const body = await request.json();
 
@@ -19,7 +22,7 @@ export async function POST(request: Request) {
     }
     try {
       const buffer = Buffer.from(base64Data, 'base64');
-      const pathname = `showhome/uploads/${user.id}/${crypto.randomUUID()}-${filename}`;
+      const pathname = `showhome/uploads/${prefix}/${crypto.randomUUID()}-${filename}`;
       const blob = await put(pathname, buffer, {
         access: 'public',
         contentType: contentType || 'image/jpeg',
@@ -30,7 +33,7 @@ export async function POST(request: Request) {
     }
   }
 
-  // Mode 2: URL-based upload (new — for imported listings)
+  // Mode 2: URL-based upload (for imported listings)
   if (body.imageUrl) {
     const { imageUrl } = body;
     try {
@@ -45,7 +48,7 @@ export async function POST(request: Request) {
       const buffer = Buffer.from(arrayBuffer);
       const ext = imageUrl.includes('.webp') ? 'webp' : imageUrl.includes('.png') ? 'png' : 'jpg';
       const contentType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
-      const pathname = `showhome/uploads/${user.id}/${crypto.randomUUID()}.${ext}`;
+      const pathname = `showhome/uploads/${prefix}/${crypto.randomUUID()}.${ext}`;
       const blob = await put(pathname, buffer, {
         access: 'public',
         contentType,

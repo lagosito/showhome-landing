@@ -5,10 +5,12 @@ import {updateSession} from '@/lib/supabase/middleware';
 
 const handleI18nRouting = createMiddleware(routing);
 
+// v3 (internal): login gate removed — preview deployments rely on
+// Vercel Deployment Protection (ssoProtection: all_except_custom_domains).
 export async function proxy(request: NextRequest) {
   const isApi = request.nextUrl.pathname.startsWith('/api');
 
-  // API routes: only refresh Supabase session, skip i18n routing
+  // API routes: skip i18n routing
   if (isApi) {
     const {response} = await updateSession(request);
     return response;
@@ -20,19 +22,8 @@ export async function proxy(request: NextRequest) {
     return i18nResponse;
   }
 
-  // Then run Supabase session management
-  const {user, response} = await updateSession(request);
-
-  // Protect /create/* and /account routes
-  if (request.nextUrl.pathname.match(/^\/(de|en)\/(create|account)/)) {
-    if (!user) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/auth/signin';
-      url.searchParams.set('redirect', request.nextUrl.pathname);
-      return Response.redirect(url);
-    }
-  }
-
+  // Then run Supabase session management (no route protection in v3)
+  const {response} = await updateSession(request);
   return response;
 }
 
