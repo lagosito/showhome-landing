@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { cn } from "../utils/cn";
 import { Container, Reveal, SectionHead } from "./primitives";
-import { IMG, px, demoImg, uploadShots } from "../data/media";
+import { demoImg, uploadShots } from "../data/media";
 
 function Card({
   title,
@@ -12,8 +12,8 @@ function Card({
   children,
   delay = 0,
 }: {
-  title: string;
-  body: string;
+  title?: string;
+  body?: string;
   className?: string;
   children?: React.ReactNode;
   delay?: number;
@@ -22,14 +22,16 @@ function Card({
     <Reveal delay={delay} className={cn("h-full", className)}>
       <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_2px_4px_rgba(13,14,16,.03),0_30px_60px_-36px_rgba(13,14,16,.45)]">
         {children}
-        <div className="mt-auto p-6 sm:p-7">
-          <h3 className="text-[19px] font-semibold tracking-[-0.03em] text-ink sm:text-[21px]">
-            {title}
-          </h3>
-          <p className="mt-2 max-w-[36ch] text-[14.5px] leading-relaxed text-ink-3">
-            {body}
-          </p>
-        </div>
+        {title && (
+          <div className="mt-auto p-6 sm:p-7">
+            <h3 className="text-[19px] font-semibold tracking-[-0.03em] text-ink sm:text-[21px]">
+              {title}
+            </h3>
+            <p className="mt-2 max-w-[36ch] text-[14.5px] leading-relaxed text-ink-3">
+              {body}
+            </p>
+          </div>
+        )}
       </article>
     </Reveal>
   );
@@ -48,13 +50,21 @@ export function Benefits() {
         />
 
         <div className="mt-14 grid gap-5 md:grid-cols-6">
-          {/* Save hours */}
+          {/* Save hours — headline on top, Professsionell auftreten at the bottom */}
           <Card
-            title={t("card1Title")}
-            body={t("card1Body")}
+            title={t("card2Title")}
+            body={t("card2Body")}
             className="md:col-span-3"
           >
-            <div className="relative overflow-hidden border-b border-line bg-paper-2/60 p-7">
+            <div className="border-b border-line bg-white p-6 sm:p-7">
+              <h3 className="text-[19px] font-semibold tracking-[-0.03em] text-ink sm:text-[21px]">
+                {t("card1Title")}
+              </h3>
+              <p className="mt-2 max-w-[36ch] text-[14.5px] leading-relaxed text-ink-3">
+                {t("card1Body")}
+              </p>
+            </div>
+            <div className="overflow-hidden border-b border-line bg-paper-2/60 p-7">
               <div className="flex items-end gap-8">
                 <div>
                   <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">
@@ -102,21 +112,22 @@ export function Benefits() {
             </div>
           </Card>
 
-          {/* Look professional */}
+          {/* Look professional — video fills the whole card */}
           <Card
-            title={t("card2Title")}
-            body={t("card2Body")}
             className="md:col-span-3"
             delay={80}
           >
-            <div className="relative overflow-hidden border-b border-line">
-              <img
-                src={px(IMG.beforeAfter, 900, 560)}
-                alt="Filmisch inszeniertes Wohnzimmer"
-                loading="lazy"
-                decoding="async"
-                className="aspect-[16/10] w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
-              />
+            <div className="relative min-h-[320px] flex-1 overflow-hidden bg-ink">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                aria-label="Fertige Immobilientour mit Color Grading und langsamer Kamerafahrt"
+                className="absolute inset-0 h-full w-full object-cover"
+              >
+                <source src={demoImg("professionell-tour.mp4")} type="video/mp4" />
+              </video>
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
               <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 p-4">
                 <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md ring-1 ring-white/20">
