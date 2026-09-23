@@ -68,9 +68,19 @@ export function resolutionFor(model: ModelId, quality: Quality): string {
   return MODEL_CONFIG[model].resolutions[quality];
 }
 
-export function costEstimate(model: ModelId, quality: Quality, duration: Duration): number {
-  const usd = MODEL_CONFIG[model].costPerSec[quality] * duration;
+export function costEstimate(model: ModelId, quality: Quality, duration: Duration, draft = false): number {
+  // BytePlus draft mode: always 480p at the 480p rate ($10.70/1M tok → ~0.103/s)
+  const perSec = draft ? DRAFT_COST_PER_SEC : MODEL_CONFIG[model].costPerSec[quality];
+  const usd = perSec * duration;
   return Math.round(usd * 100) / 100;
+}
+
+/** BytePlus draft (480p) per-second cost — same token rate as normal 480p. */
+export const DRAFT_COST_PER_SEC = 0.103;
+
+/** Draft mode is only supported on the BytePlus provider. */
+export function draftSupported(model: ModelId): boolean {
+  return MODEL_CONFIG[model].provider === 'byteplus';
 }
 
 export interface RenderParams {
@@ -80,6 +90,8 @@ export interface RenderParams {
   model: ModelId;
   duration: Duration;
   quality: Quality;
+  /** BytePlus only: cheap 480p preview; finalize to 1080p from the draft. */
+  draft?: boolean;
 }
 
 export function validateParams(p: any): { ok: true; params: RenderParams } | { ok: false; error: string } {
@@ -95,6 +107,8 @@ export function validateParams(p: any): { ok: true; params: RenderParams } | { o
     t(Number(p?.duration), [5, 10, 15], 'duration') ||
     t(p?.quality, ['standard', 'high'], 'quality');
   if (err) return { ok: false, error: err };
+  // draft only exists on BytePlus — silently drop it elsewhere
+  if (p.draft && MODEL_CONFIG[p.model as ModelId]?.provider !== 'byteplus') p = { ...p, draft: false };
   return {
     ok: true,
     params: {
@@ -104,6 +118,7 @@ export function validateParams(p: any): { ok: true; params: RenderParams } | { o
       model: p.model,
       duration: Number(p.duration) as Duration,
       quality: p.quality,
+      draft: Boolean(p.draft),
     },
   };
 }

@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   }
 
   const jobId = randomUUID();
-  const cost = costEstimate(params.model, params.quality, params.duration);
+  const cost = costEstimate(params.model, params.quality, params.duration, Boolean(params.draft));
   const endpoint = modelCfg.endpoint;
 
   try {
@@ -68,6 +68,7 @@ export async function POST(request: Request) {
         imageUrls: refs.map(p => p.url),
         resolution: resolutionFor(params.model, params.quality),
         duration: params.duration,
+        draft: Boolean(params.draft),
       });
       await updateJob(jobId, {
         shot_plan: plan as any,

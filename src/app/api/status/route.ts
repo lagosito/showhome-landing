@@ -60,6 +60,7 @@ export async function GET(request: Request) {
     params: job.params,
     model: job.model,
     error: job.error,
+    finalized_to: job.params?.finalized_to || null,
     cost_estimate_usd: job.cost_estimate_usd,
     created_at: job.created_at,
   });

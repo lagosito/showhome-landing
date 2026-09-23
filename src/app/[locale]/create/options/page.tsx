@@ -9,7 +9,7 @@ import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
 import {
   MODEL_CONFIG, FORMATS, DURATIONS, QUALITY_LABELS,
-  resolutionFor, costEstimate, selectReferencePhotos,
+  resolutionFor, costEstimate, selectReferencePhotos, draftSupported,
   type PropertyType, type Format, type Lang, type ModelId, type Quality, type Duration,
 } from '@/lib/v3/config';
 
@@ -28,6 +28,7 @@ export default function OptionsPage() {
   const [model, setModel] = useState<ModelId>('seedance-2.5');
   const [duration, setDuration] = useState<Duration>(5);
   const [quality, setQuality] = useState<Quality>('standard');
+  const [draft, setDraft] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -45,8 +46,10 @@ export default function OptionsPage() {
     [photos],
   );
 
-  const resolution = resolutionFor(model, quality);
-  const cost = costEstimate(model, quality, duration);
+  const canDraft = draftSupported(model);
+  const isDraft = canDraft && draft;
+  const resolution = isDraft ? '480p' : resolutionFor(model, quality);
+  const cost = costEstimate(model, quality, duration, isDraft);
 
   const handleSubmit = async () => {
     setSubmitting(true);
@@ -56,7 +59,7 @@ export default function OptionsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          propertyType, format, language, model, duration, quality,
+          propertyType, format, language, model, duration, quality, draft: isDraft,
           photos: refs.map((p: any, i: number) => ({ room: p.room, url: p.url, order: i + 1 })),
         }),
       });
@@ -136,6 +139,36 @@ export default function OptionsPage() {
                 { id: 'minimax-h3' as ModelId, text: 'MiniMax H3', sub: '768P / 2K' },
               ])}
 
+              {canDraft && (
+                <fieldset>
+                  <legend className="text-[14px] font-semibold text-ink">Vorschau</legend>
+                  <div className="mt-3 grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setDraft(false)}
+                      className={`rounded-xl border px-4 py-3.5 text-left transition ${
+                        !isDraft ? 'border-ink bg-ink text-paper' : 'border-line bg-white text-ink hover:border-ink/25'
+                      }`}
+                    >
+                      <span className="block text-[14px] font-medium">Direkt final</span>
+                      <span className={`mt-1 block text-[12px] ${!isDraft ? 'opacity-70' : 'text-ink-3'}`}>
+                        {resolutionFor(model, quality)} · sofort
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setDraft(true)}
+                      className={`rounded-xl border px-4 py-3.5 text-left transition ${
+                        isDraft ? 'border-ink bg-ink text-paper' : 'border-line bg-white text-ink hover:border-ink/25'
+                      }`}
+                    >
+                      <span className="block text-[14px] font-medium">Erst Entwurf (480p)</span>
+                      <span className={`mt-1 block text-[12px] ${isDraft ? 'opacity-70' : 'text-ink-3'}`}>
+                        ≈ {costEstimate(model, quality, duration, true).toFixed(2)} USD · Final 1080p danach
+                      </span>
+                    </button>
+                  </div>
+                </fieldset>
+              )}
+
               {group('Dauer', duration, setDuration, DURATIONS.map(d => ({ id: d, text: `${d} s` })))}
 
               {group('Qualität', quality, setQuality, QUALITY_LABELS.map(q => ({
@@ -148,7 +181,7 @@ export default function OptionsPage() {
               <div className="rounded-2xl border border-line bg-paper-2/50 p-5">
                 <p className="text-[13px] font-semibold text-ink">Zusammenfassung</p>
                 <div className="mt-3 space-y-2 text-[13px] text-ink-2">
-                  <p>Modell: <strong>{MODEL_CONFIG[model].label}</strong> · Auflösung: <strong>{resolution}</strong> · Dauer: <strong>{duration} s</strong></p>
+                  <p>Modell: <strong>{MODEL_CONFIG[model].label}</strong> · Auflösung: <strong>{resolution}{isDraft ? ' (Entwurf)' : ''}</strong> · Dauer: <strong>{duration} s</strong></p>
                   <p>Format: <strong>{FORMATS.find(f => f.id === format)?.label}</strong> · Sprache: <strong>{language.toUpperCase()}</strong> · Angebot: <strong>{PROPERTY_LABELS[propertyType]}</strong></p>
                   <p>Geschätzte Kosten: <strong>≈ {cost.toFixed(2)} USD</strong></p>
                 </div>
