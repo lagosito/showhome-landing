@@ -116,9 +116,7 @@ function StepBuild() {
 function StepShare() {
   const targets = [
     { n: "Portale", d: "16:9" },
-    { n: "Instagram", d: "9:16" },
-    { n: "Website", d: "16:9" },
-    { n: "WhatsApp", d: "1:1" },
+    { n: "Social Media", d: "9:16" },
   ];
   return (
     <div className="flex h-full flex-col justify-between p-5 sm:p-6">
@@ -193,10 +191,10 @@ export function HowItWorks() {
           sub={t("subheading")}
         />
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
+        <div className="mt-14 grid gap-6 lg:grid-cols-3 lg:gap-y-0">
           {steps.map((s, i) => (
-            <Reveal key={s.k} delay={i * 110} className="h-full">
-              <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-paper-2/50 transition-all duration-500 hover:-translate-y-1 hover:border-line-2 hover:shadow-[0_2px_4px_rgba(13,14,16,.03),0_28px_60px_-34px_rgba(13,14,16,.4)]">
+            <Reveal key={s.k} delay={i * 110} className="h-full lg:contents">
+              <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-paper-2/50 transition-all duration-500 hover:-translate-y-1 hover:border-line-2 hover:shadow-[0_2px_4px_rgba(13,14,16,.03),0_28px_60px_-34px_rgba(13,14,16,.4)] lg:row-span-2 lg:grid lg:grid-rows-subgrid">
                 <div className="min-h-[268px] flex-1 bg-paper-2/60">{s.visual}</div>
                 <div className="border-t border-line bg-white p-6 sm:p-7">
                   <div className="flex items-center gap-3">
