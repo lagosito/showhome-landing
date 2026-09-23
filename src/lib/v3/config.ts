@@ -25,10 +25,11 @@ export const MODEL_CONFIG = {
     label: 'Seedance 2.5 (BytePlus)',
     provider: 'byteplus' as const,
     endpoint: 'dreamina-seedance-2-5-260628',
-    // Official ModelArk API: 2.5 outputs 480p/720p ONLY (no 1080p tier).
-    resolutions: { standard: '480p', high: '720p' } as Record<Quality, string>,
-    // $10.70/1M tokens → published examples: 5s@480p $0.514, 5s@720p $1.156
-    costPerSec: { standard: 0.103, high: 0.231 } as Record<Quality, number>,
+    // Official ModelArk API: 480p/720p/1080p (1080p live-verified 24.09.2026:
+    // 245,025 tokens/5s). Tier-mapped to match the Seedance fal tiers.
+    resolutions: { standard: '720p', high: '1080p' } as Record<Quality, string>,
+    // $10.70/1M tokens: 5s@720p $1.156 (0.231/s), 5s@1080p $2.62 (0.524/s)
+    costPerSec: { standard: 0.231, high: 0.524 } as Record<Quality, number>,
     imageNotation: 'plain' as const, // "Image 1" (role: reference_image)
     maxImages: 30,
     durationType: 'int' as const,
