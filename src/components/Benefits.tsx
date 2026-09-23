@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "../utils/cn";
 import { Container, Reveal, SectionHead } from "./primitives";
@@ -39,6 +40,35 @@ function Card({
 
 export function Benefits() {
   const t = useTranslations("Benefits");
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+  const [playing, setPlaying] = useState(true);
+
+  // Sync the play/pause icon with the real element state after mount
+  // (autoplay can be delayed or blocked by the browser).
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v) setPlaying(!v.paused);
+  }, []);
+
+  const toggleSound = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+  };
+
+  const togglePlay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      void v.play();
+      setPlaying(true);
+    } else {
+      v.pause();
+      setPlaying(false);
+    }
+  };
 
   return (
     <section className="py-20 sm:py-28">
@@ -119,16 +149,37 @@ export function Benefits() {
           >
             <div className="relative min-h-[320px] flex-1 overflow-hidden bg-ink">
               <video
+                ref={videoRef}
                 autoPlay
                 loop
                 muted
                 playsInline
+                onPlay={() => setPlaying(true)}
+                onPause={() => setPlaying(false)}
                 aria-label="Fertige Immobilientour mit Color Grading und langsamer Kamerafahrt"
                 className="absolute inset-0 h-full w-full object-cover"
               >
                 <source src={demoImg("professionell-tour.mp4")} type="video/mp4" />
               </video>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <button
+                type="button"
+                onClick={toggleSound}
+                aria-label={muted ? t("soundOn") : t("soundOff")}
+                className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur transition hover:bg-black/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                {muted ? (
+                  <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M4 8v4h3l4 3V5L7 8H4Z" />
+                    <path d="m14 8 4 4m0-4-4 4" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M4 8v4h3l4 3V5L7 8H4Z" />
+                    <path d="M14 7.5a3.5 3.5 0 0 1 0 5M16 5.5a6.5 6.5 0 0 1 0 9" />
+                  </svg>
+                )}
+              </button>
               <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3">
                 <div className="flex gap-2">
                   {["source-makler.jpg", "source-haus.jpg", "source-esszimmer.jpg"].map((f) => (
@@ -143,6 +194,23 @@ export function Benefits() {
                     />
                   ))}
                 </div>
+                <button
+                  type="button"
+                  onClick={togglePlay}
+                  aria-label={playing ? t("pauseLabel") : t("playLabel")}
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/90 text-ink transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  {playing ? (
+                    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">
+                      <rect x="4" y="3" width="2.6" height="10" rx="0.8" fill="currentColor" />
+                      <rect x="9.4" y="3" width="2.6" height="10" rx="0.8" fill="currentColor" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 16 16" className="ml-0.5 h-3.5 w-3.5" aria-hidden="true">
+                      <path d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9a.6.6 0 0 0-.92.5Z" fill="currentColor" />
+                    </svg>
+                  )}
+                </button>
               </div>
             </div>
           </Card>
