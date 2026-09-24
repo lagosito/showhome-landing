@@ -1,7 +1,7 @@
 // Homemotion v3 — model config, quality mapping and cost estimation.
 // Prices verified from fal.ai model cards (23.09.2026), see brief.
 
-export type ModelId = 'seedance-2.5' | 'seedance-byteplus' | 'minimax-h3';
+export type ModelId = 'seedance-2.5' | 'seedance-byteplus' | 'minimax-h3' | 'minimax-h3-max';
 export type Provider = 'fal' | 'byteplus';
 export type Quality = 'standard' | 'high';
 export type Format = 'walkthrough' | 'lifestyle' | 'agent';
@@ -42,6 +42,20 @@ export const MODEL_CONFIG = {
     costPerSec: { standard: 0.06, high: 0.13 } as Record<Quality, number>,
     imageNotation: 'plain' as const, // "Image 1" in prompt
     maxImages: 12, // first 5 free, +0.08 USD each after → we cap at 5 photos anyway
+    durationType: 'int' as const,
+  },
+  // fal's post-trained H3 variant: better prompt adherence + faster inference.
+  // Schema verified via https://fal.ai/models/minimax/h3-max/reference-to-video/llms.txt (24.09.2026):
+  // resolution enum is 480P/768P/1080P (NO 2K), reference_image_urls ≤12 files,
+  // prompt_expansion_mode required, video refs 2-15s. Pricing $0.08/s @768P, $0.16/s @1080P.
+  'minimax-h3-max': {
+    label: 'MiniMax H3 Max',
+    provider: 'fal' as const,
+    endpoint: 'minimax/h3-max/reference-to-video',
+    resolutions: { standard: '768P', high: '1080P' } as Record<Quality, string>,
+    costPerSec: { standard: 0.08, high: 0.16 } as Record<Quality, number>,
+    imageNotation: 'plain' as const, // "Image 1" in prompt
+    maxImages: 12,
     durationType: 'int' as const,
   },
 } as const satisfies Record<ModelId, any>;
@@ -103,7 +117,7 @@ export function validateParams(p: any): { ok: true; params: RenderParams } | { o
     t(p?.propertyType, ['rent', 'sale', 'new'], 'propertyType') ||
     t(p?.format, ['walkthrough', 'lifestyle', 'agent'], 'format') ||
     t(p?.language, ['de', 'en'], 'language') ||
-    t(p?.model, ['seedance-2.5', 'seedance-byteplus', 'minimax-h3'], 'model') ||
+    t(p?.model, ['seedance-2.5', 'seedance-byteplus', 'minimax-h3', 'minimax-h3-max'], 'model') ||
     t(Number(p?.duration), [5, 10, 15], 'duration') ||
     t(p?.quality, ['standard', 'high'], 'quality');
   if (err) return { ok: false, error: err };

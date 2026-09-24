@@ -90,7 +90,7 @@ export async function POST(request: Request) {
       input.generate_audio = true;
     } else {
       input.reference_image_urls = refs.map(p => p.url);
-      input.resolution = resolutionFor('minimax-h3', params.quality);
+      input.resolution = resolutionFor(params.model, params.quality);
       input.duration = params.duration;
       input.prompt_expansion_mode = 'disabled';
     }

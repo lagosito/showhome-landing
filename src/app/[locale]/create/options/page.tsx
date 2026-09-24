@@ -137,6 +137,7 @@ export default function OptionsPage() {
                 { id: 'seedance-2.5' as ModelId, text: 'Seedance 2.5 (fal)', sub: '720p / 1080p' },
                 { id: 'seedance-byteplus' as ModelId, text: 'Seedance 2.5 (BytePlus)', sub: '720p / 1080p · −51%' },
                 { id: 'minimax-h3' as ModelId, text: 'MiniMax H3', sub: '768P / 2K' },
+                { id: 'minimax-h3-max' as ModelId, text: 'MiniMax H3 Max', sub: '768P / 1080P' },
               ])}
 
               {canDraft && (
