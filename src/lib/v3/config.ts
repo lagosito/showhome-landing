@@ -7,7 +7,13 @@ export type Quality = 'standard' | 'high';
 export type Format = 'walkthrough' | 'lifestyle' | 'agent';
 export type Lang = 'de' | 'en';
 export type PropertyType = 'rent' | 'sale' | 'new';
-export type Duration = 5 | 10 | 15;
+// Test build: 7 s is the only unlocked duration (see ACTIVE_DURATIONS);
+// 15/30 stay valid for existing jobs but are locked in the UI.
+export type Duration = 7 | 15 | 30;
+
+/** Test build: only Seedance 2.5 on BytePlus (draft support + lowest price). */
+export const DEFAULT_MODEL: ModelId = 'seedance-byteplus';
+export const ALLOWED_MODELS: ModelId[] = [DEFAULT_MODEL];
 
 export const MODEL_CONFIG = {
   'seedance-2.5': {
@@ -66,7 +72,12 @@ export const FORMATS: { id: Format; label: string; hint: string }[] = [
   { id: 'agent', label: 'Makler', hint: 'Makler vor der Kamera, Dialog' },
 ];
 
-export const DURATIONS: Duration[] = [5, 10, 15];
+export const DURATIONS: Duration[] = [7, 15, 30];
+/** Durations testers may actually render; the rest render as locked chips. */
+export const ACTIVE_DURATIONS: Duration[] = [7];
+/** Test build: 1080p is locked so nobody can burn it by accident.
+ *  Draft renders 480p regardless of this value. */
+export const ACTIVE_QUALITIES: Quality[] = ['standard'];
 
 export const QUALITY_LABELS: { id: Quality; label: string }[] = [
   { id: 'standard', label: 'Standard' },
@@ -117,9 +128,11 @@ export function validateParams(p: any): { ok: true; params: RenderParams } | { o
     t(p?.propertyType, ['rent', 'sale', 'new'], 'propertyType') ||
     t(p?.format, ['walkthrough', 'lifestyle', 'agent'], 'format') ||
     t(p?.language, ['de', 'en'], 'language') ||
-    t(p?.model, ['seedance-2.5', 'seedance-byteplus', 'minimax-h3', 'minimax-h3-max'], 'model') ||
-    t(Number(p?.duration), [5, 10, 15], 'duration') ||
-    t(p?.quality, ['standard', 'high'], 'quality');
+    t(p?.model, ALLOWED_MODELS, 'model') ||
+    // Only the unlocked test durations can be rendered — the API enforces the
+    // same lock the UI shows, so a crafted request can't burn 30 s of 1080p.
+    t(Number(p?.duration), ACTIVE_DURATIONS, 'duration') ||
+    t(p?.quality, ACTIVE_QUALITIES, 'quality');
   if (err) return { ok: false, error: err };
   // draft only exists on BytePlus — silently drop it elsewhere
   if (p.draft && MODEL_CONFIG[p.model as ModelId]?.provider !== 'byteplus') p = { ...p, draft: false };

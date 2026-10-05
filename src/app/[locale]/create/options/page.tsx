@@ -8,10 +8,15 @@ import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
 import {
-  MODEL_CONFIG, FORMATS, DURATIONS, QUALITY_LABELS,
-  resolutionFor, costEstimate, selectReferencePhotos, draftSupported,
+  FORMATS, ACTIVE_DURATIONS, DEFAULT_MODEL,
+  resolutionFor, costEstimate, selectReferencePhotos,
   type PropertyType, type Format, type Lang, type ModelId, type Quality, type Duration,
 } from '@/lib/v3/config';
+
+/** Quality tier the user picks: cheap draft, or a finished 720p render.
+ *  1080p stays locked in this test build. */
+type Tier = 'draft' | Quality;
+type DurationChoice = Duration | 'custom';
 
 const PROPERTY_LABELS: Record<PropertyType, string> = {
   rent: 'Miete',
@@ -25,10 +30,11 @@ export default function OptionsPage() {
   const [propertyType, setPropertyType] = useState<PropertyType>('rent');
   const [format, setFormat] = useState<Format>('walkthrough');
   const [language, setLanguage] = useState<Lang>('de');
-  const [model, setModel] = useState<ModelId>('seedance-2.5');
-  const [duration, setDuration] = useState<Duration>(5);
+  const [model] = useState<ModelId>(DEFAULT_MODEL);
+  const [duration, setDuration] = useState<Duration>(7);
   const [quality, setQuality] = useState<Quality>('standard');
-  const [draft, setDraft] = useState(false);
+  // Testers default to the cheap draft — never a 1080p render by accident.
+  const [draft, setDraft] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -46,9 +52,9 @@ export default function OptionsPage() {
     [photos],
   );
 
-  const canDraft = draftSupported(model);
-  const isDraft = canDraft && draft;
+  const isDraft = draft;
   const resolution = isDraft ? '480p' : resolutionFor(model, quality);
+  const tier: Tier = isDraft ? 'draft' : quality;
   const cost = costEstimate(model, quality, duration, isDraft);
 
   const handleSubmit = async () => {
@@ -79,27 +85,48 @@ export default function OptionsPage() {
     }
   };
 
-  const group = <T extends string | number>(label: string, value: T, set: (v: T) => void, options: { id: T; text: string; sub?: string }[]) => (
+  const group = <T extends string | number>(
+    label: string,
+    value: T,
+    set: (v: T) => void,
+    options: { id: T; text: string; sub?: string; disabled?: boolean }[],
+  ) => (
     <fieldset>
       <legend className="text-[14px] font-semibold text-ink">{label}</legend>
       <div className={`mt-3 grid gap-3 ${options.length > 2 ? 'grid-cols-3' : 'grid-cols-2'}`}>
         {options.map(o => (
           <button
-            key={o.id}
-            onClick={() => set(o.id)}
+            key={String(o.id)}
+            type="button"
+            onClick={() => !o.disabled && set(o.id)}
+            disabled={o.disabled}
             className={`rounded-xl border px-4 py-3.5 text-left transition ${
-              value === o.id
-                ? 'border-ink bg-ink text-paper'
-                : 'border-line bg-white text-ink hover:border-ink/25'
+              o.disabled
+                ? 'cursor-not-allowed border-line bg-paper-2 text-ink-3'
+                : value === o.id
+                  ? 'border-ink bg-ink text-paper'
+                  : 'border-line bg-white text-ink hover:border-ink/25'
             }`}
           >
             <span className="block text-[14px] font-medium">{o.text}</span>
-            {o.sub && <span className={`mt-1 block text-[12px] ${value === o.id ? 'opacity-70' : 'text-ink-3'}`}>{o.sub}</span>}
+            {o.sub && (
+              <span className={`mt-1 block text-[12px] ${o.disabled ? 'text-ink-3' : value === o.id ? 'opacity-70' : 'text-ink-3'}`}>
+                {o.sub}
+              </span>
+            )}
           </button>
         ))}
       </div>
     </fieldset>
   );
+
+  const setTier = (v: Tier) => {
+    if (v === 'draft') setDraft(true);
+    else {
+      setDraft(false);
+      setQuality(v);
+    }
+  };
 
   return (
     <>
@@ -133,56 +160,44 @@ export default function OptionsPage() {
                 { id: 'en' as Lang, text: 'English' },
               ])}
 
-              {group('Modell', model, setModel, [
-                { id: 'seedance-2.5' as ModelId, text: 'Seedance 2.5 (fal)', sub: '720p / 1080p' },
-                { id: 'seedance-byteplus' as ModelId, text: 'Seedance 2.5 (BytePlus)', sub: '720p / 1080p · −51%' },
-                { id: 'minimax-h3' as ModelId, text: 'MiniMax H3', sub: '768P / 2K' },
-                { id: 'minimax-h3-max' as ModelId, text: 'MiniMax H3 Max', sub: '768P / 1080P' },
-              ])}
-
-              {canDraft && (
-                <fieldset>
-                  <legend className="text-[14px] font-semibold text-ink">Vorschau</legend>
-                  <div className="mt-3 grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => setDraft(false)}
-                      className={`rounded-xl border px-4 py-3.5 text-left transition ${
-                        !isDraft ? 'border-ink bg-ink text-paper' : 'border-line bg-white text-ink hover:border-ink/25'
-                      }`}
-                    >
-                      <span className="block text-[14px] font-medium">Direkt final</span>
-                      <span className={`mt-1 block text-[12px] ${!isDraft ? 'opacity-70' : 'text-ink-3'}`}>
-                        {resolutionFor(model, quality)} · sofort
-                      </span>
-                    </button>
-                    <button
-                      onClick={() => setDraft(true)}
-                      className={`rounded-xl border px-4 py-3.5 text-left transition ${
-                        isDraft ? 'border-ink bg-ink text-paper' : 'border-line bg-white text-ink hover:border-ink/25'
-                      }`}
-                    >
-                      <span className="block text-[14px] font-medium">Erst Entwurf (480p)</span>
-                      <span className={`mt-1 block text-[12px] ${isDraft ? 'opacity-70' : 'text-ink-3'}`}>
-                        ≈ {costEstimate(model, quality, duration, true).toFixed(2)} USD · Final 1080p danach
-                      </span>
-                    </button>
-                  </div>
-                </fieldset>
+              {group<DurationChoice>(
+                'Dauer',
+                duration,
+                v => {
+                  if (v !== 'custom') setDuration(v);
+                },
+                [
+                  { id: 7, text: '7 s', sub: 'Aktiv für den Test', disabled: !ACTIVE_DURATIONS.includes(7) },
+                  { id: 15, text: '15 s', sub: 'gesperrt', disabled: !ACTIVE_DURATIONS.includes(15) },
+                  { id: 30, text: '30 s', sub: 'gesperrt', disabled: !ACTIVE_DURATIONS.includes(30) },
+                  { id: 'custom', text: 'Custom', sub: 'gesperrt', disabled: true },
+                ],
               )}
 
-              {group('Dauer', duration, setDuration, DURATIONS.map(d => ({ id: d, text: `${d} s` })))}
-
-              {group('Qualität', quality, setQuality, QUALITY_LABELS.map(q => ({
-                id: q.id,
-                text: q.label,
-                sub: resolutionFor(model, q.id),
-              })))}
+              {group<Tier>('Qualität', tier, setTier, [
+                {
+                  id: 'draft',
+                  text: 'Entwurf',
+                  sub: `480p · ≈ ${costEstimate(model, quality, duration, true).toFixed(2)} USD`,
+                },
+                {
+                  id: 'standard',
+                  text: '720p',
+                  sub: `≈ ${costEstimate(model, 'standard', duration, false).toFixed(2)} USD`,
+                },
+                {
+                  id: 'high',
+                  text: '1080p',
+                  sub: `≈ ${costEstimate(model, 'high', duration, false).toFixed(2)} USD · gesperrt`,
+                  disabled: true,
+                },
+              ])}
 
               {/* Cost + resolution summary */}
               <div className="rounded-2xl border border-line bg-paper-2/50 p-5">
                 <p className="text-[13px] font-semibold text-ink">Zusammenfassung</p>
                 <div className="mt-3 space-y-2 text-[13px] text-ink-2">
-                  <p>Modell: <strong>{MODEL_CONFIG[model].label}</strong> · Auflösung: <strong>{resolution}{isDraft ? ' (Entwurf)' : ''}</strong> · Dauer: <strong>{duration} s</strong></p>
+                  <p>Modell: <strong>Seedance 2.5</strong> · Qualität: <strong>{isDraft ? 'Entwurf (480p)' : `${resolution} (final)`}</strong> · Dauer: <strong>{duration} s</strong></p>
                   <p>Format: <strong>{FORMATS.find(f => f.id === format)?.label}</strong> · Sprache: <strong>{language.toUpperCase()}</strong> · Angebot: <strong>{PROPERTY_LABELS[propertyType]}</strong></p>
                   <p>Geschätzte Kosten: <strong>≈ {cost.toFixed(2)} USD</strong></p>
                 </div>

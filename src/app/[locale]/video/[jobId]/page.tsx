@@ -9,6 +9,10 @@ import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
 import { resolutionFor, costEstimate, MODEL_CONFIG, type Quality, type Duration } from '@/lib/v3/config';
 
+/** Test build: finalizing always renders 1080p, so the CTA stays hidden until
+ *  the wider rollout. Flip to true to re-enable it (route + pricing are fixed). */
+const SHOW_FINALIZE = false;
+
 const STEP_LABEL: Record<string, string> = {
   planning: 'KI-Skript wird geschrieben…',
   rendering: 'Video wird gerendert…',
@@ -122,12 +126,13 @@ export default function VideoPage() {
               </div>
             )}
 
-            {/* Draft → Final CTA */}
-            {data?.status === 'done' && isDraft && (
+            {/* Draft → Final CTA — hidden in the test build: finalizing always
+                renders 1080p and testers must not trigger that cost. */}
+            {SHOW_FINALIZE && data?.status === 'done' && isDraft && (
               <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-line bg-paper-2/50 p-5 text-center">
                 <p className="text-[14px] font-medium text-ink">Entwurf (480p) — wenn er passt:</p>
                 <p className="mt-1 text-[13px] text-ink-3">
-                  Final in 1080p rendern · ≈ {costEstimate(data.params.model, data.params.quality, data.params.duration, false).toFixed(2)} USD
+                  Final in 1080p rendern · ≈ {costEstimate(data.params.model, 'high', data.params.duration, false).toFixed(2)} USD
                 </p>
                 <button
                   onClick={finalize}

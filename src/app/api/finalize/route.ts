@@ -29,7 +29,9 @@ export async function POST(request: Request) {
   }
 
   const newId = randomUUID();
-  const finalParams = { ...job.params, draft: false };
+  // final-from-draft only accepts 1080p on BytePlus — force the tier so the
+  // stored params and the cost estimate match what the platform actually renders.
+  const finalParams = { ...job.params, draft: false, quality: 'high' as const };
   const cost = costEstimate(finalParams.model, finalParams.quality, finalParams.duration, false);
 
   try {
