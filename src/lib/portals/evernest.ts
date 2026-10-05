@@ -1,19 +1,5 @@
 import { PortalParser, PortalListing } from './types';
-
-const ROOM_MAP: Record<string, string> = {
-  wohnzimmer: 'Living Room',
-  esszimmer: 'Dining Room',
-  küche: 'Kitchen',
-  schlafzimmer: 'Bedroom',
-  badezimmer: 'Bathroom',
-  bad: 'Bathroom',
-  balkon: 'Exterior',
-  terrasse: 'Exterior',
-  garten: 'Exterior',
-  diele: 'Hallway',
-  flur: 'Hallway',
-  treppenhaus: 'Hallway',
-};
+import { ROOM_MAP } from './rooms';
 
 function mapRoomFromAlt(alt: string): string | null {
   const lower = alt.toLowerCase();
@@ -55,9 +41,17 @@ export const evernestParser: PortalParser = {
   },
 
   parse(html: string): PortalListing {
-    // --- Title ---
-    const titleMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-    const title = titleMatch?.[1]?.trim() ?? '';
+    // Next.js SSR injects `<!-- -->` comments inside tags, which breaks the
+    // value-extraction regexes below. Strip them once up front.
+    html = html.replace(/<!--[\s\S]*?-->/g, '');
+
+    // --- Title (h1 may contain nested elements, e.g. <h1><div>…</div></h1>) ---
+    const h1Inner = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '';
+    const h1Text = h1Inner.replace(/<[^>]+>/g, '').trim();
+    const ogTitle = html.match(/property="og:title"[^>]*content="([^"]*)"/i)?.[1]
+      ?? html.match(/content="([^"]*)"[^>]*property="og:title"/i)?.[1]
+      ?? '';
+    const title = h1Text || ogTitle.trim();
 
     // --- Address (h3 after "Lage" heading) ---
     const lageIdx = html.indexOf('>Lage<');
@@ -71,14 +65,14 @@ export const evernestParser: PortalParser = {
     // --- Facts section ---
     const factsText = extractTextBetweenHeadings(html, '>Fakten<', '>Energieinformationen<');
     const listingFacts: Record<string, string> = {};
-    const factPairs = factsText.match(/<[^>]*>([^<]+)<\/[^>]*>\s*<[^>]*>([^<]+)<\/[^>]*>/g) ?? [];
-    for (const pair of factPairs) {
-      const kv = pair.match(/>([^<]+)</g);
-      if (kv && kv.length >= 2) {
-        const key = kv[0].replace(/^>|<$/g, '').trim();
-        const val = kv[1].replace(/^>|<$/g, '').trim();
-        if (key && val) listingFacts[key] = val;
-      }
+    // The facts list is a <dl> of <dt>/<dd>. Values can contain nested markup
+    // (e.g. "128 m<sup>2</sup>"), so pair the elements first and strip tags after.
+    const dtRe = /<dt[^>]*>([\s\S]*?)<\/dt>\s*<dd[^>]*>([\s\S]*?)<\/dd>/gi;
+    let fact: RegExpExecArray | null;
+    while ((fact = dtRe.exec(factsText)) !== null) {
+      const key = fact[1].replace(/<[^>]+>/g, '').trim();
+      const val = fact[2].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+      if (key && val) listingFacts[key] = val;
     }
     // Fallback: parse from full text
     const factsSection = html.substring(
@@ -94,7 +88,8 @@ export const evernestParser: PortalParser = {
     }
 
     const price = listingFacts['Preis'] || listingFacts['Kaufpreis'] || listingFacts['Miete'] || '';
-    const area = listingFacts['Wohnfläche ca.'] || listingFacts['Wohnfläche'] || '';
+    const areaRaw = listingFacts['Wohnfläche ca.'] || listingFacts['Wohnfläche'] || '';
+    const area = areaRaw.replace(/\s*2$/, '²').replace(/m\s*2$/, 'm²');
     const rooms = listingFacts['Zimmer'] || '';
     const yearBuilt = listingFacts['Baujahr'] || undefined;
     const energyClass = listingFacts['Energieklasse'] || undefined;

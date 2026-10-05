@@ -16,5 +16,6 @@ export interface PortalListing {
 export interface PortalParser {
   name: string;
   matchUrl(url: string): boolean;
-  parse(html: string): PortalListing;
+  /** `baseUrl` lets the parser resolve relative image URLs. */
+  parse(html: string, baseUrl?: string): PortalListing;
 }

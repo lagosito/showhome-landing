@@ -98,8 +98,11 @@ export default function ImportPage() {
 
       for (let i = 0; i < result.photos.length; i++) {
         const photo = result.photos[i];
-        const room = mapRoomFromAlt(photo.alt) || 'Other';
-        const description = translateAltToDescription(photo.alt);
+        // The parser already classified the room when the alt text is a real
+        // caption; a long alt is the whole ad description — don't map from it.
+        const caption = photo.alt.length <= 80 ? photo.alt : '';
+        const room = photo.room || (caption ? mapRoomFromAlt(caption) : null) || 'Other';
+        const description = photo.description || (caption ? translateAltToDescription(caption) : '');
 
         const res = await fetch('/api/upload/presign', {
           method: 'POST',
@@ -173,7 +176,7 @@ export default function ImportPage() {
                   type="url"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="https://www.evernest.com/de/listing/..."
+                  placeholder="https://deine-website.de/expose/..."
                   className="flex-1 rounded-xl border border-line bg-white px-4 py-3.5 text-[14px] outline-none transition placeholder:text-ink-3 focus:border-ink focus:ring-1 focus:ring-ink"
                   onKeyDown={(e) => e.key === 'Enter' && handleFetch()}
                 />
@@ -186,7 +189,7 @@ export default function ImportPage() {
                 </button>
               </div>
               <p className="mt-3 text-[13px] text-ink-3">
-                Aktuell unterstützt: <strong>Evernest</strong>
+                Funktioniert mit den gängigen Immobilienportalen — füge einfach die Direktlink-URL deines Inserats ein.
               </p>
             </div>
 

@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: 'unsupported_portal',
-        message: 'Dieses Portal wird noch nicht unterstützt. Aktuell unterstützen wir: Evernest. Du kannst deine Fotos auch direkt hochladen.',
+        message: 'Diese URL konnte nicht gelesen werden. Bitte prüfe, dass es sich um die Direktseite deines Inserats handelt. Du kannst deine Fotos auch direkt hochladen.',
       },
       { status: 400 }
     );
@@ -123,7 +123,7 @@ export async function POST(request: Request) {
   // Parse
   let listing;
   try {
-    listing = parser.parse(html);
+    listing = parser.parse(html, url);
   } catch {
     return NextResponse.json(
       { error: 'parse_error', message: 'Wir konnten dieses Inserat nicht auslesen. Bitte versuche es erneut oder lade die Fotos direkt hoch.' },
