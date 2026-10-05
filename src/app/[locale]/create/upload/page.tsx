@@ -81,8 +81,14 @@ export default function UploadPage() {
     setPhotos(prev => prev.filter(p => p.id !== id));
   };
 
+  const uploadingRef = useRef(false);
+
   const uploadAll = async () => {
-    const pending = photos.filter(p => p.status === 'pending');
+    if (uploadingRef.current) return;
+    // Retry photos that failed on a previous attempt too.
+    const pending = photos.filter(p => p.status === 'pending' || p.status === 'error');
+    if (pending.length === 0) return;
+    uploadingRef.current = true;
     for (const photo of pending) {
       setPhotos(prev => prev.map(p => p.id === photo.id ? { ...p, status: 'uploading' } : p));
 
@@ -110,10 +116,16 @@ export default function UploadPage() {
         setPhotos(prev => prev.map(p => p.id === photo.id ? { ...p, status: 'error', error: err.message } : p));
       }
     }
+    uploadingRef.current = false;
   };
 
-  const allUploaded = photos.length >= MIN_FILES && photos.every(p => p.status === 'done');
-  const canSubmit = allUploaded;
+  const doneCount = photos.filter(p => p.status === 'done').length;
+  const pendingCount = photos.filter(p => p.status === 'pending' || p.status === 'error').length;
+  const errorCount = photos.filter(p => p.status === 'error').length;
+  const isUploading = photos.some(p => p.status === 'uploading');
+  const allUploaded = photos.length >= MIN_FILES && doneCount === photos.length;
+  const canSubmit = allUploaded && !isUploading;
+  const enoughPhotos = photos.length >= MIN_FILES;
 
   const handleSubmit = () => {
     if (!canSubmit) return;
@@ -184,9 +196,37 @@ export default function UploadPage() {
             {/* Photo grid — thumbnails only, no room dropdown */}
             {photos.length > 0 && (
               <div className="mt-8">
-                <p className="mb-3 text-[13px] font-medium text-ink-3">
-                  {photos.length} von {MAX_FILES} Fotos · {photos.filter(p => p.status === 'done').length} hochgeladen
-                </p>
+                {/* Prominent upload progress */}
+                <div className="mb-4 rounded-2xl border border-line bg-white p-4 shadow-[0_1px_2px_rgba(13,14,16,.04)]">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="text-[15px] font-medium text-ink">
+                      {doneCount} von {photos.length} Fotos hochgeladen
+                    </p>
+                    <p className={`text-[13px] font-semibold tabular-nums ${isUploading ? 'text-clay' : 'text-ink-3'}`}>
+                      {isUploading
+                        ? 'Wird hochgeladen…'
+                        : `${Math.round((doneCount / Math.max(photos.length, 1)) * 100)}%`}
+                    </p>
+                  </div>
+                  <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-paper-2">
+                    <div
+                      className={`h-full rounded-full transition-[width] duration-500 ease-out ${
+                        isUploading ? 'animate-pulse bg-clay' : 'bg-clay'
+                      }`}
+                      style={{ width: `${Math.round((doneCount / Math.max(photos.length, 1)) * 100)}%` }}
+                    />
+                  </div>
+                  {errorCount > 0 && !isUploading && (
+                    <p className="mt-3 text-[13px] text-red-600">
+                      {errorCount} {errorCount === 1 ? 'Foto konnte' : 'Fotos konnten'} nicht hochgeladen werden — klicke noch einmal auf „Alle hochladen“.
+                    </p>
+                  )}
+                  {!enoughPhotos && pendingCount === 0 && (
+                    <p className="mt-3 text-[13px] text-clay">
+                      Füge noch {MIN_FILES - photos.length} {MIN_FILES - photos.length !== 1 ? 'Fotos' : 'Foto'} hinzu, um fortzufahren
+                    </p>
+                  )}
+                </div>
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                   {photos.map((photo, idx) => (
                     <div
@@ -207,7 +247,7 @@ export default function UploadPage() {
                       <img src={photo.preview} alt="" className="aspect-square w-full object-cover" />
                       {photo.status === 'uploading' && (
                         <div className="absolute inset-x-0 bottom-0 h-1 bg-line">
-                          <div className="h-full bg-clay transition-all" style={{ width: '60%' }} />
+                          <div className="h-full w-full animate-pulse bg-clay" />
                         </div>
                       )}
                       {photo.status === 'error' && (
@@ -221,27 +261,22 @@ export default function UploadPage() {
               </div>
             )}
 
-            {photos.length > 0 && photos.length < MIN_FILES && (
-              <p className="mt-4 text-center text-[13px] text-clay">
-                Füge noch mindestens {MIN_FILES - photos.length} {MIN_FILES - photos.length !== 1 ? 'Fotos' : 'Foto'} hinzu, um fortzufahren
-              </p>
-            )}
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              {photos.length > 0 && photos.some(p => p.status === 'pending') && (
-                <button
-                  onClick={uploadAll}
-                  className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
-                >
-                  Alle hochladen
-                </button>
-              )}
+            {/* Single action button — label follows the current state */}
+            <div className="mt-6">
               <button
-                onClick={handleSubmit}
-                disabled={!canSubmit}
-                className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-40 disabled:hover:translate-y-0"
+                onClick={isUploading || pendingCount > 0 ? uploadAll : handleSubmit}
+                disabled={isUploading || !enoughPhotos || (pendingCount === 0 && !canSubmit)}
+                className="w-full rounded-full bg-ink px-6 py-4 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-40 disabled:hover:translate-y-0"
               >
-                {allUploaded ? 'Räume sortieren' : `Zuerst ${photos.filter(p => p.status === 'pending').length} Fotos hochladen`}
+                {isUploading
+                  ? `Wird hochgeladen… ${doneCount} von ${photos.length}`
+                  : pendingCount > 0
+                    ? doneCount > 0
+                      ? `Weitere ${pendingCount} Fotos hochladen`
+                      : 'Alle hochladen'
+                    : !enoughPhotos
+                      ? `Noch ${MIN_FILES - photos.length} ${MIN_FILES - photos.length !== 1 ? 'Fotos' : 'Foto'} hinzufügen`
+                      : 'Räume sortieren'}
               </button>
             </div>
           </div>
