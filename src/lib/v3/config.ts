@@ -78,6 +78,10 @@ export const ACTIVE_DURATIONS: Duration[] = [7];
 /** Test build: 1080p is locked so nobody can burn it by accident.
  *  Draft renders 480p regardless of this value. */
 export const ACTIVE_QUALITIES: Quality[] = ['standard'];
+/** Final (non-draft) qualities a tester may actually render. Empty = only the
+ *  Entwurf preview is open; 720p/1080p stay VISIBLE in the UI so testers see
+ *  they exist, but the API refuses them. */
+export const ACTIVE_FINAL_QUALITIES: Quality[] = [];
 
 export const QUALITY_LABELS: { id: Quality; label: string }[] = [
   { id: 'standard', label: 'Standard' },
@@ -136,7 +140,13 @@ export function validateParams(p: any): { ok: true; params: RenderParams } | { o
     // Only the unlocked test durations can be rendered — the API enforces the
     // same lock the UI shows, so a crafted request can't burn 30 s of 1080p.
     t(Number(p?.duration), ACTIVE_DURATIONS, 'duration') ||
-    t(p?.quality, ACTIVE_QUALITIES, 'quality');
+    // Entwurf (draft) is open in this test build; a finished 720p/1080p render
+    // only when its quality is unlocked.
+    (p?.draft
+      ? t(p?.quality, ACTIVE_QUALITIES, 'quality')
+      : ACTIVE_FINAL_QUALITIES.includes(p?.quality)
+        ? null
+        : 'quality gesperrt: in diesem Test ist nur Entwurf (480p) aktiv');
   if (err) return { ok: false, error: err };
   // draft only exists on BytePlus — silently drop it elsewhere
   if (p.draft && MODEL_CONFIG[p.model as ModelId]?.provider !== 'byteplus') p = { ...p, draft: false };

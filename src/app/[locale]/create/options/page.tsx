@@ -8,13 +8,13 @@ import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
 import {
-  FORMATS, ACTIVE_DURATIONS, DEFAULT_MODEL,
+  FORMATS, ACTIVE_DURATIONS, ACTIVE_FINAL_QUALITIES, DEFAULT_MODEL,
   resolutionFor, costEstimate, selectReferencePhotos,
   type PropertyType, type Format, type Lang, type ModelId, type Quality, type Duration,
 } from '@/lib/v3/config';
 
-/** Quality tier the user picks: cheap draft, or a finished 720p render.
- *  1080p stays locked in this test build. */
+/** Quality tier the user picks. This test build only opens the cheap draft —
+ *  720p and 1080p stay visible (so testers see they exist) but locked. */
 type Tier = 'draft' | Quality;
 type DurationChoice = Duration | 'custom';
 
@@ -187,7 +187,10 @@ export default function OptionsPage() {
                 {
                   id: 'standard',
                   text: '720p',
-                  sub: `≈ ${costEstimate(model, 'standard', duration, false).toFixed(2)} USD`,
+                  sub: `≈ ${costEstimate(model, 'standard', duration, false).toFixed(2)} USD${
+                    ACTIVE_FINAL_QUALITIES.includes('standard') ? '' : ' · gesperrt'
+                  }`,
+                  disabled: !ACTIVE_FINAL_QUALITIES.includes('standard'),
                 },
                 {
                   id: 'high',

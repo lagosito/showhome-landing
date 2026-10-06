@@ -12,7 +12,7 @@ const base = {
 
 const cases: { name: string; patch: Record<string, unknown> }[] = [
   { name: 'OK  Entwurf 480p · 7 s', patch: {} },
-  { name: 'OK  720p final · 7 s', patch: { draft: false } },
+  { name: 'LOCK 720p final (Test nur Entwurf)', patch: { draft: false } },
   { name: 'LOCK 1080p (quality=high)', patch: { quality: 'high', draft: false } },
   { name: 'LOCK duration 5 s', patch: { duration: 5 } },
   { name: 'LOCK duration 15 s', patch: { duration: 15 } },
