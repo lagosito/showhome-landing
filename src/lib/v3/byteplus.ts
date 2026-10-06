@@ -9,6 +9,26 @@
 
 const ARK_BASE = 'https://ark.ap-southeast.bytepluses.com/api/v3';
 
+/** Rejection from ModelArk with the machine-readable code attached, so callers
+ *  can turn e.g. InputImageSensitiveContentDetected into a useful user message
+ *  instead of surfacing raw JSON. */
+export class BytePlusError extends Error {
+  status: number;
+  code?: string;
+  detail?: string;
+  constructor(status: number, body: string) {
+    super(`BytePlus submit ${status}: ${body.slice(0, 300)}`);
+    this.status = status;
+    try {
+      const parsed = JSON.parse(body);
+      this.code = parsed?.error?.code ?? parsed?.code ?? undefined;
+      this.detail = parsed?.error?.message ?? parsed?.message ?? undefined;
+    } catch {
+      // not JSON — keep code/detail unset
+    }
+  }
+}
+
 function apiKey(): string {
   const k = process.env.BYTEPLUS_API_KEY;
   if (!k) throw new Error('BYTEPLUS_API_KEY not configured');
@@ -49,7 +69,7 @@ export async function submitBytePlus(input: {
   });
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`BytePlus submit ${res.status}: ${body.slice(0, 300)}`);
+    throw new BytePlusError(res.status, body);
   }
   const data = (await res.json()) as { id?: string };
   if (!data.id) throw new Error('BytePlus submit: no task id');

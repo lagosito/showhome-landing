@@ -37,6 +37,13 @@ export default function OptionsPage() {
   const [draft, setDraft] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  // ModelArk rejected a reference photo because a real person is in it.
+  const [personIssue, setPersonIssue] = useState<null | {
+    photoIndex: number;
+    photoUrl: string;
+    room: string | null;
+    message: string;
+  }>(null);
 
   useEffect(() => {
     const stored = sessionStorage.getItem('showhome-photos');
@@ -61,21 +68,44 @@ export default function OptionsPage() {
   // photos); it is sent separately and turned into a text description.
   const presenterUrl = photos.find((p: any) => p.room === 'Presenter')?.url ?? null;
 
-  const handleSubmit = async () => {
+  const persistPhotos = (next: any[]) => {
+    setPhotos(next);
+    sessionStorage.setItem('showhome-photos', JSON.stringify(next));
+  };
+
+  /** photosOverride lets a fix (drop / re-role the rejected photo) re-submit in
+   *  the same tick, before React has re-rendered from setPhotos. */
+  const handleSubmit = async (photosOverride?: any[]) => {
     setSubmitting(true);
     setError('');
+    setPersonIssue(null);
+    const list = photosOverride ?? photos;
+    const refsNow = selectReferencePhotos(list.map((p: any, i: number) => ({ ...p, order: p.order ?? i + 1 })));
+    const presenterNow = list.find((p: any) => p.room === 'Presenter')?.url ?? null;
     try {
       const res = await fetch('/api/render', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          propertyType, format, language, model, duration, quality, draft: isDraft, presenterUrl,
-          photos: refs.map((p: any, i: number) => ({ room: p.room, url: p.url, order: i + 1 })),
+          propertyType, format, language, model, duration, quality, draft: isDraft,
+          presenterUrl: presenterNow,
+          photos: refsNow.map((p: any, i: number) => ({ room: p.room, url: p.url, order: i + 1 })),
         }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Etwas ist schiefgelaufen');
+        if (data.code === 'person_in_reference_image') {
+          setPersonIssue({
+            photoIndex: typeof data.photoIndex === 'number' ? data.photoIndex : -1,
+            photoUrl: data.photoUrl || '',
+            room: data.room || null,
+            message:
+              data.message ||
+              'Ein Referenzfoto zeigt eine Person und kann nicht als Vorlage dienen.',
+          });
+        } else {
+          setError(data.error || 'Etwas ist schiefgelaufen');
+        }
         setSubmitting(false);
         return;
       }
@@ -87,6 +117,23 @@ export default function OptionsPage() {
       setError(e.message || 'Netzwerkfehler');
       setSubmitting(false);
     }
+  };
+
+  // Two ways out of a rejected person photo: drop it, or keep the person as a
+  // generated look-alike on camera (Makler format only, no presenter yet).
+  const removeProblemPhoto = () => {
+    if (!personIssue?.photoUrl) return;
+    persistPhotos(photos.filter((p: any) => p.url !== personIssue.photoUrl));
+    handleSubmit(photos.filter((p: any) => p.url !== personIssue.photoUrl));
+  };
+
+  const useSimilarPerson = () => {
+    if (!personIssue?.photoUrl) return;
+    const next = photos.map((p: any) =>
+      p.url === personIssue.photoUrl ? { ...p, room: 'Presenter' } : p,
+    );
+    persistPhotos(next);
+    handleSubmit(next);
   };
 
   const group = <T extends string | number>(
@@ -210,6 +257,52 @@ export default function OptionsPage() {
                 </div>
               </div>
 
+              {personIssue && (
+                <div className="rounded-2xl border border-amber-300 bg-amber-50 p-5">
+                  <p className="text-[14px] font-semibold text-ink">
+                    {personIssue.room ? `Referenzfoto „${personIssue.room}“` : 'Ein Referenzfoto'}{' '}
+                    zeigt eine Person
+                    {personIssue.photoIndex >= 0 ? ` (Position ${personIssue.photoIndex + 1})` : ''}
+                  </p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-ink-2">
+                    Aus Datenschutzgründen dürfen echte Personen nicht als Vorlage für die
+                    Generierung dienen. Deshalb wurde nichts gestartet – dir entstehen keine
+                    Kosten. Du kannst das Foto jetzt entfernen
+                    {format === 'agent' && !presenterUrl
+                      ? ' oder die Person als ähnliche, künstliche Person ins Video holen (sie tritt dann vor der Kamera auf).'
+                      : '.'}
+                  </p>
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={removeProblemPhoto}
+                      disabled={submitting}
+                      className="rounded-full bg-ink px-5 py-3 text-[14px] font-medium text-paper transition hover:-translate-y-0.5 disabled:opacity-40"
+                    >
+                      Foto entfernen
+                    </button>
+                    {format === 'agent' && !presenterUrl && (
+                      <button
+                        type="button"
+                        onClick={useSimilarPerson}
+                        disabled={submitting}
+                        className="rounded-full border border-ink/25 bg-white px-5 py-3 text-[14px] font-medium text-ink transition hover:-translate-y-0.5 disabled:opacity-40"
+                      >
+                        Ähnliche Person ins Video
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setPersonIssue(null)}
+                      disabled={submitting}
+                      className="rounded-full border border-line-2 bg-white/70 px-5 py-3 text-[14px] font-medium text-ink transition hover:-translate-y-0.5 disabled:opacity-40"
+                    >
+                      Verwerfen
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {error && (
                 <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-[13px] text-red-700">
                   {error}
@@ -223,7 +316,7 @@ export default function OptionsPage() {
                   className="flex-1 rounded-full border border-line-2 bg-white/70 px-6 py-3.5 text-[15px] font-medium text-ink backdrop-blur transition hover:-translate-y-0.5 hover:bg-white disabled:opacity-40"
                 >Zurück</button>
                 <button
-                  onClick={handleSubmit}
+                  onClick={() => handleSubmit()}
                   disabled={submitting || refs.length === 0}
                   className="flex-1 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper shadow-[0_1px_2px_rgba(13,14,16,.2),0_12px_28px_-12px_rgba(13,14,16,.55)] transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-40 disabled:hover:translate-y-0"
                 >

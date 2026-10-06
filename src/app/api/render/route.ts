@@ -7,7 +7,7 @@ import { runShotPlanner } from '@/lib/v3/shotPlanner';
 import { buildVideoPrompt } from '@/lib/v3/buildPrompt';
 import { describePresenter } from '@/lib/v3/presenter';
 import { submitFal } from '@/lib/v3/fal';
-import { submitBytePlus } from '@/lib/v3/byteplus';
+import { submitBytePlus, BytePlusError } from '@/lib/v3/byteplus';
 import { insertJob, updateJob } from '@/lib/v3/db';
 import { createClient } from '@/lib/supabase/server';
 import { randomUUID } from 'crypto';
@@ -152,7 +152,41 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ job_id: jobId });
   } catch (err: any) {
-    await updateJob(jobId, { status: 'error', error: String(err?.message || err).slice(0, 500) }).catch(() => {});
-    return NextResponse.json({ error: String(err?.message || 'Render failed') }, { status: 502 });
+    // ModelArk refuses reference images that contain a real person — the task
+    // never starts, so nothing is billed. Tell the user in plain German WHICH
+    // photo did it and offer a way out, instead of the raw provider payload.
+    const raw = String(err?.message || '');
+    const code = String(err?.code || '');
+    const personRejected =
+      code.includes('InputImageSensitiveContentDetected') ||
+      /may contain a real person/i.test(raw) ||
+      /may contain a real person/i.test(String(err?.detail || ''));
+
+    if (personRejected) {
+      const contentIdx = /content\[(\d+)\]/.exec(`${raw} ${String(err?.detail || '')}`);
+      const idx = contentIdx ? parseInt(contentIdx[1], 10) : -1;
+      // content[0] is the prompt text, reference images start at content[1]
+      const photoIndex = idx > 0 ? idx - 1 : -1;
+      const photo = photoIndex >= 0 && photoIndex < refs.length ? refs[photoIndex] : undefined;
+      await updateJob(jobId, {
+        status: 'error',
+        error: 'Referenzfoto enthält eine Person – Vorlage abgelehnt',
+      }).catch(() => {});
+      return NextResponse.json(
+        {
+          code: 'person_in_reference_image',
+          error: 'person_in_reference_image',
+          message:
+            'Ein Referenzfoto zeigt eine Person. Der Videodienst nimmt Bilder mit echten Personen nicht als Vorlage an (Datenschutz) – die Generierung wurde nicht gestartet.',
+          photoIndex,
+          photoUrl: photo?.url ?? null,
+          room: photo?.room ?? null,
+        },
+        { status: 422 },
+      );
+    }
+
+    await updateJob(jobId, { status: 'error', error: raw.slice(0, 500) }).catch(() => {});
+    return NextResponse.json({ error: raw || 'Render failed' }, { status: 502 });
   }
 }
