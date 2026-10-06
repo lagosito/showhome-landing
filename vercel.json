@@ -1,6 +1,12 @@
 {
   "framework": "nextjs",
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/cron/reconcile",
+      "schedule": "*/2 * * * *"
+    }
+  ],
   "redirects": [
     {
       "source": "/(.*)",
