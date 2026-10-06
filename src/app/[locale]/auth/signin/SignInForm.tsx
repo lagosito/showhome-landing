@@ -4,6 +4,22 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
+/** Auth errors arrive in English from GoTrue ("email rate limit exceeded",
+ *  "Invalid login credentials", …). Testers should never see those raw. */
+function authError(message?: string): string {
+  const m = (message || '').toLowerCase();
+  if (m.includes('invalid login credentials')) return 'E-Mail oder Passwort stimmt nicht.';
+  if (m.includes('rate limit') || m.includes('too many'))
+    return 'Zu viele Versuche in kurzer Zeit. Bitte versuche es in einer Stunde erneut.';
+  if (m.includes('already registered') || m.includes('already been registered'))
+    return 'Es gibt bereits ein Konto mit dieser E-Mail. Melde dich einfach an.';
+  if (m.includes('password') && m.includes('at least'))
+    return 'Das Passwort braucht mindestens 6 Zeichen.';
+  if (m.includes('valid email')) return 'Bitte gib eine gültige E-Mail-Adresse ein.';
+  if (!message) return 'Anmeldung fehlgeschlagen. Bitte prüfe deine Angaben.';
+  return 'Anmeldung fehlgeschlagen. Bitte prüfe deine Angaben und versuche es erneut.';
+}
+
 export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +38,7 @@ export default function SignInForm() {
     setError('');
     const { error } = await sb.auth.signInWithPassword({ email, password });
     if (error) {
-      setError(error.message);
+      setError(authError(error.message));
       setLoading(false);
     } else {
       router.push(redirect);
@@ -38,7 +54,7 @@ export default function SignInForm() {
       options: { emailRedirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}` },
     });
     if (error) {
-      setError(error.message);
+      setError(authError(error.message));
       setLoading(false);
     } else {
       setMagicSent(true);
@@ -49,15 +65,21 @@ export default function SignInForm() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    const { error } = await sb.auth.signUp({
+    const { data, error } = await sb.auth.signUp({
       email,
       password,
       options: { emailRedirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}` },
     });
     if (error) {
-      setError(error.message);
+      setError(authError(error.message));
       setLoading(false);
+    } else if (data.session) {
+      // mailer_autoconfirm is on: the account exists right now, so go straight
+      // into the flow instead of telling people to check a mailbox that will
+      // never receive anything.
+      router.push(redirect);
     } else {
+      // Confirmation email required (only happens if autoconfirm is off).
       setMagicSent(true);
     }
   }
