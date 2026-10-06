@@ -74,6 +74,7 @@ export async function POST(request: Request) {
   try {
     await insertJob({
       id: jobId,
+      user_id: user.id,
       params,
       photos: refs,
       model: params.model,

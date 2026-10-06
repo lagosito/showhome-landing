@@ -26,6 +26,7 @@ export interface V3Job {
   model: string | null;
   endpoint: string | null;
   status: 'planning' | 'rendering' | 'done' | 'error';
+  user_id: string | null;
   error: string | null;
   video_url: string | null;
   cost_estimate_usd: number | null;

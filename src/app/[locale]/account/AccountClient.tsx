@@ -41,9 +41,13 @@ function statusLabel(status: string, t: (key: string) => string): { text: string
     case 'rendering':
       return { text: t('statusProcessing'), color: 'bg-amber-400 animate-pulse' };
     case 'queued':
+    case 'planning':
       return { text: t('statusQueued'), color: 'bg-sky-400' };
     case 'failed':
+    case 'error':
       return { text: t('statusFailed'), color: 'bg-red-500' };
+    case 'done':
+      return { text: t('statusCompleted'), color: 'bg-emerald-500' };
     default:
       return { text: status, color: 'bg-ink-3' };
   }
@@ -179,12 +183,11 @@ export default function AccountClient({
                         )}
                       </div>
                       <div className="ml-4 shrink-0">
-                        {job.status === 'completed' && job.video_url ? (
+                        {job.status === 'done' && job.video_url ? (
                           <div className="flex gap-2">
+                            {/* /video/<id> refreshes the signed link (24 h expiry) before playing */}
                             <a
-                              href={job.video_url}
-                              target="_blank"
-                              rel="noopener"
+                              href={`/video/${job.id}`}
                               className="rounded-full border border-line-2 bg-white/70 px-4 py-2 text-[13px] font-medium text-ink transition hover:bg-paper"
                             >
                               {t('watch')}
@@ -199,9 +202,9 @@ export default function AccountClient({
                           </div>
                         ) : (
                           <button
-                            onClick={() => router.push(`/create/result/${job.id}`)}
+                            onClick={() => router.push(`/video/${job.id}`)}
                             className="rounded-full border border-line-2 bg-white/70 px-4 py-2 text-[13px] font-medium text-ink transition hover:bg-paper"
-                            disabled={job.status === 'failed'}
+                            disabled={job.status === 'error'}
                           >
                             {t('viewDetails')}
                           </button>

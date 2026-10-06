@@ -36,9 +36,9 @@ export default async function AccountPage() {
     .eq('id', user.id)
     .single();
 
-  // Fetch user's videos from showhome_jobs
+  // Fetch the user's renders — v3 writes to v3_jobs (v2's showhome_jobs is dead)
   const { data: jobs } = await supabase
-    .from('showhome_jobs')
+    .from('v3_jobs')
     .select('id, status, created_at, video_url, error')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
