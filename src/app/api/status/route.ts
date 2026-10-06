@@ -6,6 +6,24 @@ import { MODEL_CONFIG } from '@/lib/v3/config';
 
 export const dynamic = 'force-dynamic';
 
+/** BytePlus/ByteDance TOS signs video URLs for 24 h (X-Tos-Date + X-Tos-Expires).
+ *  Returns seconds left before the stored link stops working, or null when the
+ *  URL isn't signed that way. */
+function signedUrlRemainingSeconds(raw: string): number | null {
+  try {
+    const q = new URL(raw).searchParams;
+    const stamp = q.get('X-Tos-Date'); // 20261006T092621Z
+    const expires = Number(q.get('X-Tos-Expires'));
+    if (!stamp || !Number.isFinite(expires) || stamp.length < 16) return null;
+    const iso = `${stamp.slice(0, 4)}-${stamp.slice(4, 6)}-${stamp.slice(6, 8)}T` +
+      `${stamp.slice(9, 11)}:${stamp.slice(11, 13)}:${stamp.slice(13, 15)}Z`;
+    const expiresAt = Math.floor(new Date(iso).getTime() / 1000) + expires;
+    return expiresAt - Math.floor(Date.now() / 1000);
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const jobId = url.searchParams.get('job_id');
@@ -30,6 +48,22 @@ export async function GET(request: Request) {
         job = (await getJob(jobId))!;
       }
     } catch { /* transient — next poll retries */ }
+  }
+
+  // Done + about to expire: ask BytePlus for a fresh signed link, otherwise a
+  // tester who comes back tomorrow gets a dead player.
+  if (job.status === 'done' && provider === 'byteplus' && bpTaskId && job.video_url) {
+    const remaining = signedUrlRemainingSeconds(job.video_url);
+    if (remaining !== null && remaining < 3600) {
+      try {
+        const task = await getBytePlusTask(bpTaskId);
+        const st = mapBytePlusStatus(task);
+        if (st.done && st.videoUrl) {
+          await updateJob(jobId, { video_url: st.videoUrl });
+          job = (await getJob(jobId))!;
+        }
+      } catch { /* keep the old link until it actually expires */ }
+    }
   }
 
   // Fallback: if still rendering, check fal directly (webhook may be blocked
