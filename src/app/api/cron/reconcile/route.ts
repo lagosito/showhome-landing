@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/v3/db';
+import { GET as pollJobStatus } from '@/app/api/status/route';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -45,27 +46,32 @@ async function reconcile(request: Request) {
     return NextResponse.json({ checked: 0, jobs: [] });
   }
 
-  const origin = new URL(request.url).origin;
-  const checked: { id: string; from: string; to: string | null }[] = [];
+  // Call the status handler directly instead of HTTP: Vercel invokes crons on
+  // the deployment URL, whose origin sits behind deployment protection, so an
+  // internal fetch silently came back non-JSON and the sweep never closed
+  // anything (observed: heartbeats "rendering->rendering" for 40 min).
+  const checked: { id: string; from: string; to: string | null; err?: string }[] = [];
 
   for (const row of data) {
     let to: string | null = row.status;
+    let err: string | undefined;
     try {
-      const res = await fetch(
-        `${origin}/api/status?job_id=${encodeURIComponent(row.id)}`,
-        { headers: { accept: 'application/json' } },
+      const res = await pollJobStatus(
+        new Request(`http://internal/api/status?job_id=${encodeURIComponent(row.id)}`),
       );
-      if (res.ok) {
-        const body = (await res.json()) as { status?: string };
-        to = body.status ?? row.status;
-      }
-    } catch {
-      to = row.status; // transient — the next sweep retries
+      const body = (await res.json()) as { status?: string; error?: string };
+      to = res.ok ? (body.status ?? row.status) : row.status;
+      if (!res.ok) err = (body.error || `HTTP ${res.status}`).slice(0, 80);
+    } catch (e) {
+      err = String(e).slice(0, 80); // transient — the next sweep retries
     }
-    checked.push({ id: row.id, from: row.status, to });
+    checked.push(err ? { id: row.id, from: row.status, to, err } : { id: row.id, from: row.status, to });
   }
 
-  await beat(checked.length, checked.map(c => `${c.from}->${c.to}`).join(', ').slice(0, 200));
+  await beat(
+    checked.length,
+    checked.map(c => `${c.from}->${c.to}${c.err ? ` (${c.err})` : ''}`).join(', ').slice(0, 200),
+  );
   return NextResponse.json({ checked: checked.length, jobs: checked });
 }
 
