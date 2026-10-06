@@ -8,7 +8,7 @@
 // So the presenter photo never travels as an image. We turn it into a text
 // description once per render and put that in the prompt's CHARACTER block.
 
-import { chatProvider } from '@/lib/llm';
+import { chatText } from '@/lib/llm';
 
 const DESCRIBE_PROMPT = `Describe the person in this photo for a text-to-video prompt.
 Reply with ONLY the description, in English, maximum 70 words, covering:
@@ -22,40 +22,17 @@ as beautiful, handsome, elegant or professional.`;
  *  (no key, blocked image, timeout) — the caller then falls back to the
  *  built-in character card. */
 export async function describePresenter(imageUrl: string): Promise<string | null> {
-  const provider = chatProvider();
-  if (!provider || !/^https?:\/\//i.test(imageUrl)) return null;
+  if (!/^https?:\/\//i.test(imageUrl)) return null;
 
-  try {
-    const res = await fetch(`${provider.baseUrl}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${provider.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: provider.model,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              { type: 'text', text: DESCRIBE_PROMPT },
-              { type: 'image_url', image_url: { url: imageUrl } },
-            ],
-          },
-        ],
-        max_tokens: 160,
-        temperature: 0,
-      }),
-      signal: AbortSignal.timeout(20000),
-    });
-
-    if (!res.ok) return null;
-    const data = await res.json();
-    const text = (data.choices?.[0]?.message?.content || '').trim();
-    if (!text) return null;
-    // Guard against the model wrapping the answer in quotes or a preamble.
-    return text.replace(/^["'\s]+|["'\s]+$/g, '').slice(0, 700) || null;
-  } catch {
-    return null;
-  }
+  // Tries orcarouter first, falls back to OpenAI (see lib/llm.ts).
+  const text = await chatText(
+    [
+      { type: 'text', text: DESCRIBE_PROMPT },
+      { type: 'image_url', image_url: { url: imageUrl } },
+    ],
+    { maxTokens: 160, timeoutMs: 25000 },
+  );
+  if (!text) return null;
+  // Guard against the model wrapping the answer in quotes or a preamble.
+  return text.replace(/^["'\s]+|["'\s]+$/g, '').slice(0, 700) || null;
 }

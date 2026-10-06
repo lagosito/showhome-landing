@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 const ROOMS = ['Facade', 'Kitchen', 'Living Room', 'Dining Room', 'Bedroom', 'Bathroom', 'Hallway', 'Exterior', 'Other'] as const;
 type Room = typeof ROOMS[number];
 
-import { chatProvider } from '@/lib/llm';
+import { chatText } from '@/lib/llm';
 
 interface RoomClassification {
   room: Room;
@@ -20,43 +20,19 @@ Reply with ONLY valid JSON, nothing else.`;
 
 async function detectRoomForImage(imageUrl: string): Promise<RoomClassification> {
   const fallback: RoomClassification = { room: 'Other', description: '' };
-  const provider = chatProvider();
-  if (!provider) return fallback;
+
+  // Tries orcarouter first, falls back to OpenAI (see lib/llm.ts) — a capacity
+  // outage on one provider used to leave every photo in "Other".
+  const text = await chatText(
+    [
+      { type: 'text', text: DESCRIPTION_PROMPT },
+      { type: 'image_url', image_url: { url: imageUrl } },
+    ],
+    { maxTokens: 200, timeoutMs: 30000, json: true },
+  );
+  if (!text) return fallback;
 
   try {
-    const res = await fetch(`${provider.baseUrl}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${provider.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: provider.model,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: DESCRIPTION_PROMPT,
-              },
-              {
-                type: 'image_url',
-                image_url: { url: imageUrl },
-              },
-            ],
-          },
-        ],
-        max_tokens: 120,
-        temperature: 0,
-        response_format: { type: 'json_object' },
-      }),
-    });
-
-    if (!res.ok) return fallback;
-
-    const data = await res.json();
-    const text = (data.choices?.[0]?.message?.content || '').trim();
     const parsed = JSON.parse(text);
     const room = ROOMS.find(r => r.toLowerCase() === (parsed.room || '').toLowerCase()) || 'Other';
     const description = typeof parsed.description === 'string' ? parsed.description.slice(0, 200) : '';
