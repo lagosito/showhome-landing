@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
 
 const ROOMS = ['Facade', 'Kitchen', 'Living Room', 'Dining Room', 'Bedroom', 'Bathroom', 'Hallway', 'Exterior', 'Other'] as const;
 type Room = typeof ROOMS[number];
@@ -66,6 +67,11 @@ async function detectRoomForImage(imageUrl: string): Promise<RoomClassification>
 
 // v3 (internal): no login required — protected by Vercel Deployment Protection.
 export async function POST(request: Request) {
+  // Lives behind the /create login gate — every vision call is billed.
+  const sb = await createClient();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return NextResponse.json({ error: 'Nicht angemeldet' }, { status: 401 });
+
   const { photos } = await request.json();
   if (!photos?.length) {
     return NextResponse.json({ error: 'photos required' }, { status: 400 });

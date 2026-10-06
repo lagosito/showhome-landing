@@ -5,8 +5,6 @@ import {updateSession} from '@/lib/supabase/middleware';
 
 const handleI18nRouting = createMiddleware(routing);
 
-// v3 (internal): login gate removed — preview deployments rely on
-// Vercel Deployment Protection (ssoProtection: all_except_custom_domains).
 export async function proxy(request: NextRequest) {
   const isApi = request.nextUrl.pathname.startsWith('/api');
 
@@ -22,8 +20,20 @@ export async function proxy(request: NextRequest) {
     return i18nResponse;
   }
 
-  // Then run Supabase session management (no route protection in v3)
-  const {response} = await updateSession(request);
+  // Then run Supabase session management
+  const {user, response} = await updateSession(request);
+
+  // Login gate — same rule as production (v2): every visitor must sign in or
+  // register before the create flow (upload → rooms → options → video).
+  if (request.nextUrl.pathname.match(/^\/(de|en)\/(create|account)/)) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/auth/signin';
+      url.searchParams.set('redirect', request.nextUrl.pathname);
+      return Response.redirect(url);
+    }
+  }
+
   return response;
 }
 

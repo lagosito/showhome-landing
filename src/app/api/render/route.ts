@@ -8,9 +8,26 @@ import { buildVideoPrompt } from '@/lib/v3/buildPrompt';
 import { submitFal } from '@/lib/v3/fal';
 import { submitBytePlus } from '@/lib/v3/byteplus';
 import { insertJob, updateJob } from '@/lib/v3/db';
+import { createClient } from '@/lib/supabase/server';
 import { randomUUID } from 'crypto';
 
 export const maxDuration = 60;
+
+// Every render is billed to this account — require a session and cap the rate.
+const renderLimits = new Map<string, { count: number; resetAt: number }>();
+const MAX_RENDERS_PER_HOUR = 10;
+
+function underRenderLimit(userId: string): boolean {
+  const now = Date.now();
+  const entry = renderLimits.get(userId);
+  if (!entry || now > entry.resetAt) {
+    renderLimits.set(userId, { count: 1, resetAt: now + 3600_000 });
+    return true;
+  }
+  if (entry.count >= MAX_RENDERS_PER_HOUR) return false;
+  entry.count++;
+  return true;
+}
 
 export async function POST(request: Request) {
   let body: any;
@@ -18,6 +35,18 @@ export async function POST(request: Request) {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  const sb = await createClient();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Nicht angemeldet' }, { status: 401 });
+  }
+  if (!underRenderLimit(user.id)) {
+    return NextResponse.json(
+      { error: `Maximal ${MAX_RENDERS_PER_HOUR} Renders pro Stunde. Bitte warte kurz.` },
+      { status: 429 },
+    );
   }
 
   const v = validateParams(body);
