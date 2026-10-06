@@ -117,6 +117,10 @@ export interface RenderParams {
   quality: Quality;
   /** BytePlus only: cheap 480p preview; finalize to 1080p from the draft. */
   draft?: boolean;
+  /** Uploaded presenter photo. Seedance/BytePlus refuses person images as a
+   *  reference (400 InputImageSensitiveContentDetected), so only the text
+   *  description derived from it reaches the prompt — see v3/presenter.ts. */
+  presenterUrl?: string | null;
 }
 
 export function validateParams(p: any): { ok: true; params: RenderParams } | { ok: false; error: string } {
@@ -146,6 +150,10 @@ export function validateParams(p: any): { ok: true; params: RenderParams } | { o
       duration: Number(p.duration) as Duration,
       quality: p.quality,
       draft: Boolean(p.draft),
+      presenterUrl:
+        typeof p.presenterUrl === 'string' && /^https?:\/\//i.test(p.presenterUrl)
+          ? p.presenterUrl
+          : null,
     },
   };
 }

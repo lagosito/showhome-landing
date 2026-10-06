@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 const ROOMS = ['Facade', 'Kitchen', 'Living Room', 'Dining Room', 'Bedroom', 'Bathroom', 'Hallway', 'Exterior', 'Other'] as const;
 type Room = typeof ROOMS[number];
 
-const ORCAROUTER_KEY = process.env.ORCAROUTER_API_KEY;
+import { chatProvider } from '@/lib/llm';
 
 interface RoomClassification {
   room: Room;
@@ -20,17 +20,18 @@ Reply with ONLY valid JSON, nothing else.`;
 
 async function detectRoomForImage(imageUrl: string): Promise<RoomClassification> {
   const fallback: RoomClassification = { room: 'Other', description: '' };
-  if (!ORCAROUTER_KEY) return fallback;
+  const provider = chatProvider();
+  if (!provider) return fallback;
 
   try {
-    const res = await fetch('https://api.orcarouter.ai/v1/chat/completions', {
+    const res = await fetch(`${provider.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ORCAROUTER_KEY}`,
+        'Authorization': `Bearer ${provider.apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: provider.model,
         messages: [
           {
             role: 'user',

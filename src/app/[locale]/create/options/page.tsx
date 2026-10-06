@@ -57,6 +57,10 @@ export default function OptionsPage() {
   const tier: Tier = isDraft ? 'draft' : quality;
   const cost = costEstimate(model, quality, duration, isDraft);
 
+  // The presenter photo is not a reference image (Seedance refuses person
+  // photos); it is sent separately and turned into a text description.
+  const presenterUrl = photos.find((p: any) => p.room === 'Presenter')?.url ?? null;
+
   const handleSubmit = async () => {
     setSubmitting(true);
     setError('');
@@ -65,7 +69,7 @@ export default function OptionsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          propertyType, format, language, model, duration, quality, draft: isDraft,
+          propertyType, format, language, model, duration, quality, draft: isDraft, presenterUrl,
           photos: refs.map((p: any, i: number) => ({ room: p.room, url: p.url, order: i + 1 })),
         }),
       });

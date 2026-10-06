@@ -26,6 +26,9 @@ export function buildVideoPrompt(
   params: RenderParams,
   plan: ShotPlan,
   photos: { room: string; url: string }[],
+  /** Text description derived from the uploaded presenter photo (see presenter.ts).
+   *  Null/undefined → the built-in character card is used instead. */
+  presenter?: string | null,
 ): string {
   const langName = params.language === 'de' ? 'German' : 'English';
   const hasPeople = params.format !== 'walkthrough';
@@ -51,7 +54,10 @@ export function buildVideoPrompt(
   // 3. Character (agent / lifestyle only)
   if (hasPeople) {
     blocks.push(
-      `CHARACTER:\n${CHARACTER}\nKeep face, hair, clothing and wristwatch identical in every shot.`,
+      presenter && isAgent
+        ? `CHARACTER:\nThe presenter on camera matches this description exactly: ${presenter}\n` +
+            'Keep face, hair, clothing and accessories identical in every shot. Do not show any other person.'
+        : `CHARACTER:\n${CHARACTER}\nKeep face, hair, clothing and wristwatch identical in every shot.`,
     );
   }
 

@@ -5,6 +5,7 @@ import {
 } from '@/lib/v3/config';
 import { runShotPlanner } from '@/lib/v3/shotPlanner';
 import { buildVideoPrompt } from '@/lib/v3/buildPrompt';
+import { describePresenter } from '@/lib/v3/presenter';
 import { submitFal } from '@/lib/v3/fal';
 import { submitBytePlus } from '@/lib/v3/byteplus';
 import { insertJob, updateJob } from '@/lib/v3/db';
@@ -86,7 +87,13 @@ export async function POST(request: Request) {
 
   try {
     const plan = await runShotPlanner(params, refs);
-    const prompt = buildVideoPrompt(params, plan, refs);
+    // Seedance refuses person photos as a reference image, so the presenter
+    // becomes a text description that drives the CHARACTER block instead.
+    const presenterDesc =
+      params.format === 'agent' && params.presenterUrl
+        ? await describePresenter(params.presenterUrl)
+        : null;
+    const prompt = buildVideoPrompt(params, plan, refs, presenterDesc);
 
     const provider = modelCfg.provider;
 
