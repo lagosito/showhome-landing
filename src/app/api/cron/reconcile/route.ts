@@ -34,7 +34,16 @@ async function reconcile(request: Request) {
     .limit(20);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  if (!data?.length) return NextResponse.json({ checked: 0, jobs: [] });
+  const beat = async (jobs: number, note: string) => {
+    try {
+      await db().from('cron_heartbeats').insert({ jobs_checked: jobs, note });
+    } catch { /* never fail the sweep over telemetry */ }
+  };
+
+  if (!data?.length) {
+    await beat(0, 'nothing to reconcile');
+    return NextResponse.json({ checked: 0, jobs: [] });
+  }
 
   const origin = new URL(request.url).origin;
   const checked: { id: string; from: string; to: string | null }[] = [];
@@ -56,6 +65,7 @@ async function reconcile(request: Request) {
     checked.push({ id: row.id, from: row.status, to });
   }
 
+  await beat(checked.length, checked.map(c => `${c.from}->${c.to}`).join(', ').slice(0, 200));
   return NextResponse.json({ checked: checked.length, jobs: checked });
 }
 
