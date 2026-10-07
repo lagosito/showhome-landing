@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
+
+/** Version of the Terms / Privacy texts the user accepts at sign-up. Bump when
+ *  the legal texts change — it is stored with the consent record. */
+const TERMS_VERSION = '2026-10-06';
 
 /** Auth errors arrive in English from GoTrue ("email rate limit exceeded",
  *  "Invalid login credentials", …). Testers should never see those raw. */
@@ -27,7 +32,15 @@ export default function SignInForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<'password' | 'magic'>('password');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const router = useRouter();
+  const locale = useLocale();
+  const isEn = locale === 'en';
+  const termsHref = isEn ? '/en/terms' : '/de/agb';
+  const privacyHref = isEn ? '/en/privacy' : '/de/datenschutz';
+  const termsError = isEn
+    ? 'Please accept the Terms and read the Privacy Policy.'
+    : 'Bitte akzeptiere die AGB und lies die Datenschutzerklärung.';
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/create/upload';
   const sb = createClient();
@@ -63,17 +76,45 @@ export default function SignInForm() {
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
+    if (!termsAccepted) {
+      setError(termsError);
+      return;
+    }
     setLoading(true);
     setError('');
+    const acceptedAt = new Date().toISOString();
     const { data, error } = await sb.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}`,
+        data: {
+          terms_version: TERMS_VERSION,
+          privacy_version: TERMS_VERSION,
+          terms_accepted_at: acceptedAt,
+          terms_locale: locale,
+        },
+      },
     });
     if (error) {
       setError(authError(error.message));
       setLoading(false);
-    } else if (data.session) {
+    } else if (data.session && data.user) {
+      // Consent record next to the account (timestamp + text version). The
+      // metadata written above stays as a fallback if this insert is refused.
+      await sb
+        .from('user_consents')
+        .upsert(
+          {
+            user_id: data.user.id,
+            terms_version: TERMS_VERSION,
+            privacy_version: TERMS_VERSION,
+            terms_accepted_at: acceptedAt,
+            locale,
+            source: window.location.pathname,
+          },
+          { onConflict: 'user_id', ignoreDuplicates: true },
+        );
       // mailer_autoconfirm is on: the account exists right now, so go straight
       // into the flow instead of telling people to check a mailbox that will
       // never receive anything.
@@ -138,7 +179,44 @@ export default function SignInForm() {
         </button>
       </form>
 
-      <p className="mt-6 text-center text-[13px] text-ink-3">
+      <div className="mt-6 flex items-start gap-3">
+        <input
+          id="terms"
+          type="checkbox"
+          checked={termsAccepted}
+          onChange={(e) => setTermsAccepted(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 rounded border-line accent-ink"
+        />
+        <label htmlFor="terms" className="cursor-pointer text-[13px] leading-relaxed text-ink-3">
+          {isEn ? (
+            <>
+              I accept the{' '}
+              <a href={termsHref} className="text-clay underline hover:text-ink">
+                Terms
+              </a>{' '}
+              and have read the{' '}
+              <a href={privacyHref} className="text-clay underline hover:text-ink">
+                Privacy Policy
+              </a>
+              .
+            </>
+          ) : (
+            <>
+              Ich akzeptiere die{' '}
+              <a href={termsHref} className="text-clay underline hover:text-ink">
+                AGB
+              </a>{' '}
+              und habe die{' '}
+              <a href={privacyHref} className="text-clay underline hover:text-ink">
+                Datenschutzerklärung
+              </a>{' '}
+              gelesen.
+            </>
+          )}
+        </label>
+      </div>
+
+      <p className="mt-5 text-center text-[13px] text-ink-3">
         Noch kein Konto?{' '}
         <button onClick={handleSignUp} className="font-medium text-clay hover:underline">
           Jetzt erstellen

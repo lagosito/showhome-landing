@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { enterpriseMailto, uploadHref } from "@/lib/links";
 import { cn } from "../utils/cn";
 import { ArrowIcon, Button, Container, Reveal, SectionHead } from "./primitives";
 
@@ -28,40 +29,32 @@ function Check({ dark }: { dark?: boolean }) {
 
 export function Pricing() {
   const t = useTranslations("Pricing");
+  const locale = useLocale();
+  const upload = uploadHref(locale);
+  const sales = enterpriseMailto(locale);
 
   const plans = [
     {
       name: "Starter",
       for: t("ownerFor"),
-      price: "XX €",
+      price: t("ownerPrice"),
       unit: t("perMonth"),
       note: t("ownerNote"),
       cta: t("ownerCta"),
+      href: upload,
       variant: "secondary" as const,
-      features: [
-        t("ownerF1"),
-        t("ownerF2"),
-        t("ownerF3"),
-        t("ownerF4"),
-        t("ownerF5"),
-      ],
+      features: [t("ownerF1"), t("ownerF2"), t("ownerF3"), t("ownerF4")],
     },
     {
       name: "Professional",
       for: t("agentFor"),
-      price: "XX €",
+      price: t("agentPrice"),
       unit: t("perMonth"),
       note: t("agentNote"),
       cta: t("agentCta"),
+      href: upload,
       variant: "light" as const,
-      features: [
-        t("agentF1"),
-        t("agentF2"),
-        t("agentF3"),
-        t("agentF4"),
-        t("agentF5"),
-        t("agentF6"),
-      ],
+      features: [t("agentF1"), t("agentF2"), t("agentF3"), t("agentF4"), t("agentF5")],
     },
     {
       name: "Enterprise",
@@ -70,15 +63,9 @@ export function Pricing() {
       unit: "",
       note: t("companyNote"),
       cta: t("companyCta"),
+      href: sales,
       variant: "secondary" as const,
-      features: [
-        t("companyF1"),
-        t("companyF2"),
-        t("companyF3"),
-        t("companyF4"),
-        t("companyF5"),
-        t("companyF6"),
-      ],
+      features: [t("companyF1"), t("companyF2"), t("companyF3"), t("companyF4"), t("companyF5")],
     },
   ];
 
@@ -175,7 +162,7 @@ export function Pricing() {
 
                   <div className="mt-9 pt-1">
                     <Button
-                      href="#cta"
+                      href={p.href}
                       size="lg"
                       variant={p.variant}
                       className="w-full"

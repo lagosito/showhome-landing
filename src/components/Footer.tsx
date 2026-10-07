@@ -1,10 +1,13 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { legalHrefs, uploadHref } from '@/lib/links';
 import { ArrowIcon, Button, Container, Logo } from './primitives';
 
 export function Footer() {
   const t = useTranslations('Footer');
+  const locale = useLocale();
+  const legal = legalHrefs(locale);
 
   const nav = [
     { label: t('product'), href: '#product' },
@@ -14,7 +17,12 @@ export function Footer() {
     { label: t('enterprise'), href: '#enterprise' },
   ];
 
-  const legal = [t('privacy'), t('terms'), t('security'), t('imprint')];
+  // "Sicherheit" stays hidden until there is a real page for it.
+  const legalLinks = [
+    { label: t('privacy'), href: legal.privacy },
+    { label: t('terms'), href: legal.terms },
+    { label: t('imprint'), href: legal.imprint },
+  ];
 
   return (
     <footer className="border-t border-line bg-white">
@@ -43,7 +51,7 @@ export function Footer() {
           </nav>
 
           <div className="shrink-0">
-            <Button href="#cta" size="lg" icon={<ArrowIcon />}>
+            <Button href={uploadHref(locale)} size="lg" icon={<ArrowIcon />}>
               {t('createVideo')}
             </Button>
           </div>
@@ -54,13 +62,13 @@ export function Footer() {
             {t('copyright', { year: new Date().getFullYear() })}
           </p>
           <ul className="flex flex-wrap gap-6">
-            {legal.map((l) => (
-              <li key={l}>
+            {legalLinks.map((l) => (
+              <li key={l.href}>
                 <a
-                  href="#top"
+                  href={l.href}
                   className="text-[12.5px] text-ink-3 transition-colors hover:text-ink"
                 >
-                  {l}
+                  {l.label}
                 </a>
               </li>
             ))}

@@ -1,11 +1,13 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { enterpriseMailto, uploadHref } from "@/lib/links";
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
 import { IMG, px } from "../data/media";
 
 export function FinalCTA() {
   const t = useTranslations("FinalCTA");
+  const locale = useLocale();
 
   return (
     <section id="cta" className="scroll-mt-20 px-5 py-20 sm:px-8 sm:py-28">
@@ -39,11 +41,11 @@ export function FinalCTA() {
             </p>
 
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button href="#top" size="lg" variant="light" className="w-full sm:w-auto" icon={<ArrowIcon />}>
+              <Button href={uploadHref(locale)} size="lg" variant="light" className="w-full sm:w-auto" icon={<ArrowIcon />}>
                 {t("cta")}
               </Button>
               <Button
-                href="#enterprise"
+                href={enterpriseMailto(locale)}
                 size="lg"
                 className="w-full border border-white/18 bg-white/[0.06] text-paper backdrop-blur hover:bg-white/[0.12] sm:w-auto"
                 variant="ghost"

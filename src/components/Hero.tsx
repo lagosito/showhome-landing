@@ -1,10 +1,12 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { uploadHref } from "@/lib/links";
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
 
 export function Hero() {
   const t = useTranslations("Hero");
+  const locale = useLocale();
 
   const steps = [
     { k: "01", t: t("step1Title"), d: t("step1Desc") },
@@ -55,7 +57,7 @@ export function Hero() {
           <Reveal delay={230}>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button
-                href="#cta"
+                href={uploadHref(locale)}
                 size="lg"
                 className="w-full sm:w-auto"
                 icon={<ArrowIcon />}
