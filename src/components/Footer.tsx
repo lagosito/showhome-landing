@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { legalHrefs, uploadHref } from '@/lib/links';
+import { legalHrefs } from '@/lib/links';
 import { ArrowIcon, Button, Container, Logo } from './primitives';
 
 export function Footer() {
@@ -51,7 +51,7 @@ export function Footer() {
           </nav>
 
           <div className="shrink-0">
-            <Button href={uploadHref(locale)} size="lg" icon={<ArrowIcon />}>
+            <Button href="#cta" size="lg" icon={<ArrowIcon />}>
               {t('createVideo')}
             </Button>
           </div>

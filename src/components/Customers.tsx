@@ -1,21 +1,16 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
-import { enterpriseMailto, uploadHref } from "@/lib/links";
+import { useTranslations } from "next-intl";
 import { cn } from "../utils/cn";
 import { ArrowIcon, Button, Container, Reveal } from "./primitives";
 import { demoImg } from "../data/media";
 
 export function Customers() {
   const t = useTranslations("Customers");
-  const locale = useLocale();
-  const upload = uploadHref(locale);
-  const sales = enterpriseMailto(locale);
 
   const blocks = [
     {
       id: "owners",
-      href: upload,
       eyebrow: t("ownerEyebrow"),
       title: t("ownerHeading"),
       body: t("ownerBody"),
@@ -29,7 +24,6 @@ export function Customers() {
     },
     {
       id: "agents",
-      href: upload,
       eyebrow: t("agentEyebrow"),
       title: t("agentHeading"),
       body: t("agentBody"),
@@ -43,7 +37,6 @@ export function Customers() {
     },
     {
       id: "enterprise",
-      href: sales,
       eyebrow: t("companyEyebrow"),
       title: t("companyHeading"),
       body: t("companyBody"),
@@ -124,7 +117,7 @@ export function Customers() {
 
                   <div className="mt-6 pt-1">
                     <Button
-                      href={b.href}
+                      href="#cta"
                       className="w-full"
                       variant={i === 1 ? "primary" : "secondary"}
                       icon={<ArrowIcon />}
