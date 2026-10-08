@@ -261,6 +261,12 @@
     "planFree": "Kostenlos",
     "planStarter": "Starter",
     "planPro": "Pro",
-    "planEnterprise": "Enterprise"
+    "planEnterprise": "Enterprise",
+    "presenterAssetTitle": "Präsentator",
+    "presenterAssetHint": "Asset-ID aus dem BytePlus-Konto (My assets → asset://asset-…). Ist sie gesetzt, verwenden Makler-Videos genau dieses Gesicht in allen Clips.",
+    "presenterAssetPlaceholder": "asset://asset-2026…",
+    "presenterAssetSave": "Speichern",
+    "presenterAssetSaved": "Gespeichert.",
+    "presenterAssetError": "Konnte nicht gespeichert werden. Prüfe die asset://-ID."
   }
 }

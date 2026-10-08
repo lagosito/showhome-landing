@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { Container } from '@/components/primitives';
@@ -64,6 +64,45 @@ export default function AccountClient({
   const router = useRouter();
   const supabase = createClient();
   const [signingOut, setSigningOut] = useState(false);
+  const [assetId, setAssetId] = useState('');
+  const [assetMsg, setAssetMsg] = useState<null | { kind: 'ok' | 'err'; text: string }>(null);
+  const [savingAsset, setSavingAsset] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from('presenter_assets')
+        .select('asset_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (!cancelled && data?.asset_id) setAssetId(data.asset_id);
+    })();
+    return () => { cancelled = true; };
+  }, [supabase]);
+
+  async function savePresenterAsset() {
+    setSavingAsset(true);
+    setAssetMsg(null);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setAssetMsg({ kind: 'err', text: t('presenterAssetError') });
+      setSavingAsset(false);
+      return;
+    }
+    const trimmed = assetId.trim();
+    const value = trimmed && !trimmed.startsWith('asset://') ? `asset://${trimmed}` : trimmed;
+    if (!value) setAssetId('');
+    const { error } = await supabase.from('presenter_assets').upsert(
+      { user_id: user.id, asset_id: value, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id' },
+    );
+    setAssetMsg(error || !value ? { kind: 'err', text: t('presenterAssetError') } : { kind: 'ok', text: t('presenterAssetSaved') });
+    if (!error && value) setAssetId(value);
+    setSavingAsset(false);
+  }
 
   const creditsRemaining = userProfile.credits_total - userProfile.credits_used;
   const planDisplay =
@@ -138,6 +177,34 @@ export default function AccountClient({
                     {t('trialEnds')} {formatDate(userProfile.trial_ends_at)}
                   </p>
                 </div>
+              )}
+            </div>
+
+            {/* Presenter asset */}
+            <div className="mt-6 rounded-2xl border border-line bg-white p-6">
+              <p className="text-[11.5px] font-semibold uppercase tracking-[0.18em] text-clay">
+                {t('presenterAssetTitle')}
+              </p>
+              <p className="mt-3 text-[13px] text-ink-2">{t('presenterAssetHint')}</p>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <input
+                  value={assetId}
+                  onChange={(e) => setAssetId(e.target.value)}
+                  placeholder={t('presenterAssetPlaceholder')}
+                  className="flex-1 rounded-xl border border-line bg-white px-4 py-3 text-[14px] outline-none transition focus:border-ink focus:ring-1 focus:ring-ink"
+                />
+                <button
+                  onClick={savePresenterAsset}
+                  disabled={savingAsset}
+                  className="rounded-full bg-ink px-6 py-3 text-[14px] font-medium text-paper transition hover:-translate-y-0.5 hover:bg-[#1b1d20] disabled:opacity-50"
+                >
+                  {t('presenterAssetSave')}
+                </button>
+              </div>
+              {assetMsg && (
+                <p className={`mt-2 text-[13px] ${assetMsg.kind === 'ok' ? 'text-emerald-600' : 'text-red-600'}`}>
+                  {assetMsg.text}
+                </p>
               )}
             </div>
 

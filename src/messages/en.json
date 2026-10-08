@@ -261,6 +261,12 @@
     "planFree": "Free",
     "planStarter": "Starter",
     "planPro": "Pro",
-    "planEnterprise": "Enterprise"
+    "planEnterprise": "Enterprise",
+    "presenterAssetTitle": "Presenter",
+    "presenterAssetHint": "Asset ID from your BytePlus account (My assets → asset://asset-…). When set, agent videos use that exact face in every clip.",
+    "presenterAssetPlaceholder": "asset://asset-2026…",
+    "presenterAssetSave": "Save",
+    "presenterAssetSaved": "Saved.",
+    "presenterAssetError": "Could not save. Check the asset:// ID."
   }
 }

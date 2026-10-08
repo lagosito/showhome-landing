@@ -8,7 +8,7 @@ import { buildVideoPrompt } from '@/lib/v3/buildPrompt';
 import { describePresenter } from '@/lib/v3/presenter';
 import { submitFal } from '@/lib/v3/fal';
 import { submitBytePlus, BytePlusError } from '@/lib/v3/byteplus';
-import { insertJob, updateJob } from '@/lib/v3/db';
+import { insertJob, updateJob, db } from '@/lib/v3/db';
 import { createClient } from '@/lib/supabase/server';
 import { randomUUID } from 'crypto';
 
@@ -94,7 +94,23 @@ export async function POST(request: Request) {
       params.format === 'agent' && params.presenterUrl
         ? await describePresenter(params.presenterUrl)
         : null;
-    const prompt = buildVideoPrompt(params, plan, refs, presenterDesc);
+
+    // Registered presenter asset (asset://…) gives the presenter one stable
+    // identity across videos. BytePlus accepts an asset reference where a raw
+    // person photo is rejected (400 InputImageSensitiveContentDetected), so it
+    // wins over the text description; accounts without one keep the old path.
+    let presenterAsset: string | null = null;
+    if (params.format === 'agent' && params.presenterUrl) {
+      const { data: assetRow } = await db()
+        .from('presenter_assets')
+        .select('asset_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      const raw = typeof assetRow?.asset_id === 'string' ? assetRow.asset_id.trim() : '';
+      if (raw) presenterAsset = raw.startsWith('asset://') ? raw : `asset://${raw}`;
+    }
+
+    const prompt = buildVideoPrompt(params, plan, refs, presenterDesc, presenterAsset);
 
     const provider = modelCfg.provider;
 
@@ -102,7 +118,11 @@ export async function POST(request: Request) {
       // BytePlus ModelArk (official Seedance 2.5) — Bearer auth, task polling.
       const taskId = await submitBytePlus({
         prompt,
-        imageUrls: refs.map(p => p.url),
+        // presenter asset goes last so prompt indices (@Image1..N rooms,
+        // @ImageN+1 presenter) match the content array order
+        imageUrls: presenterAsset
+          ? [...refs.map(p => p.url), presenterAsset]
+          : refs.map(p => p.url),
         resolution: resolutionFor(params.model, params.quality),
         duration: params.duration,
         draft: Boolean(params.draft),
@@ -162,6 +182,19 @@ export async function POST(request: Request) {
       code.includes('InputImageSensitiveContentDetected') ||
       /may contain a real person/i.test(raw) ||
       /may contain a real person/i.test(String(err?.detail || ''));
+
+    if (/is not found/i.test(raw) && /asset/i.test(raw)) {
+      await updateJob(jobId, { status: 'error', error: 'Präsentator-Asset nicht gefunden' }).catch(() => {});
+      return NextResponse.json(
+        {
+          code: 'presenter_asset_not_found',
+          error: 'presenter_asset_not_found',
+          message:
+            'Das Präsentator-Asset wurde nicht gefunden. Bitte prüfe die asset://-ID in den Kontoeinstellungen.',
+        },
+        { status: 422 },
+      );
+    }
 
     if (personRejected) {
       const contentIdx = /content\[(\d+)\]/.exec(`${raw} ${String(err?.detail || '')}`);
